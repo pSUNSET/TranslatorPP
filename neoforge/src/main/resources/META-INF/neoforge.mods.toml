@@ -1,0 +1,41 @@
+modLoader = "kotlinforforge"
+loaderVersion = "${kff_version_range}"
+clientSideOnly = true
+issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "Translator++"
+authors = "LShiftLess"
+credits = "By - LShiftLess (NoodleInWater)"
+description = '''
+A mod for swift, light and convenient auto translation.
+'''
+logoFile = "icon.png"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/translator-plus-plus"
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_neoforge_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "architectury"
+type = "required"
+versionRange = "[13.0.8,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
