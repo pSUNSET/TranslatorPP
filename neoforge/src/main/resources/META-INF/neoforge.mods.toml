@@ -1,25 +1,25 @@
-modLoader = "kotlinforforge"
-loaderVersion = "${kff_version_range}"
+modLoader = "javafml"
+loaderVersion = "[1,)"
 clientSideOnly = true
-issueTrackerURL = ""
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/translatorpp"
+issueTrackerURL = "https://github.com/pSUNSET/TranslatorPP/issues"
+logoFile = "icon.png"
+authors = "LShiftLess"
+credits = "By - LShiftLess (NoodleInWater)"
 license = "MIT"
 
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
 displayName = "Translator++"
-authors = "LShiftLess"
-credits = "By - LShiftLess (NoodleInWater)"
 description = '''
 A mod for swift, light and convenient auto translation.
 '''
-logoFile = "icon.png"
-displayURL = "https://www.curseforge.com/minecraft/mc-mods/translator-plus-plus"
 
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
+versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
@@ -33,7 +33,7 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "architectury"
 type = "required"
-versionRange = "[13.0.8,)"
+versionRange = "${architectury_api_version_neoforge_range}"
 ordering = "AFTER"
 side = "BOTH"
 

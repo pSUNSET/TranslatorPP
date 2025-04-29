@@ -9,17 +9,18 @@
   ],
   "contact": {
     "homepage": "https://modrinth.com/project/translator++",
-    "issue"
+    "sources": "https://github.com/pSUNSET/TranslatorPP",
+    "issues": "https://github.com/pSUNSET/TranslatorPP/issues"
   },
   "license": "MIT",
   "icon": "icon.png",
   "environment": "client",
   "entrypoints": {
     "main": [
-      "${maven_group}.${mod_id}.fabric.TranslatorPPFabric"
+      "${group}.${mod_id}.fabric.TranslatorPPFabric"
     ],
     "client": [
-      "${maven_group}.${mod_id}.fabric.client.TranslatorPPFabricClient"
+      "${group}.${mod_id}.fabric.client.TranslatorPPFabricClient"
     ]
   },
   "mixins": [

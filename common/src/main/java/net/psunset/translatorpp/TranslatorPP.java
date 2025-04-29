@@ -1,9 +1,17 @@
 package net.psunset.translatorpp;
 
-public final class TranslatorPP {
-    public static final String MOD_ID = "translatorpp";
+import com.mojang.logging.LogUtils;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
+import org.slf4j.Logger;
 
-    public static void init() {
-        // Write common init code here.
+public final class TranslatorPP {
+    public static final String ID = "translatorpp";
+    public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static void commonInit() {
+    }
+
+    public static void clientInit() {
+        TPPKeyMappings.init();
     }
 }

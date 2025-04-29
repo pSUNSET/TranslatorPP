@@ -16,20 +16,31 @@ configurations {
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
 
-    // Files in this configuration will be bundled into your mod using the Shadow plugin.
-    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
     shadowBundle {
         canBeResolved = true
         canBeConsumed = false
     }
 }
 
+repositories {
+    maven {
+        name = "Shedaniel"
+        url = "https://maven.shedaniel.me/"
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/releases/"
+    }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+
+    modApi("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") { exclude(group: "net.fabricmc.fabric-api") }
+    modApi "com.terraformersmc:modmenu:$rootProject.modmenu_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
@@ -39,7 +50,15 @@ processResources {
     inputs.property 'version', project.version
 
     filesMatching('fabric.mod.json') {
-        expand version: project.version
+        expand(
+                mod_id: rootProject.mod_id,
+                version: project.version,
+                group: project.group,
+                minecraft_version_fabric_range: rootProject.minecraft_version_fabric_range,
+                architectury_api_version_fabric_range: rootProject.architectury_api_version_fabric_range,
+                fabric_loader_version_range: rootProject.fabric_loader_version_range,
+                fabric_api_version_range: rootProject.fabric_api_version_range,
+        )
     }
 }
 
