@@ -28,9 +28,10 @@ public class TranslationKit {
         return INSTANCE;
     }
 
-    public ItemStack hoveredStack = null;
+    private ItemStack hoveredStack = null;
     private ItemStack translatedStack = null;
     private String translatedResult = null;
+    private boolean translated = false;
     private Thread translationThread = null;
 
     public static void init() {
@@ -41,26 +42,26 @@ public class TranslationKit {
     }
 
     public void translate() {
+        translated = true;
         if (hoveredStack == null || hoveredStack.equals(translatedStack)) return;
-        if (translationThread != null && translationThread.isAlive()) {
-            translationThread.interrupt();
-        }
+        translationThread = null;
 
         translatedStack = hoveredStack;
         translatedResult = I18n.get("misc.translatorpp.translating");
-        translationThread = new Thread(() -> {
-            translatedResult = TranslationTool.getInstance().translate(
-                    translatedStack.getHoverName().getString(), TPPConfig.INSTANCE.sourceLanguage.get(), TPPConfig.INSTANCE.targetLanguage.get());
-        }, "Translation thread-" + taskCounter.incrementAndGet());
+        translationThread = buildThread();
         translationThread.start();
     }
 
-    public void cleanTranslation() {
-        if (translationThread.isAlive()) {
-            translationThread.interrupt();
-        }
-        translatedStack = null;
-        translatedResult = null;
+    private Thread buildThread() {
+        return new Thread(() -> {
+            translatedResult = TranslationTool.getInstance().translate(
+                    translatedStack.getHoverName().getString(), TPPConfig.INSTANCE.sourceLanguage.get(), TPPConfig.INSTANCE.targetLanguage.get());
+        }, "Translation thread-" + taskCounter.incrementAndGet());
+    }
+
+    public void stop() {
+        translationThread = null;
+        translated = false;
     }
 
     @SubscribeEvent
@@ -80,13 +81,13 @@ public class TranslationKit {
     @SubscribeEvent
     public static void afterScreenKeyReleased(ScreenEvent.KeyReleased.Post event) {
         if (TPPKeyMappings.TRANSLATE_KEY.isActiveAndMatches(InputConstants.Type.KEYSYM.getOrCreate(event.getKeyCode()))) {
-            INSTANCE.cleanTranslation();
+            INSTANCE.stop();
         }
     }
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
-        if (INSTANCE.translatedResult != null) {
+        if (INSTANCE.translated) {
             event.getToolTip().add(1,
                     Component.translatable("misc.translatorpp.translated_result", INSTANCE.translatedResult));
         }

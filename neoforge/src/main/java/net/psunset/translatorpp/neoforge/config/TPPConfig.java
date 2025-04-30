@@ -40,17 +40,17 @@ public class TPPConfig {
 
         this.targetLanguage = builder
                 .translation("config.translatorpp.target_language")
-                .comment(I18n.get("config.translatorpp.target_language.comment")) // The language to translate to.
+                .comment(I18n.get("The language to translate to."))
                 .define("target_language", "en-US",
-                        it -> availableLanguages.contains(it.toString().replace('_', '-').toLowerCase()));
+                        it -> it != null && availableLanguages.contains(it.toString().replace('_', '-').toLowerCase()));
 
         availableLanguages.addFirst("auto");
 
         this.sourceLanguage = builder
                 .translation("config.translatorpp.source_language")
-                .comment(I18n.get("config.translatorpp.source_language.comment")) // The language to translate from. Set to 'auto' to detect automatically.
+                .comment(I18n.get("The language to translate from. Set to 'auto' to detect automatically."))
                 .define("source_language", "auto",
-                        it -> availableLanguages.contains(it.toString().replace('_', '-').toLowerCase()));
+                        it -> it != null && availableLanguages.contains(it.toString().replace('_', '-').toLowerCase()));
     }
 
     public static void commonInit(ModContainer container) {

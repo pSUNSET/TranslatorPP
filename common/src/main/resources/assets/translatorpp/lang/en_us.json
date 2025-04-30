@@ -1,3 +1,10 @@
 {
-
+  "config.translatorpp.target_language": "Target Language",
+  "config.translatorpp.target_language.comment": "The language to translate to.",
+  "config.translatorpp.source_language": "Source Language",
+  "config.translatorpp.source_language.comment": "The language to translate from. Set to 'auto' to detect automatically.",
+  "key.translatorpp.translate": "Translate Key",
+  "key.categories.translatorpp.general": "Translator++",
+  "misc.translatorpp.translating": "Translating...",
+  "misc.translatorpp.translated_result": "Translation result: %s"
 }

@@ -26,12 +26,11 @@ public class TranslationTool {
     public TranslationTool() {
     }
 
-    public String translate(String q, String sl, String tl) {
+    public synchronized String translate(String q, String sl, String tl) {
         try {
             String url = buildUrl(q, sl, tl);
             String response = getUrlResponse(url);
-            String result = parseResult(response);
-            return result;
+            return parseResult(response);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error(e.getMessage());
             e.printStackTrace();
@@ -46,7 +45,7 @@ public class TranslationTool {
                 "&tl=" + tl;
     }
 
-    private String getUrlResponse(String urlStr) throws Exception {
+    private synchronized String getUrlResponse(String urlStr) throws Exception {
         URL url = URI.create(urlStr).toURL();
         TranslatorPP.LOGGER.info("Connecting to URL: {}", url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
