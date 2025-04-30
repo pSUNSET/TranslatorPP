@@ -2,6 +2,8 @@ package net.psunset.translatorpp.keybind;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 
@@ -13,6 +15,7 @@ public class TPPKeyMappings {
             "key.categories.translatorpp.general"
     );
 
+    @Environment(EnvType.CLIENT)
     public static void init() {
         KeyMappingRegistry.register(TRANSLATE_KEY);
     }

@@ -1,29 +1,89 @@
 package net.psunset.translatorpp.fabric.tool;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.fabric.config.TPPConfig;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.TranslationTool;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TranslationKit {
 
     private static TranslationKit INSTANCE;
 
+    private static final AtomicInteger taskCounter = new AtomicInteger(0);
+
     public static TranslationKit getInstance() {
         return INSTANCE;
     }
 
-    public ItemStack hoveredStack = ItemStack.EMPTY;
-    private ItemStack translatedStack = ItemStack.EMPTY;
+    public ItemStack hoveredStack = null;
+    private ItemStack translatedStack = null;
     private String translatedResult = null;
+    private boolean translated = false;
+    private Thread translationThread = null;
 
-    private void translate() {
-        translatedResult = I18n.get("misc.translatorpp.translating");
-        CompletableFuture.runAsync(() -> translatedResult = TranslationTool.getInstance().translate("", "", ""));
+    public TranslationKit() {
     }
 
-    public static void init() {
+    public void translate() {
+        translated = true;
+        if (hoveredStack == null || hoveredStack.equals(translatedStack)) return;
+        translationThread = null;
+
+        translatedStack = hoveredStack;
+        translatedResult = I18n.get("misc.translatorpp.translating");
+        translationThread = createTranslationThread();
+        translationThread.start();
+    }
+
+    private Thread createTranslationThread() {
+        return new Thread(() -> {
+            translatedResult = TranslationTool.getInstance().translate(
+                    translatedStack.getHoverName().getString(), TPPConfig.getInstance().sourceLanguage, TPPConfig.getInstance().targetLanguage);
+        }, "Translation thread-" + taskCounter.incrementAndGet());
+    }
+
+    public void stop() {
+        translationThread = null;
+        translated = false;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void clientInit() {
+        TranslatorPP.LOGGER.debug("Initializing TranslationKit");
         INSTANCE = new TranslationKit();
+    }
+
+    public static void commonInit() {
+        ScreenEvents.AFTER_INIT.register((client, _screen, scaledWidth, scaledHeight) -> {
+            ScreenKeyboardEvents.afterKeyPress(_screen).register((screen, key, scancode, modifiers) -> {
+                if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
+                    INSTANCE.translate();
+                }
+            });
+            ScreenKeyboardEvents.afterKeyRelease(_screen).register((screen, key, scancode, modifiers) -> {
+                if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
+                    INSTANCE.stop();
+                }
+            });
+        });
+
+        ItemTooltipCallback.EVENT.register(((stack, tooltipContext, tooltipType, lines) -> {
+            if (INSTANCE.translated) {
+                lines.add(1, Component.translatable("misc.translatorpp.translated_result", INSTANCE.translatedResult));
+            }
+        }));
     }
 }

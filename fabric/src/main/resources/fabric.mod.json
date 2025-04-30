@@ -20,7 +20,10 @@
       "${group}.${mod_id}.fabric.TranslatorPPFabric"
     ],
     "client": [
-      "${group}.${mod_id}.fabric.client.TranslatorPPFabricClient"
+      "${group}.${mod_id}.fabric.TranslatorPPFabricClient"
+    ],
+    "modmenu": [
+      "${group}.${mod_id}.fabric.config.TPPModMenuIntegration"
     ]
   },
   "mixins": [

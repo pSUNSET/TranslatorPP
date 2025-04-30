@@ -6,6 +6,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -34,10 +35,6 @@ public class TranslationKit {
     private boolean translated = false;
     private Thread translationThread = null;
 
-    public static void init() {
-        INSTANCE = new TranslationKit();
-    }
-
     public TranslationKit() {
     }
 
@@ -48,11 +45,11 @@ public class TranslationKit {
 
         translatedStack = hoveredStack;
         translatedResult = I18n.get("misc.translatorpp.translating");
-        translationThread = buildThread();
+        translationThread = createTranslationThread();
         translationThread.start();
     }
 
-    private Thread buildThread() {
+    private Thread createTranslationThread() {
         return new Thread(() -> {
             translatedResult = TranslationTool.getInstance().translate(
                     translatedStack.getHoverName().getString(), TPPConfig.INSTANCE.sourceLanguage.get(), TPPConfig.INSTANCE.targetLanguage.get());
@@ -62,6 +59,12 @@ public class TranslationKit {
     public void stop() {
         translationThread = null;
         translated = false;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void init() {
+        TranslatorPP.LOGGER.debug("Initializing TranslationKit");
+        INSTANCE = new TranslationKit();
     }
 
     @SubscribeEvent

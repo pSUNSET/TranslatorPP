@@ -1,4 +1,6 @@
 {
+  "config.title.translatorpp": "Translator++ Options",
+  "config.category.translatorpp.general": "General",
   "config.translatorpp.target_language": "Target Language",
   "config.translatorpp.target_language.comment": "The language to translate to.",
   "config.translatorpp.source_language": "Source Language",

@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.neoforge.config;
 
-import com.ibm.icu.impl.locale.BaseLocale;
 import net.minecraft.client.resources.language.I18n;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -11,10 +10,8 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TPPConfig {
     public static final TPPConfig INSTANCE;
@@ -31,30 +28,27 @@ public class TPPConfig {
     public final ModConfigSpec.ConfigValue<String> targetLanguage;
 
     private TPPConfig(ModConfigSpec.Builder builder) {
-        List<String> availableLanguages = new ArrayList<>(Arrays.stream(Locale.getAvailableLocales())
+        Set<String> tlList = Arrays.stream(Locale.getAvailableLocales())
                 .map(Locale::toLanguageTag)
-                .map(String::toLowerCase)
-                .distinct()
-                .sorted(String::compareTo)
-                .toList());
+                .collect(Collectors.toSet());
 
-        this.targetLanguage = builder
-                .translation("config.translatorpp.target_language")
-                .comment(I18n.get("The language to translate to."))
-                .define("target_language", "en-US",
-                        it -> it != null && availableLanguages.contains(it.toString().replace('_', '-').toLowerCase()));
-
-        availableLanguages.addFirst("auto");
+        Set<String> slList = new HashSet<>(tlList.size() + 1);
+        slList.add("auto");
+        slList.addAll(tlList);
 
         this.sourceLanguage = builder
                 .translation("config.translatorpp.source_language")
-                .comment(I18n.get("The language to translate from. Set to 'auto' to detect automatically."))
-                .define("source_language", "auto",
-                        it -> it != null && availableLanguages.contains(it.toString().replace('_', '-').toLowerCase()));
+                .comment("The language to translate from. Set to 'auto' to detect automatically.")
+                .defineInList("source_language", "auto", slList);
+
+        this.targetLanguage = builder
+                .translation("config.translatorpp.target_language")
+                .comment("The language to translate to.")
+                .defineInList("target_language", "es-ES", tlList);
     }
 
     public static void commonInit(ModContainer container) {
-        container.registerConfig(ModConfig.Type.CLIENT, SPEC);
+        container.registerConfig(ModConfig.Type.COMMON, SPEC);
     }
 
     @OnlyIn(Dist.CLIENT)
