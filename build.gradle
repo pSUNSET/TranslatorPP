@@ -9,8 +9,8 @@ architectury {
 }
 
 allprojects {
-    group = rootProject.maven_group
-    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
+    group = maven_group
+    version = "${mod_version}+${minecraft_version}"
 }
 
 subprojects {
@@ -19,14 +19,14 @@ subprojects {
     apply plugin: 'maven-publish'
 
     base {
-        archivesName = "$rootProject.mod_id-$project.name"
+        archivesName = "$mod_id-$project.name"
     }
 
     repositories {
     }
 
     dependencies {
-        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        minecraft "net.minecraft:minecraft:$minecraft_version"
         mappings loom.officialMojangMappings()
     }
 

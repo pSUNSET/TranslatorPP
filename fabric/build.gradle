@@ -34,13 +34,13 @@ repositories {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
 
-    modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+    modImplementation "dev.architectury:architectury-fabric:$architectury_api_version"
 
     modApi("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") { exclude(group: "net.fabricmc.fabric-api") }
-    modApi "com.terraformersmc:modmenu:$rootProject.modmenu_version"
+    modApi "com.terraformersmc:modmenu:$modmenu_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
@@ -48,16 +48,18 @@ dependencies {
 
 processResources {
     inputs.property 'version', project.version
+    inputs.property 'group', project.group
 
     filesMatching('fabric.mod.json') {
         expand(
-                mod_id: rootProject.mod_id,
+                mod_id: mod_id,
                 version: project.version,
                 group: project.group,
-                minecraft_version_fabric_range: rootProject.minecraft_version_fabric_range,
-                architectury_api_version_fabric_range: rootProject.architectury_api_version_fabric_range,
-                fabric_loader_version_range: rootProject.fabric_loader_version_range,
-                fabric_api_version_range: rootProject.fabric_api_version_range,
+                minecraft_version_fabric_range: minecraft_version_fabric_range,
+                architectury_api_version_fabric_range: architectury_api_version_fabric_range,
+                fabric_loader_version_range: fabric_loader_version_range,
+                fabric_api_version_range: fabric_api_version_range,
+                cloth_config_version_range: cloth_config_version_range
         )
     }
 }

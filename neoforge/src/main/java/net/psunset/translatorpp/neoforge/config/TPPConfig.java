@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.neoforge.config;
 
-import net.minecraft.client.resources.language.I18n;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModContainer;
@@ -10,7 +9,10 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TPPConfig {

@@ -2,6 +2,7 @@ package net.psunset.translatorpp.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.fabric.keybind.TPPKeyMappingsFabric;
 import net.psunset.translatorpp.fabric.tool.TranslationKit;
 
 public final class TranslatorPPFabricClient implements ClientModInitializer {
@@ -9,5 +10,6 @@ public final class TranslatorPPFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         TranslatorPP.clientInit();
         TranslationKit.clientInit();
+        TPPKeyMappingsFabric.init();
     }
 }
