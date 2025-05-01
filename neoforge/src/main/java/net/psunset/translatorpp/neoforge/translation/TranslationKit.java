@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.neoforge.tool;
+package net.psunset.translatorpp.neoforge.translation;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfig;
-import net.psunset.translatorpp.tool.TranslationTool;
+import net.psunset.translatorpp.translation.GoogleTranslationAPITool;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -51,7 +51,7 @@ public class TranslationKit {
 
     private Thread createTranslationThread() {
         return new Thread(() -> {
-            translatedResult = TranslationTool.getInstance().translate(
+            translatedResult = GoogleTranslationAPITool.getInstance().translate(
                     translatedStack.getHoverName().getString(), TPPConfig.INSTANCE.sourceLanguage.get(), TPPConfig.INSTANCE.targetLanguage.get());
         }, "Translation thread-" + taskCounter.incrementAndGet());
     }

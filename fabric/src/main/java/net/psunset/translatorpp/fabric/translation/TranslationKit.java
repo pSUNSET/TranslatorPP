@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.fabric.tool;
+package net.psunset.translatorpp.fabric.translation;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.fabric.config.TPPConfig;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.tool.TranslationTool;
+import net.psunset.translatorpp.translation.GoogleTranslationClientTool;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,7 +47,7 @@ public class TranslationKit {
 
     private Thread createTranslationThread() {
         return new Thread(() -> {
-            translatedResult = TranslationTool.getInstance().translate(
+            translatedResult = GoogleTranslationClientTool.getInstance().translate(
                     translatedStack.getHoverName().getString(), TPPConfig.getInstance().sourceLanguage, TPPConfig.getInstance().targetLanguage);
         }, "Translation thread-" + taskCounter.incrementAndGet());
     }

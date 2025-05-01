@@ -6,7 +6,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.neoforge.config.TPPConfig;
-import net.psunset.translatorpp.neoforge.tool.TranslationKit;
+import net.psunset.translatorpp.neoforge.translation.TranslationKit;
 
 @Mod(value = TranslatorPP.ID, dist = Dist.CLIENT)
 public final class TranslatorPPNeoForgeClient {

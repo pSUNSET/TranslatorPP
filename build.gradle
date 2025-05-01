@@ -28,6 +28,8 @@ subprojects {
     dependencies {
         minecraft "net.minecraft:minecraft:$minecraft_version"
         mappings loom.officialMojangMappings()
+
+        implementation "com.openai:openai-java:$openai_version"
     }
 
     java {

@@ -1,10 +1,11 @@
-package net.psunset.translatorpp.tool;
+package net.psunset.translatorpp.translation;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.psunset.translatorpp.TranslatorPP;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -13,28 +14,22 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class TranslationTool {
+public class GoogleTranslationClientTool extends AbstractTranslationClientTool {
 
-    private static final TranslationTool INSTANCE = new TranslationTool();
-    public static final String ERROR = "!@#$%^&*()_+";
+    private static final GoogleTranslationClientTool INSTANCE = new GoogleTranslationClientTool();
 
-    public static TranslationTool getInstance() {
+    public static GoogleTranslationClientTool getInstance() {
         return INSTANCE;
     }
 
-    public TranslationTool() {
+    public GoogleTranslationClientTool() {
     }
 
-    public synchronized String translate(String q, String sl, String tl) {
-        try {
-            String url = buildUrl(q, sl, tl);
-            String response = getUrlResponse(url);
-            return parseResult(response);
-        } catch (Exception e) {
-            TranslatorPP.LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return ERROR;
-        }
+    @Override
+    public String _translate(String q, String sl, String tl) throws IOException {
+        String url = buildUrl(q, sl, tl);
+        String response = getUrlResponse(url);
+        return parseResult(response);
     }
 
     private String buildUrl(String q, String sl, String tl) {
@@ -44,7 +39,7 @@ public class TranslationTool {
                 "&tl=" + tl;
     }
 
-    private synchronized String getUrlResponse(String urlStr) throws Exception {
+    private String getUrlResponse(String urlStr) throws IOException {
         URL url = URI.create(urlStr).toURL();
         TranslatorPP.LOGGER.info("Connecting to URL: {}", url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
