@@ -3,6 +3,8 @@ package net.psunset.translatorpp.translation;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 
+import java.util.function.Supplier;
+
 public class OpenAIClientTool extends AbstractTranslationClientTool {
 
     private static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
@@ -11,17 +13,26 @@ public class OpenAIClientTool extends AbstractTranslationClientTool {
         return INSTANCE;
     }
 
-    public OpenAIClient client;
+    private Supplier<OpenAIOkHttpClient.Builder> clientBuilderSup;
+    private OpenAIClient client;
 
     public OpenAIClientTool() {
     }
 
     @Override
-    protected String _translate(String q, String sl, String tl) throws Exception {
+    public String _translate(String q, String sl, String tl) throws Exception {
         return "";
     }
 
-    public void init() {
+    public void setClientBuilderSup(Supplier<OpenAIOkHttpClient.Builder> clientBuilderSup) {
+        this.clientBuilderSup = clientBuilderSup;
+    }
 
+    public OpenAIClient presentClient() {
+        return this.client;
+    }
+
+    public void refreshClient() {
+        this.client = this.clientBuilderSup.get().build();
     }
 }

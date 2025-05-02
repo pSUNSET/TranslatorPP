@@ -17,5 +17,5 @@ public abstract class AbstractTranslationClientTool {
         }
     }
 
-    protected abstract String _translate(String q, String sl, String tl) throws Exception;
+    public abstract String _translate(String q, String sl, String tl) throws Exception;
 }

@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfig;
-import net.psunset.translatorpp.translation.GoogleTranslationAPITool;
+import net.psunset.translatorpp.translation.GoogleTranslationClientTool;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -51,7 +51,7 @@ public class TranslationKit {
 
     private Thread createTranslationThread() {
         return new Thread(() -> {
-            translatedResult = GoogleTranslationAPITool.getInstance().translate(
+            translatedResult = GoogleTranslationClientTool.getInstance().translate(
                     translatedStack.getHoverName().getString(), TPPConfig.INSTANCE.sourceLanguage.get(), TPPConfig.INSTANCE.targetLanguage.get());
         }, "Translation thread-" + taskCounter.incrementAndGet());
     }
