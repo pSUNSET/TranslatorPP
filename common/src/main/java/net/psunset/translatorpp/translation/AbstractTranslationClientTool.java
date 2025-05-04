@@ -12,7 +12,7 @@ public abstract class AbstractTranslationClientTool {
         try {
             return _translate(q, sl, tl);
         } catch (Exception e) {
-            TranslatorPP.LOGGER.error(e.getMessage());
+            TranslatorPP.LOGGER.error("Error while translating: {}", e.toString());
             return ERROR;
         }
     }

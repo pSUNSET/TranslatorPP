@@ -40,7 +40,7 @@ public class TranslationKit {
         translationThread = null;
 
         translatedStack = hoveredStack;
-        translatedResult = I18n.get("misc.translatorpp.translating");
+        translatedResult = I18n.get("misc.translatorpp.translation.waiting");
         translationThread = createTranslationThread();
         translationThread.start();
     }
@@ -79,7 +79,7 @@ public class TranslationKit {
 
         ItemTooltipCallback.EVENT.register(((stack, tooltipContext, tooltipType, lines) -> {
             if (INSTANCE.translated) {
-                lines.add(1, Component.translatable("misc.translatorpp.translated_result", INSTANCE.translatedResult));
+                lines.add(1, Component.translatable("misc.translatorpp.translation", INSTANCE.translatedResult));
             }
         }));
     }

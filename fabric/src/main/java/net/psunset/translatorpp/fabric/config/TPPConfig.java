@@ -70,14 +70,14 @@ public class TPPConfig implements ConfigData {
         slList.addAll(tlList);
 
         generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), config.sourceLanguage)
-                .setTooltip(Component.translatable("config.translatorpp.source_language.comment"))
+                .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
                 .setSelections(slList)
                 .setDefaultValue("auto")
                 .setSaveConsumer(it -> config.sourceLanguage = it)
                 .build());
 
         generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), config.targetLanguage)
-                .setTooltip(Component.translatable("config.translatorpp.target_language.comment"))
+                .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
                 .setSelections(tlList)
                 .setDefaultValue("es-ES")
                 .setSaveConsumer(it -> config.targetLanguage = it)

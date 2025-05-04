@@ -41,7 +41,6 @@ public class GoogleTranslationClientTool extends AbstractTranslationClientTool {
 
     private String getUrlResponse(String urlStr) throws IOException {
         URL url = URI.create(urlStr).toURL();
-        TranslatorPP.LOGGER.info("Connecting to URL: {}", url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
             conn.setDoInput(true);
@@ -55,11 +54,6 @@ public class GoogleTranslationClientTool extends AbstractTranslationClientTool {
             conn.connect();
 
             StringBuilder response = new StringBuilder();
-
-            if (Thread.currentThread().isInterrupted()) {
-                TranslatorPP.LOGGER.warn("{} interrupted", Thread.currentThread().getName());
-                throw new RuntimeException("Thread interrupted, translation terminated");
-            }
 
             if (conn.getResponseCode() == 200) {
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
@@ -78,8 +72,6 @@ public class GoogleTranslationClientTool extends AbstractTranslationClientTool {
                         response.append(errorLine);
                     }
                 }
-
-                TranslatorPP.LOGGER.error("HTTP response: {}", response);
             }
             return response.toString();
         } finally {
