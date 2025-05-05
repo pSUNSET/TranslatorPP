@@ -1,14 +1,16 @@
 package net.psunset.translatorpp.translation;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.ClientOptions;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
 import com.openai.models.models.Model;
+import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -95,17 +97,21 @@ public class OpenAIClientTool extends AbstractTranslationClientTool {
         }
     }
 
-    public enum BaseUrl {
+    public enum Api {
         OpenAI(ClientOptions.PRODUCTION_URL, "gpt-4o-mini"),
         Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
         Grok("https://api.x.ai/v1", "grok-3"),
         DeepSeek("https://api.deepseek.com/v1", "deepseek-chat");
 
-        public final String url;
+        public static final Map<String, Api> entries = Util.make(Maps.newHashMap(), map -> {
+            Arrays.asList(values()).forEach(it -> map.put(it.name(), it));
+        });
+
+        public final String baseUrl;
         public final String defaultModel;
 
-        BaseUrl(String url, String defaultModel) {
-            this.url = url;
+        Api(String baseUrl, String defaultModel) {
+            this.baseUrl = baseUrl;
             this.defaultModel = defaultModel;
         }
     }

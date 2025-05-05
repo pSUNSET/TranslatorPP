@@ -58,8 +58,11 @@ public class TranslationKit {
             }
     );
 
+    @Nullable
     private ItemStack hoveredStack = null;
+    @Nullable
     private ItemStack translatedStack = null;
+    @Nullable
     private volatile MutableComponent translatedResult = null;
     private volatile boolean translated = false;
     private CompletableFuture<Void> translationFuture = null;
@@ -201,17 +204,17 @@ public class TranslationKit {
     public static void refreshOpenAIClientTool() {
         try {
             String apikey = TPPConfig.OPENAI.openaiApiKey.get();
-            OpenAIClientTool.BaseUrl baseUrl = TPPConfig.OPENAI.openaiBaseUrl.get();
+            OpenAIClientTool.Api api = TPPConfig.OPENAI.openaiBaseUrl.get();
             String model = TPPConfig.GENERAL.openaiModel.get();
             if (model.isBlank()) {
-                model = baseUrl.defaultModel;
+                model = api.defaultModel;
             }
             TranslatorPP.LOGGER.info("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apikey.isEmpty() ? "NOT SET" : "****" + apikey.substring(apikey.length() - 4), baseUrl.url, model); // Avoid logging full API key
+                    apikey.isEmpty() ? "NOT SET" : "****" + apikey.substring(apikey.length() - 4), api.baseUrl, model); // Avoid logging full API key
             OpenAIClientTool.getInstance().setClientBuilderSup(() ->
                     OpenAIOkHttpClient.builder()
                             .apiKey(apikey)
-                            .baseUrl(baseUrl.url)
+                            .baseUrl(api.baseUrl)
                             .headers(Headers.builder()
                                     .put("Accept", "*/*")
                                     .put("User-Agent", "TranslatorPP")

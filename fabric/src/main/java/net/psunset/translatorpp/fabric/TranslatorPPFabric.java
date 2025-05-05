@@ -10,6 +10,5 @@ public final class TranslatorPPFabric implements ModInitializer {
     public void onInitialize() {
         TranslatorPP.commonInit();
         TranslationKit.commonInit();
-        TPPConfig.init();
     }
 }

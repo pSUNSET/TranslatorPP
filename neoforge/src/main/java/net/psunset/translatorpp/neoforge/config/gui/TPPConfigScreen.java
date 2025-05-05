@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.neoforge.client.gui;
+package net.psunset.translatorpp.neoforge.config.gui;
 
 import com.mojang.realmsclient.RealmsMainScreen;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;

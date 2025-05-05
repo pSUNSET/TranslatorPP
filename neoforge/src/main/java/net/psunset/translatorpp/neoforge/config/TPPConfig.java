@@ -11,7 +11,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.neoforge.client.gui.TPPConfigScreen;
+import net.psunset.translatorpp.neoforge.config.gui.TPPConfigScreen;
 import net.psunset.translatorpp.neoforge.translation.TranslationKit;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationTools;
@@ -74,19 +74,19 @@ public class TPPConfig {
 
             this.openaiModel = builder
                     .translation("config.translatorpp.openai_model")
-                    .define("openai_model", OpenAIClientTool.BaseUrl.OpenAI.defaultModel, it ->
-                            it == null || it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && this.openaiModels.contains(it)));
+                    .define("openai_model", OpenAIClientTool.Api.OpenAI.defaultModel, it ->
+                            it == null || it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && openaiModels.contains(it)));
         }
 
         private void refreshOpenAIModels() {
-            this.openaiModels = new HashSet<>(OpenAIClientTool.getInstance().getModels());
+            openaiModels = new HashSet<>(OpenAIClientTool.getInstance().getModels());
         }
     }
 
     public static class OpenAI {
 
         public final ModConfigSpec.ConfigValue<String> openaiApiKey;
-        public final ModConfigSpec.ConfigValue<OpenAIClientTool.BaseUrl> openaiBaseUrl;
+        public final ModConfigSpec.ConfigValue<OpenAIClientTool.Api> openaiBaseUrl;
 
         private OpenAI(ModConfigSpec.Builder builder) {
             this.openaiApiKey = builder
@@ -95,7 +95,7 @@ public class TPPConfig {
 
             this.openaiBaseUrl = builder
                     .translation("config.translatorpp.openai_baseurl")
-                    .defineEnum("openai_baseurl", OpenAIClientTool.BaseUrl.OpenAI, EnumGetMethod.NAME_IGNORECASE);
+                    .defineEnum("openai_baseurl", OpenAIClientTool.Api.OpenAI, EnumGetMethod.NAME_IGNORECASE);
         }
     }
 

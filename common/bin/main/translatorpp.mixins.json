@@ -1,11 +1,9 @@
 {
   "required": true,
-  "package": "net.psunset.translatorpp.fabric.mixin",
+  "package": "net.psunset.translatorpp.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "AbstractContainerScreenMixin",
-    "ClothConfigScreenMixin"
   ],
   "mixins": [
   ],

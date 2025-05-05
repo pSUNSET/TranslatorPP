@@ -1,5 +1,6 @@
 package net.psunset.translatorpp.translation;
 
+import com.google.common.collect.Maps;
 import net.minecraft.Util;
 
 import java.util.Arrays;
@@ -11,10 +12,9 @@ public enum TranslationTools {
     GoogleTranslation("Google Translation", GoogleTranslationClientTool::getInstance),
     OpenAIClient("OpenAI Client", OpenAIClientTool::getInstance);
 
-    public static final Map<String, TranslationTools> nameToTool =
-            Util.make(new HashMap<>(), map -> {
-                Arrays.stream(TranslationTools.values()).toList().forEach(it -> map.put(it.displayName, it));
-            });
+    public static final Map<String, TranslationTools> entries = Util.make(Maps.newHashMap(), map -> {
+        Arrays.asList(values()).forEach(it -> map.put(it.displayName, it));
+    });
 
     private final String displayName;
     private final Supplier<? extends AbstractTranslationClientTool> toolSup;

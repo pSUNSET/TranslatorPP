@@ -6,6 +6,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,6 +22,7 @@ import java.util.function.Supplier;
  * OpenAI API Key maybe too long to got cut in default EditBox.
  * So we increase the max length of the EditBox when StringValue is created.
  */
+@OnlyIn(Dist.CLIENT)
 @Mixin(ConfigurationScreen.ConfigurationSectionScreen.class)
 public abstract class ConfigurationSectionScreenMixin extends OptionsSubScreen {
     public ConfigurationSectionScreenMixin(Screen arg, Options arg2, Component arg3) {
