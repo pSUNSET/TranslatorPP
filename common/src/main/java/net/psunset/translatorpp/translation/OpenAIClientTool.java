@@ -35,7 +35,7 @@ public class OpenAIClientTool extends AbstractTranslationClientTool {
     }
 
     @Override
-    public String _translate(String q, String sl, String tl) throws Exception {
+    public String translate(String q, String sl, String tl) throws Exception {
         ChatCompletionCreateParams.Builder chatBuilder = ChatCompletionCreateParams.builder()
                 .addUserMessage(PROMPT.formatted(q, sl, tl))
                 .temperature(0.7)

@@ -14,11 +14,14 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.fabric.keybind.TPPKeyMappingsFabric;
+import net.psunset.translatorpp.translation.OpenAIClientTool;
+import net.psunset.translatorpp.translation.TranslationTools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Config(name = TranslatorPP.ID)
 public class TPPConfig implements ConfigData {
@@ -35,11 +38,13 @@ public class TPPConfig implements ConfigData {
 
     public String sourceLanguage = "auto";
     public String targetLanguage = "es-ES";
+    public String translationTool = "Google Translation";
+    public String openaiModel = "gpt-4o-mini";
 
     public static void init() {
         HOLDER = AutoConfig.register(TPPConfig.class, GsonConfigSerializer::new);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (TPPKeyMappingsFabric.CONFIG_KEY.isDown()){
+            if (TPPKeyMappingsFabric.CONFIG_KEY.isDown()) {
                 if (client.screen == null ||
                         !client.screen.getTitle().getString().equals(I18n.get("config.title.translatorpp"))) {
                     client.setScreen(TPPConfig.screen(client.screen));
@@ -58,6 +63,7 @@ public class TPPConfig implements ConfigData {
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
         ConfigCategory generalCategory = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.general"));
+        ConfigCategory openaiCategory = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.openai"));
 
         List<String> tlList = Arrays.stream(Locale.getAvailableLocales())
                 .map(Locale::toLanguageTag)
@@ -81,6 +87,20 @@ public class TPPConfig implements ConfigData {
                 .setSelections(tlList)
                 .setDefaultValue("es-ES")
                 .setSaveConsumer(it -> config.targetLanguage = it)
+                .build());
+
+        generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.translation_tool"), config.translationTool)
+                .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
+                .setSelections(TranslationTools.nameToTool.keySet())
+                .setDefaultValue("Google Translation")
+                .setSaveConsumer(it -> config.translationTool = it)
+                .build());
+
+        generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel)
+                .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
+                .setSelections(OpenAIClientTool.getInstance().getModels())
+                .setDefaultValue(() -> OpenAIClientTool.BaseUrl.OpenAI.defaultModel)
+                .setSaveConsumer(it -> config.openaiModel = it)
                 .build());
 
         return builder.build();

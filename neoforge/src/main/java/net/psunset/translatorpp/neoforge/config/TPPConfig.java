@@ -75,7 +75,7 @@ public class TPPConfig {
             this.openaiModel = builder
                     .translation("config.translatorpp.openai_model")
                     .define("openai_model", OpenAIClientTool.BaseUrl.OpenAI.defaultModel, it ->
-                            it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && this.openaiModels.contains(it)));
+                            it == null || it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && this.openaiModels.contains(it)));
         }
 
         private void refreshOpenAIModels() {
@@ -91,7 +91,7 @@ public class TPPConfig {
         private OpenAI(ModConfigSpec.Builder builder) {
             this.openaiApiKey = builder
                     .translation("config.translatorpp.openai_apikey")
-                    .define("openai_apikey", "********************");
+                    .define("openai_apikey", "");
 
             this.openaiBaseUrl = builder
                     .translation("config.translatorpp.openai_baseurl")

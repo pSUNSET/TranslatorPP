@@ -26,7 +26,7 @@ public class GoogleTranslationClientTool extends AbstractTranslationClientTool {
     }
 
     @Override
-    public String _translate(String q, String sl, String tl) throws IOException {
+    public String translate(String q, String sl, String tl) throws IOException {
         String url = buildUrl(q, sl, tl);
         String response = getUrlResponse(url);
         return parseResult(response);

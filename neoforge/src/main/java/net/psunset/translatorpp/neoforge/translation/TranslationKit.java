@@ -20,6 +20,7 @@ import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfig;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -66,7 +67,7 @@ public class TranslationKit {
     public TranslationKit() {
     }
 
-    public void translate(Player player) {
+    public void translate(@Nullable Player player) {
         if (hoveredStack == null || hoveredStack.equals(translatedStack)) return; // Already translating or translated this exact stack instance
 
         // Cancel any previous ongoing translation
@@ -91,7 +92,7 @@ public class TranslationKit {
         translationFuture = CompletableFuture
                 .supplyAsync(() -> {
                     try {
-                        return TPPConfig.GENERAL.translationTool.get().getTool()._translate(
+                        return TPPConfig.GENERAL.translationTool.get().getTool().translate(
                                 originalText,
                                 TPPConfig.GENERAL.sourceLanguage.get(),
                                 TPPConfig.GENERAL.targetLanguage.get()
@@ -112,19 +113,23 @@ public class TranslationKit {
                 .exceptionally(err -> {
                     TranslatorPP.LOGGER.error("Translation failed for: {}, cause: {}", originalText, err.getCause());
                     translatedResult = Component.translatable("misc.translatorpp.translation.failed").withStyle(ChatFormatting.RED);
-                    this.sendErrorToPlayer(player, err.getCause());
+                    if (player != null){
+                        this.sendErrorToPlayer(player, err.getCause());
+                    }
                     return null; // Indicate exception was handled
                 });
     }
 
     public void stop() {
-        if (translationFuture != null && !translationFuture.isDone()) {
-            translationFuture.cancel(true);
+        if (this.translated){
+            if (translationFuture != null && !translationFuture.isDone()) {
+                translationFuture.cancel(true);
+            }
+            translated = false;
+            translatedStack = null;
+            translatedResult = null;
+            translationFuture = null;
         }
-        translated = false;
-        translatedStack = null;
-        translatedResult = null;
-        translationFuture = null;
     }
 
     public void clearCache() {
