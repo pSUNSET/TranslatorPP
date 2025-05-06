@@ -110,8 +110,8 @@ public class TPPConfig implements ConfigData {
 
         generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel)
                 .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
-                .setSelections(openaiModels)
-                .setDefaultValue(() -> OpenAIClientTool.Api.OpenAI.defaultModel)
+                .setSelections(openaiModels::iterator)
+                .setDefaultValue(OpenAIClientTool.Api.OpenAI.defaultModel)
                 .setSaveConsumer(it -> config.openaiModel = it)
                 .build());
 
