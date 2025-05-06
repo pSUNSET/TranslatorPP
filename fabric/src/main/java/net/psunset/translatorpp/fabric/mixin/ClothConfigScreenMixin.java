@@ -10,6 +10,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.fabric.config.TPPConfig;
 import net.psunset.translatorpp.fabric.translation.TranslationKit;
 import org.spongepowered.asm.mixin.Final;
@@ -46,9 +47,10 @@ public abstract class ClothConfigScreenMixin extends AbstractTabbedConfigScreen 
 
     @Inject(method = "render", at = @At("TAIL"))
     public void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        String selectedCategoryText = getSelectedCategory().getString();
-        String delaySelectedCategoryText = getDelaySelectedCategory().getString();
-        if (!selectedCategoryText.equals(delaySelectedCategoryText)) {
+        if (this.delaySelectedCategoryIndex != selectedCategoryIndex) {
+            String selectedCategoryText = getSelectedCategory().getString();
+            String delaySelectedCategoryText = getDelaySelectedCategory().getString();
+            TranslatorPP.LOGGER.info("Cloth Config selected tag got changed from {} to {}", delaySelectedCategoryText, selectedCategoryText);
             if (delaySelectedCategoryText.equals(I18n.get("config.category.translatorpp.general"))) {
                 TranslationKit.refreshOpenAIClientTool();
                 TranslationKit.getInstance().clearCache();
@@ -56,7 +58,7 @@ public abstract class ClothConfigScreenMixin extends AbstractTabbedConfigScreen 
                 TranslationKit.refreshOpenAIClientTool();
                 TPPConfig.refreshOpenAIModels();
             }
+            this.delaySelectedCategoryIndex = selectedCategoryIndex;
         }
-        this.delaySelectedCategoryIndex = selectedCategoryIndex;
     }
 }

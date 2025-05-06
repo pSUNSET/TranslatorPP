@@ -16,9 +16,9 @@ import java.util.function.Supplier;
 @Environment(EnvType.CLIENT)
 public class LazyDropdownBoxEntry<T> extends DropdownBoxEntry<T> {
 
-    public LazyDropdownBoxEntry(Component fieldName, @NotNull Component resetButtonKey, @Nullable Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart, @Nullable Supplier<T> defaultValue, @Nullable Consumer<T> saveConsumer, Supplier<Iterable<T>> selectionsSup, @NotNull SelectionTopCellElement<T> topRenderer, @NotNull SelectionCellCreator<T> cellCreator) {
+    public LazyDropdownBoxEntry(Component fieldName, @NotNull Component resetButtonKey, @Nullable Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart, @Nullable Supplier<T> defaultValue, @Nullable Consumer<T> saveConsumer, Supplier<ImmutableList<T>> selectionsSup, @NotNull SelectionTopCellElement<T> topRenderer, @NotNull SelectionCellCreator<T> cellCreator) {
         super(fieldName, resetButtonKey, tooltipSupplier, requiresRestart, defaultValue, saveConsumer, null, topRenderer, cellCreator);
-        this.selectionElement = new SelectionElement<>(this, new Rectangle(0, 0, 150, 20), new LazyDropdownMenuElement<>(() -> ImmutableList.copyOf(selectionsSup.get())), topRenderer, cellCreator);
+        this.selectionElement = new SelectionElement<>(this, new Rectangle(0, 0, 150, 20), new LazyDropdownMenuElement<>(selectionsSup), topRenderer, cellCreator);
     }
 
     public static class LazyDropdownMenuElement<R> extends DropdownBoxEntry.DefaultDropdownMenuElement<R> {

@@ -1,5 +1,6 @@
 package net.psunset.translatorpp.fabric.config;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -11,6 +12,8 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
+import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -30,7 +33,7 @@ import java.util.*;
 public class TPPConfig implements ConfigData {
 
     private static ConfigHolder<TPPConfig> HOLDER;
-    private static final HashSet<String> openaiModels = Sets.newHashSet();
+    private static volatile ImmutableList<String> openaiModels = ImmutableList.of();
 
     public static TPPConfig getInstance() {
         return HOLDER.getConfig();
@@ -101,16 +104,15 @@ public class TPPConfig implements ConfigData {
                 .setSaveConsumer(it -> config.targetLanguage = it)
                 .build());
 
-        generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.translation_tool"), config.translationTool == null ? "" : config.translationTool.getDisplayName())
+        generalCategory.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTools.class, config.translationTool)
                 .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
-                .setSelections(TranslationTools.entries.keySet())
-                .setDefaultValue(TranslationTools.GoogleTranslation.getDisplayName())
-                .setSaveConsumer(it -> config.translationTool = TranslationTools.entries.get(it))
+                .setDefaultValue(TranslationTools.GoogleTranslation)
+                .setSaveConsumer(it -> config.translationTool = it)
                 .build());
 
-        generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel)
+        generalCategory.addEntry(LazyDropdownMenuBuilder.start(entryBuilder, Component.translatable("config.translatorpp.openai_model"), DropdownMenuBuilder.TopCellElementBuilder.of(config.openaiModel, it -> it, Component::literal), new DropdownBoxEntry.DefaultSelectionCellCreator<>())
+                .setSelectionsSupplier(() -> openaiModels)
                 .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
-                .setSelections(openaiModels::iterator)
                 .setDefaultValue(OpenAIClientTool.Api.OpenAI.defaultModel)
                 .setSaveConsumer(it -> config.openaiModel = it)
                 .build());
@@ -121,18 +123,16 @@ public class TPPConfig implements ConfigData {
                 .setSaveConsumer(it -> config.openaiApiKey = it)
                 .build());
 
-        openaiCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_baseurl"), config.openaiBaseUrl == null ? "" : config.openaiBaseUrl.name())
+        openaiCategory.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, config.openaiBaseUrl)
                 .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
-                .setSelections(OpenAIClientTool.Api.entries.keySet())
-                .setDefaultValue(OpenAIClientTool.Api.OpenAI.name())
-                .setSaveConsumer(it -> config.openaiBaseUrl = OpenAIClientTool.Api.entries.get(it))
+                .setDefaultValue(OpenAIClientTool.Api.OpenAI)
+                .setSaveConsumer(it -> config.openaiBaseUrl = it)
                 .build());
 
         return builder.build();
     }
 
     public static void refreshOpenAIModels() {
-        openaiModels.clear();
-        openaiModels.addAll(OpenAIClientTool.getInstance().getModels());
+        openaiModels = ImmutableList.copyOf(OpenAIClientTool.getInstance().getModels());
     }
 }
