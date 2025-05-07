@@ -1,8 +1,6 @@
 package net.psunset.translatorpp.fabric.config;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -11,15 +9,12 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.fabric.keybind.TPPKeyMappingsFabric;
@@ -27,13 +22,16 @@ import net.psunset.translatorpp.fabric.translation.TranslationKit;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationTools;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 @Config(name = TranslatorPP.ID)
 public class TPPConfig implements ConfigData {
 
     private static ConfigHolder<TPPConfig> HOLDER;
-    private static volatile ImmutableList<String> openaiModels = ImmutableList.of();
+    private static ImmutableList<String> openaiModels = ImmutableList.of();
 
     public static TPPConfig getInstance() {
         return HOLDER.getConfig();
@@ -110,7 +108,7 @@ public class TPPConfig implements ConfigData {
                 .setSaveConsumer(it -> config.translationTool = it)
                 .build());
 
-        generalCategory.addEntry(LazyDropdownMenuBuilder.start(entryBuilder, Component.translatable("config.translatorpp.openai_model"), DropdownMenuBuilder.TopCellElementBuilder.of(config.openaiModel, it -> it, Component::literal), new DropdownBoxEntry.DefaultSelectionCellCreator<>())
+        generalCategory.addEntry(FocusedDropdownMenuBuilder.start(entryBuilder, Component.translatable("config.translatorpp.openai_model"), DropdownMenuBuilder.TopCellElementBuilder.of(config.openaiModel, it -> it, Component::literal), new DropdownBoxEntry.DefaultSelectionCellCreator<>())
                 .setSelectionsSupplier(() -> openaiModels)
                 .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
                 .setDefaultValue(OpenAIClientTool.Api.OpenAI.defaultModel)

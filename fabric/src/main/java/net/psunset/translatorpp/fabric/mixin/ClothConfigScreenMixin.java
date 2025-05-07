@@ -50,7 +50,7 @@ public abstract class ClothConfigScreenMixin extends AbstractTabbedConfigScreen 
         if (this.delaySelectedCategoryIndex != selectedCategoryIndex) {
             String selectedCategoryText = getSelectedCategory().getString();
             String delaySelectedCategoryText = getDelaySelectedCategory().getString();
-            TranslatorPP.LOGGER.info("Cloth Config selected tag got changed from {} to {}", delaySelectedCategoryText, selectedCategoryText);
+            TranslatorPP.LOGGER.info("{} config's selected tag got changed from {} to {}", getTitle(), delaySelectedCategoryText, selectedCategoryText);
             if (delaySelectedCategoryText.equals(I18n.get("config.category.translatorpp.general"))) {
                 TranslationKit.refreshOpenAIClientTool();
                 TranslationKit.getInstance().clearCache();

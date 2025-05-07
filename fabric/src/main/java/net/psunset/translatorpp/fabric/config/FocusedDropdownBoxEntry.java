@@ -7,7 +7,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.psunset.translatorpp.TranslatorPP;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,25 +15,32 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
-public class LazyDropdownBoxEntry<T> extends DropdownBoxEntry<T> {
+public class FocusedDropdownBoxEntry<T> extends DropdownBoxEntry<T> {
 
-    public LazyDropdownBoxEntry(Component fieldName, @NotNull Component resetButtonKey, @Nullable Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart, @Nullable Supplier<T> defaultValue, @Nullable Consumer<T> saveConsumer, Supplier<ImmutableList<T>> selectionsSup, @NotNull SelectionTopCellElement<T> topRenderer, @NotNull SelectionCellCreator<T> cellCreator) {
+    public FocusedDropdownBoxEntry(Component fieldName, @NotNull Component resetButtonKey, @Nullable Supplier<Optional<Component[]>> tooltipSupplier, boolean requiresRestart, @Nullable Supplier<T> defaultValue, @Nullable Consumer<T> saveConsumer, Supplier<ImmutableList<T>> selectionsSup, @NotNull SelectionTopCellElement<T> topRenderer, @NotNull SelectionCellCreator<T> cellCreator) {
         super(fieldName, resetButtonKey, tooltipSupplier, requiresRestart, defaultValue, saveConsumer, null, topRenderer, cellCreator);
-        this.selectionElement = new SelectionElement<>(this, new Rectangle(0, 0, 150, 20), new LazyDropdownMenuElement<>(selectionsSup), topRenderer, cellCreator);
+        this.selectionElement = new SelectionElement<>(this, new Rectangle(0, 0, 150, 20), new FocusedDropdownMenuElement<>(selectionsSup), topRenderer, cellCreator);
     }
 
-    public static class LazyDropdownMenuElement<R> extends DropdownBoxEntry.DefaultDropdownMenuElement<R> {
+    public static class FocusedDropdownMenuElement<R> extends DropdownBoxEntry.DefaultDropdownMenuElement<R> {
 
         protected Supplier<ImmutableList<R>> selectionsSup;
 
-        public LazyDropdownMenuElement(@NotNull Supplier<ImmutableList<R>> selectionsSup) {
+        public FocusedDropdownMenuElement(@NotNull Supplier<ImmutableList<R>> selectionsSup) {
             super(ImmutableList.of());
             this.selectionsSup = selectionsSup;
         }
 
+        public void refreshCells() {
+            this.cells.clear();
+            for (R selection : this.getSelections()) {
+                this.cells.add(this.getCellCreator().create(selection));
+            }
+        }
+
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, Rectangle rectangle, float delta) {
-            initCells();
+            refreshCells();
             super.render(graphics, mouseX, mouseY, rectangle, delta);
         }
 
