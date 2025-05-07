@@ -5,7 +5,9 @@ import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
 import me.shedaniel.math.Rectangle;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.psunset.translatorpp.TranslatorPP;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +30,12 @@ public class LazyDropdownBoxEntry<T> extends DropdownBoxEntry<T> {
         public LazyDropdownMenuElement(@NotNull Supplier<ImmutableList<R>> selectionsSup) {
             super(ImmutableList.of());
             this.selectionsSup = selectionsSup;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, Rectangle rectangle, float delta) {
+            initCells();
+            super.render(graphics, mouseX, mouseY, rectangle, delta);
         }
 
         @Override
