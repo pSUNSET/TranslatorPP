@@ -31,7 +31,6 @@ import java.util.Locale;
 public class TPPConfig implements ConfigData {
 
     private static ConfigHolder<TPPConfig> HOLDER;
-    private static ImmutableList<String> openaiModels = ImmutableList.of();
 
     public static TPPConfig getInstance() {
         return HOLDER.getConfig();
@@ -58,7 +57,6 @@ public class TPPConfig implements ConfigData {
         });
 
         TranslationKit.refreshOpenAIClientTool();
-        refreshOpenAIModels();
     }
 
     public static Screen screen(Screen parent) {
@@ -70,7 +68,6 @@ public class TPPConfig implements ConfigData {
                     TPPConfig.getHolder().save();
                     TranslationKit.getInstance().clearCache();
                     TranslationKit.refreshOpenAIClientTool();
-                    refreshOpenAIModels();
                 })
                 .setTitle(Component.translatable("config.title.translatorpp"));
 
@@ -108,8 +105,8 @@ public class TPPConfig implements ConfigData {
                 .setSaveConsumer(it -> config.translationTool = it)
                 .build());
 
-        generalCategory.addEntry(FocusedDropdownMenuBuilder.start(entryBuilder, Component.translatable("config.translatorpp.openai_model"), DropdownMenuBuilder.TopCellElementBuilder.of(config.openaiModel, it -> it, Component::literal), new DropdownBoxEntry.DefaultSelectionCellCreator<>())
-                .setSelectionsSupplier(() -> openaiModels)
+        generalCategory.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel)
+                .setSelections(OpenAIClientTool.getInstance().getModelOffline())
                 .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
                 .setDefaultValue(OpenAIClientTool.Api.OpenAI.defaultModel)
                 .setSaveConsumer(it -> config.openaiModel = it)
@@ -128,9 +125,5 @@ public class TPPConfig implements ConfigData {
                 .build());
 
         return builder.build();
-    }
-
-    public static void refreshOpenAIModels() {
-        openaiModels = ImmutableList.copyOf(OpenAIClientTool.getInstance().getModels());
     }
 }
