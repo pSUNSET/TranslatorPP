@@ -23,7 +23,7 @@
       "${group}.${mod_id}.fabric.TranslatorPPFabricClient"
     ],
     "modmenu": [
-      "${group}.${mod_id}.fabric.config.TPPModMenuIntegration"
+      "${group}.${mod_id}.fabric.compat.modmenu.TPPModMenuIntegration"
     ]
   },
   "mixins": [
@@ -34,7 +34,6 @@
     "minecraft": "${minecraft_version_fabric_range}",
     "architectury": "${architectury_api_version_fabric_range}",
     "fabricloader": "${fabric_loader_version_range}",
-    "fabric-api": "${fabric_api_version_range}",
-    "cloth-config": "${cloth_config_version_range}"
+    "fabric-api": "${fabric_api_version_range}"
   }
 }

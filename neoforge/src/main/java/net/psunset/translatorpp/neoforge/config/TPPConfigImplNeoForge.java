@@ -11,10 +11,12 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.neoforge.config.gui.TPPConfigScreen;
-import net.psunset.translatorpp.neoforge.translation.TranslationKit;
+import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.neoforge.config.gui.TPPConfigNeoForgeScreen;
+import net.psunset.translatorpp.neoforge.translation.TranslationKitEvents;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
-import net.psunset.translatorpp.translation.TranslationTools;
+import net.psunset.translatorpp.translation.TranslationKit;
+import net.psunset.translatorpp.translation.TranslationTool;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
@@ -24,7 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @EventBusSubscriber(modid = TranslatorPP.ID, bus = EventBusSubscriber.Bus.MOD)
-public class TPPConfig {
+public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static final General GENERAL;
     public static final ModConfigSpec generalSpec;
@@ -42,11 +44,41 @@ public class TPPConfig {
 
     }
 
+    @Override
+    public String getSourceLanguage() {
+        return GENERAL.sourceLanguage.get();
+    }
+
+    @Override
+    public String getTargetLanguage() {
+        return GENERAL.targetLanguage.get();
+    }
+
+    @Override
+    public TranslationTool.Type getTranslationTool() {
+        return GENERAL.translationTool.get();
+    }
+
+    @Override
+    public String getOpenaiModel() {
+        return GENERAL.openaiModel.get();
+    }
+
+    @Override
+    public String getOpenaiApiKey() {
+        return OPENAI.openaiApiKey.get();
+    }
+
+    @Override
+    public OpenAIClientTool.Api getOpenaiBaseUrl() {
+        return OPENAI.openaiBaseUrl.get();
+    }
+
     public static class General {
 
         public final ModConfigSpec.ConfigValue<String> sourceLanguage;
         public final ModConfigSpec.ConfigValue<String> targetLanguage;
-        public final ModConfigSpec.EnumValue<TranslationTools> translationTool;
+        public final ModConfigSpec.EnumValue<TranslationTool.Type> translationTool;
         public final ModConfigSpec.ConfigValue<String> openaiModel;
 
         private Set<String> openaiModels = Set.of();
@@ -66,11 +98,11 @@ public class TPPConfig {
 
             this.targetLanguage = builder
                     .translation("config.translatorpp.target_language")
-                    .defineInList("target_language", "es-ES", tlList);
+                    .defineInList("target_language", "ja-JP", tlList);
 
             this.translationTool = builder
                     .translation("config.translatorpp.translation_tool")
-                    .defineEnum("translation_tool", TranslationTools.GoogleTranslation, EnumGetMethod.NAME_IGNORECASE);
+                    .defineEnum("translation_tool", TranslationTool.Type.GoogleTranslation, EnumGetMethod.NAME_IGNORECASE);
 
             this.openaiModel = builder
                     .translation("config.translatorpp.openai_model")
@@ -106,7 +138,7 @@ public class TPPConfig {
 
     @OnlyIn(Dist.CLIENT)
     public static void clientInit(ModContainer container) {
-        container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigScreen::new);
+        container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigNeoForgeScreen::new);
     }
 
     @SubscribeEvent
@@ -114,7 +146,7 @@ public class TPPConfig {
         if (event.getConfig().getSpec().equals(generalSpec)) {
 
         } else if (event.getConfig().getSpec().equals(openaiSpec)) {
-            TranslationKit.refreshOpenAIClientTool();
+            TranslationKit.getInstance().refreshOpenAIClientTool();
             GENERAL.refreshOpenAIModels();
         }
     }
@@ -122,10 +154,10 @@ public class TPPConfig {
     @SubscribeEvent
     public static void onConfigReloading(ModConfigEvent.Reloading event) {
         if (event.getConfig().getSpec().equals(generalSpec)) {
-            TranslationKit.refreshOpenAIClientTool();
+            TranslationKit.getInstance().refreshOpenAIClientTool();
             TranslationKit.getInstance().clearCache();
         } else if (event.getConfig().getSpec().equals(openaiSpec)) {
-            TranslationKit.refreshOpenAIClientTool();
+            TranslationKit.getInstance().refreshOpenAIClientTool();
             GENERAL.refreshOpenAIModels();
         }
     }

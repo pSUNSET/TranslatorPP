@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
-import net.psunset.translatorpp.fabric.translation.TranslationKit;
+import net.psunset.translatorpp.translation.TranslationKit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,6 +30,6 @@ public abstract class AbstractContainerScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void afterRender(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        TranslationKit.getInstance().hoveredStack = this.hoveredSlot != null && this.hoveredSlot.hasItem() ? this.hoveredSlot.getItem() : null;
+        TranslationKit.getInstance().setHoveredStack(this.hoveredSlot != null && this.hoveredSlot.hasItem() ? this.hoveredSlot.getItem() : null);
     }
 }

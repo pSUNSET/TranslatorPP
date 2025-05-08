@@ -3,7 +3,9 @@ package net.psunset.translatorpp;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
+import net.psunset.translatorpp.translation.TranslationKit;
 import org.slf4j.Logger;
 
 public final class TranslatorPP {
@@ -16,5 +18,7 @@ public final class TranslatorPP {
     @Environment(EnvType.CLIENT)
     public static void clientInit() {
         TPPKeyMappings.init();
+        TranslationKit.init();
+        TPPConfig.init();
     }
 }

@@ -5,12 +5,12 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.neoforge.config.TPPConfig;
+import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 
 @Mod(value = TranslatorPP.ID)
 public final class TranslatorPPNeoForge {
     public TranslatorPPNeoForge(ModContainer container, IEventBus bus, Dist dist) {
         TranslatorPP.commonInit();
-        TPPConfig.commonInit(container);
+        TPPConfigImplNeoForge.commonInit(container);
     }
 }

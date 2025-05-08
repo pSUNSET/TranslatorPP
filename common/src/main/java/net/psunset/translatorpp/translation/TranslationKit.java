@@ -1,25 +1,15 @@
-package net.psunset.translatorpp.neoforge.translation;
+package net.psunset.translatorpp.translation;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.Headers;
 import com.openai.errors.OpenAIServiceException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.neoforge.config.TPPConfig;
-import net.psunset.translatorpp.translation.OpenAIClientTool;
+import net.psunset.translatorpp.config.TPPConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -30,10 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@EventBusSubscriber(modid = TranslatorPP.ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class TranslationKit {
 
-    private static TranslationKit INSTANCE;
+    protected static TranslationKit INSTANCE;
 
     private static final AtomicInteger taskCounter = new AtomicInteger(0);
     private static final ExecutorService translationExecutor = Executors.newSingleThreadExecutor(r -> {
@@ -41,7 +30,6 @@ public class TranslationKit {
         t.setDaemon(true); // Allow JVM to exit even if this thread is running
         return t;
     });
-
 
     public static TranslationKit getInstance() {
         return INSTANCE;
@@ -70,8 +58,29 @@ public class TranslationKit {
     public TranslationKit() {
     }
 
-    public void translate(@Nullable Player player) {
-        if (hoveredStack == null || hoveredStack.equals(translatedStack)) return; // Already translating or translated this exact stack instance
+    public void setHoveredStack(@Nullable ItemStack stack) {
+        this.hoveredStack = stack;
+    }
+
+    public @Nullable ItemStack getHoveredStack() {
+        return hoveredStack;
+    }
+
+    public @Nullable ItemStack getTranslatedStack() {
+        return translatedStack;
+    }
+
+    public @Nullable MutableComponent getTranslatedResult() {
+        return translatedResult;
+    }
+
+    public boolean isTranslated() {
+        return this.translated;
+    }
+
+    public void start(@Nullable Player player) {
+        if (hoveredStack == null || hoveredStack.equals(translatedStack))
+            return; // Already translating or translated this exact stack instance
 
         // Cancel any previous ongoing translation
         this.stop();
@@ -95,10 +104,10 @@ public class TranslationKit {
         translationFuture = CompletableFuture
                 .supplyAsync(() -> {
                     try {
-                        return TPPConfig.GENERAL.translationTool.get().getTool().translate(
+                        return TPPConfig.getInstance().getTranslationTool().getTool().translate(
                                 originalText,
-                                TPPConfig.GENERAL.sourceLanguage.get(),
-                                TPPConfig.GENERAL.targetLanguage.get()
+                                TPPConfig.getInstance().getSourceLanguage(),
+                                TPPConfig.getInstance().getTargetLanguage()
                         );
                     } catch (Exception e) {
                         if (e instanceof RuntimeException re) {
@@ -116,7 +125,7 @@ public class TranslationKit {
                 .exceptionally(err -> {
                     TranslatorPP.LOGGER.error("Translation failed for: {}, cause: {}", originalText, err.getCause());
                     translatedResult = Component.translatable("misc.translatorpp.translation.failed").withStyle(ChatFormatting.RED);
-                    if (player != null){
+                    if (player != null) {
                         this.sendErrorToPlayer(player, err.getCause());
                     }
                     return null; // Indicate exception was handled
@@ -124,7 +133,7 @@ public class TranslationKit {
     }
 
     public void stop() {
-        if (this.translated){
+        if (this.translated) {
             if (translationFuture != null && !translationFuture.isDone()) {
                 translationFuture.cancel(true);
             }
@@ -155,65 +164,21 @@ public class TranslationKit {
         player.sendSystemMessage(Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void init() {
-        TranslatorPP.LOGGER.debug("Initializing TranslationKit");
-        INSTANCE = new TranslationKit();
-        Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
+    public void refreshOpenAIClientTool() {
+        refreshOpenAIClientTool(TPPConfig.getInstance().getOpenaiApiKey(),
+                TPPConfig.getInstance().getOpenaiBaseUrl(), TPPConfig.getInstance().getOpenaiModel());
     }
 
-    @SubscribeEvent
-    public static void afterScreenKeyPressed(ScreenEvent.KeyPressed.Post event) {
-        if (event.getScreen() instanceof AbstractContainerScreen<?> screen) {
-            if (screen.getSlotUnderMouse() != null && screen.getSlotUnderMouse().hasItem()) {
-                INSTANCE.hoveredStack = screen.getSlotUnderMouse().getItem();
-            }
-
-            if (TPPKeyMappings.TRANSLATE_KEY.isActiveAndMatches(InputConstants.Type.KEYSYM.getOrCreate(event.getKeyCode()))) {
-                INSTANCE.translate(screen.getMinecraft().player);
-            }
-        }
-    }
-
-
-    @SubscribeEvent
-    public static void afterScreenKeyReleased(ScreenEvent.KeyReleased.Post event) {
-        if (event.getScreen() instanceof AbstractContainerScreen<?>) {
-            if (TPPKeyMappings.TRANSLATE_KEY.isActiveAndMatches(InputConstants.Type.KEYSYM.getOrCreate(event.getKeyCode()))) {
-                INSTANCE.stop();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onScreenClosing(ScreenEvent.Closing event) {
-        if (event.getScreen() instanceof AbstractContainerScreen<?>) {
-            INSTANCE.stop();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onItemTooltip(ItemTooltipEvent event) {
-        // Check if the tooltip is for the currently hovered/translated item and if translation is active
-        if (INSTANCE.translated && event.getItemStack().equals(INSTANCE.translatedStack) && INSTANCE.translatedResult != null) {
-            event.getToolTip().add(1, INSTANCE.translatedResult);
-        }
-    }
-
-
-    public static void refreshOpenAIClientTool() {
+    public void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String model) {
         try {
-            String apikey = TPPConfig.OPENAI.openaiApiKey.get();
-            OpenAIClientTool.Api api = TPPConfig.OPENAI.openaiBaseUrl.get();
-            String model = TPPConfig.GENERAL.openaiModel.get();
             if (model.isBlank()) {
                 model = api.defaultModel;
             }
             TranslatorPP.LOGGER.info("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apikey.isEmpty() ? "NOT SET" : "****" + apikey.substring(apikey.length() - 4), api.baseUrl, model); // Avoid logging full API key
+                    apiKey.isEmpty() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
             OpenAIClientTool.getInstance().setClientBuilderSup(() ->
                     OpenAIOkHttpClient.builder()
-                            .apiKey(apikey)
+                            .apiKey(apiKey)
                             .baseUrl(api.baseUrl)
                             .headers(Headers.builder()
                                     .put("Accept", "*/*")
@@ -224,5 +189,11 @@ public class TranslationKit {
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
         }
+    }
+
+    public static void init() {
+        TranslatorPP.LOGGER.debug("Initializing TranslationKit");
+        INSTANCE = new TranslationKit();
+        Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
     }
 }

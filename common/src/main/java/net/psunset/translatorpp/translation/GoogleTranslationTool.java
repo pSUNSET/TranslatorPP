@@ -14,15 +14,15 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class GoogleTranslationClientTool extends AbstractTranslationClientTool {
+public class GoogleTranslationTool implements TranslationTool {
 
-    private static final GoogleTranslationClientTool INSTANCE = new GoogleTranslationClientTool();
+    private static final GoogleTranslationTool INSTANCE = new GoogleTranslationTool();
 
-    public static GoogleTranslationClientTool getInstance() {
+    public static GoogleTranslationTool getInstance() {
         return INSTANCE;
     }
 
-    public GoogleTranslationClientTool() {
+    public GoogleTranslationTool() {
     }
 
     @Override

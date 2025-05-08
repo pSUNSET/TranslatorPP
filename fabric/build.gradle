@@ -24,12 +24,12 @@ configurations {
 
 repositories {
     maven {
-        name = "Shedaniel"
-        url = "https://maven.shedaniel.me/"
-    }
-    maven {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/releases/"
+    }
+    maven {
+        name = "Shedaniel"
+        url = "https://maven.shedaniel.me/"
     }
 }
 
@@ -39,8 +39,8 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-fabric:$architectury_api_version"
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") { exclude(group: "net.fabricmc.fabric-api") }
     modApi "com.terraformersmc:modmenu:$modmenu_version"
+    modApi("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") { exclude(group: "net.fabricmc.fabric-api") }
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
@@ -58,8 +58,7 @@ processResources {
                 minecraft_version_fabric_range: minecraft_version_fabric_range,
                 architectury_api_version_fabric_range: architectury_api_version_fabric_range,
                 fabric_loader_version_range: fabric_loader_version_range,
-                fabric_api_version_range: fabric_api_version_range,
-                cloth_config_version_range: cloth_config_version_range
+                fabric_api_version_range: fabric_api_version_range
         )
     }
 }

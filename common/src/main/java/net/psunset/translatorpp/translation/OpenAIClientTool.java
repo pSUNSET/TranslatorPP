@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class OpenAIClientTool extends AbstractTranslationClientTool {
+public class OpenAIClientTool implements TranslationTool {
 
     private static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
     public static final String PROMPT = """

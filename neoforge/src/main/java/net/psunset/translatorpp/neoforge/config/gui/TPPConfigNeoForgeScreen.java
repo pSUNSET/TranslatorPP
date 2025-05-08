@@ -25,7 +25,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Locale;
 
-public class TPPConfigScreen extends OptionsSubScreen {
+public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
 
     private static final String NEOFORGE_LANG_PREFIX = "neoforge.configuration.uitext.";
     private static final String TITLE = "config.title.translatorpp";
@@ -40,23 +40,23 @@ public class TPPConfigScreen extends OptionsSubScreen {
     protected static final ConfigurationScreen.TranslationChecker translationChecker = new ConfigurationScreen.TranslationChecker();
 
     protected final ModContainer mod;
-    private final PropertyDispatch.QuadFunction<TPPConfigScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
+    private final PropertyDispatch.QuadFunction<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
 
     public ModConfigSpec.RestartType needsRestart = ModConfigSpec.RestartType.NONE;
     // If there is only one config type (and it can be edited, we show that instantly on the way "down" and want to close on the way "up".
     // But when returning from the restart/reload confirmation screens, we need to stay open.
     private boolean autoClose = false;
 
-    public TPPConfigScreen(final ModContainer mod, final Screen parent) {
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent) {
         this(mod, parent, ConfigurationScreen.ConfigurationSectionScreen::new);
     }
 
-    public TPPConfigScreen(final ModContainer mod, final Screen parent, ConfigurationScreen.ConfigurationSectionScreen.Filter filter) {
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, ConfigurationScreen.ConfigurationSectionScreen.Filter filter) {
         this(mod, parent, (a, b, c, d) -> new ConfigurationScreen.ConfigurationSectionScreen(a, b, c, d, filter));
     }
 
     @SuppressWarnings("resource")
-    public TPPConfigScreen(final ModContainer mod, final Screen parent, PropertyDispatch.QuadFunction<TPPConfigScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen) {
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, PropertyDispatch.QuadFunction<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen) {
         super(parent, Minecraft.getInstance().options, Component.translatable(TITLE));
         this.mod = mod;
         this.sectionScreen = sectionScreen;
