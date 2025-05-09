@@ -17,6 +17,8 @@ import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.config.ModConfigs;
@@ -25,6 +27,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Locale;
 
+@OnlyIn(Dist.CLIENT)
 public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
 
     private static final String NEOFORGE_LANG_PREFIX = "neoforge.configuration.uitext.";
@@ -106,10 +109,6 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
             autoClose = true;
             btn.onPress();
         }
-    }
-
-    public Component translatableConfig(ModConfig modConfig, String suffix, String fallback) {
-        return Component.translatable(translationChecker.check(mod.getModId() + ".configuration.section." + modConfig.getFileName().replaceAll("[^a-zA-Z0-9]+", ".").replaceFirst("^\\.", "").replaceFirst("\\.$", "").toLowerCase(Locale.ENGLISH) + suffix, fallback), mod.getModInfo().getDisplayName());
     }
 
     @Override

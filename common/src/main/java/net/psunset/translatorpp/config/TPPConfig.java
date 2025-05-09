@@ -11,21 +11,26 @@ import net.psunset.translatorpp.translation.TranslationTool;
 
 public interface TPPConfig {
     String getSourceLanguage();
+
     String getTargetLanguage();
+
     TranslationTool.Type getTranslationTool();
+
     String getOpenaiModel();
+
     String getOpenaiApiKey();
+
     OpenAIClientTool.Api getOpenaiBaseUrl();
 
     @Environment(EnvType.CLIENT)
     static void init() {
-        if (CompatUtl.isClothConfigLoaded()) {
+        if (Platform.isNeoForge()) {
+            TranslatorPP.LOGGER.info("NeoForge is loaded, using neoforge for config.");
+            // Injected
+        } else if (CompatUtl.isClothConfigLoaded()) {
             TranslatorPP.LOGGER.info("Cloth Config is loaded, using cloth config for config.");
             Default.INSTANCE = new TPPConfigImplCloth();
             TPPConfigImplCloth.init();
-        } else if (Platform.isNeoForge()) {
-            TranslatorPP.LOGGER.info("NeoForge is loaded, using neoforge for config.");
-            // Injected
         } else {
             TranslatorPP.LOGGER.info("No config api is loaded, using default one for config.");
             Default.INSTANCE = new TPPConfig.Default();
