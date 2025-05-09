@@ -11,7 +11,9 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.compat.CompatUtl;
 import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.neoforge.compat.clothconfig.TPPConfigImplNeoForgeCloth;
 import net.psunset.translatorpp.neoforge.config.gui.TPPConfigNeoForgeScreen;
 import net.psunset.translatorpp.neoforge.translation.TranslationKitEvents;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
@@ -41,7 +43,6 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         final Pair<OpenAI, ModConfigSpec> openaiPair = new ModConfigSpec.Builder().configure(OpenAI::new);
         OPENAI = openaiPair.getLeft();
         openaiSpec = openaiPair.getRight();
-
     }
 
     @Override
@@ -139,12 +140,14 @@ public class TPPConfigImplNeoForge implements TPPConfig {
     @OnlyIn(Dist.CLIENT)
     public static void clientInit(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigNeoForgeScreen::new);
+        if (CompatUtl.isClothConfigLoaded()) {
+            TPPConfigImplNeoForgeCloth.init();
+        }
     }
 
     @SubscribeEvent
     public static void onConfigLoading(ModConfigEvent.Loading event) {
         if (event.getConfig().getSpec().equals(generalSpec)) {
-
         } else if (event.getConfig().getSpec().equals(openaiSpec)) {
             TranslationKit.getInstance().refreshOpenAIClientTool();
             GENERAL.refreshOpenAIModels();

@@ -7,10 +7,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.compat.CompatUtl;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
@@ -22,10 +25,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-@EventBusSubscriber(modid = TranslatorPP.ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class TPPConfigImplNeoForgeCloth {
 
-    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void init() {
+        NeoForge.EVENT_BUS.addListener(TPPConfigImplNeoForgeCloth::afterClientTick);
+    }
+
     public static void afterClientTick(ClientTickEvent.Post event) {
         if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
             Minecraft.getInstance().setScreen(screen(Minecraft.getInstance().screen));
