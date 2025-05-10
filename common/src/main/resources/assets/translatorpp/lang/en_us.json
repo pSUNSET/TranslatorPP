@@ -32,5 +32,9 @@
   "misc.translatorpp.translation.failed.chat.openai.503_over": "Translation got an error code 503.\nCause: Our servers are experiencing high traffic.\nSolution: Please retry your requests after a brief wait.",
   "misc.translatorpp.translation.failed.chat.openai.503": "Translation got an error code 503.\nCause: A sudden increase in your request rate is impacting service reliability.\nSolution: Please reduce your request rate to its original level, maintain a consistent rate for at least 15 minutes, and then gradually increase it.",
   "misc.translatorpp.translation.waiting": "Translating...",
-  "misc.translatorpp.translation": "Translation result: %s"
+  "misc.translatorpp.translation": "Translation result: %s",
+  "misc.translatorpp.missing.clothconfig": "§cTranslator++ configuration requires Cloth Config API but it is missing now!",
+  "gui.title.translatorpp.missing.clothconfig": "§cMissing Cloth Config API",
+  "gui.translatorpp.missing.clothconfig.0": "Translator++ configuration requires Cloth Config API.",
+  "gui.translatorpp.missing.clothconfig.1": "If you want to set options, please install it first."
 }

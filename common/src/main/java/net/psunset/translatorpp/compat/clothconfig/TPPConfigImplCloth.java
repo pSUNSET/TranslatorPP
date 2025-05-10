@@ -88,14 +88,14 @@ public class TPPConfigImplCloth implements TPPConfig {
 
         ClientTickEvent.CLIENT_POST.register(client -> {
             if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
-                client.setScreen(TPPConfigImplCloth.screen(client.screen));
+                client.setScreen(TPPConfigImplCloth.createScreen(client.screen));
             }
         });
 
         TranslationKit.getInstance().refreshOpenAIClientTool();
     }
 
-    public static Screen screen(Screen parent) {
+    public static Screen createScreen(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setSavingRunnable(() -> {

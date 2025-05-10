@@ -8,16 +8,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.compat.CompatUtl;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
-import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationTool;
 
 import java.util.ArrayList;
@@ -34,11 +29,11 @@ public class TPPConfigImplNeoForgeCloth {
 
     public static void afterClientTick(ClientTickEvent.Post event) {
         if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
-            Minecraft.getInstance().setScreen(screen(Minecraft.getInstance().screen));
+            Minecraft.getInstance().setScreen(createScreen(Minecraft.getInstance().screen));
         }
     }
 
-    public static Screen screen(Screen parent) {
+    public static Screen createScreen(Screen parent) {
 
         TPPConfigImplNeoForge.General general = TPPConfigImplNeoForge.GENERAL;
         TPPConfigImplNeoForge.OpenAI openai = TPPConfigImplNeoForge.OPENAI;

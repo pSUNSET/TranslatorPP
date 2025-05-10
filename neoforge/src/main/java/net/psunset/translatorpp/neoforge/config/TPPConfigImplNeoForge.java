@@ -1,6 +1,8 @@
 package net.psunset.translatorpp.neoforge.config;
 
 import com.electronwill.nightconfig.core.EnumGetMethod;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -8,14 +10,16 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.NeoForge;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.compat.CompatUtl;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
+import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.neoforge.compat.clothconfig.TPPConfigImplNeoForgeCloth;
 import net.psunset.translatorpp.neoforge.config.gui.TPPConfigNeoForgeScreen;
-import net.psunset.translatorpp.neoforge.translation.TranslationKitEvents;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationTool;
@@ -140,8 +144,18 @@ public class TPPConfigImplNeoForge implements TPPConfig {
     @OnlyIn(Dist.CLIENT)
     public static void clientInit(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigNeoForgeScreen::new);
-        if (CompatUtl.isClothConfigLoaded()) {
+        if (CompatUtl.ClothConfig.isLoaded()) {
             TPPConfigImplNeoForgeCloth.init();
+        } else {
+            NeoForge.EVENT_BUS.addListener(TPPConfigImplNeoForge::afterClientTick);
+        }
+    }
+
+    public static void afterClientTick(ClientTickEvent.Post event) {
+        while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
+            if (Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("misc.translatorpp.missing.clothconfig"));
+            }
         }
     }
 

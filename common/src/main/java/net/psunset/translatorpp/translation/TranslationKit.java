@@ -36,7 +36,7 @@ public class TranslationKit {
     }
 
     // LRU Cache implementation
-    private static final int MAX_CACHE_SIZE = 20;
+    private static final int MAX_CACHE_SIZE = 100;
     private final Map<String, String> translationCache = Collections.synchronizedMap(
             new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
                 @Override

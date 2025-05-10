@@ -5,7 +5,7 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
-import net.psunset.translatorpp.compat.CompatUtl;
+import net.psunset.translatorpp.tool.CompatUtl;
 import org.lwjgl.glfw.GLFW;
 
 public class TPPKeyMappings {
@@ -26,8 +26,6 @@ public class TPPKeyMappings {
     @Environment(EnvType.CLIENT)
     public static void init() {
         KeyMappingRegistry.register(TRANSLATE_KEY);
-        if (CompatUtl.isClothConfigLoaded()){
-            KeyMappingRegistry.register(CLOTH_CONFIG_KEY);
-        }
+        KeyMappingRegistry.register(CLOTH_CONFIG_KEY);
     }
 }
