@@ -1,8 +1,5 @@
 package net.psunset.translatorpp.translation;
 
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.core.http.Headers;
-import com.openai.errors.OpenAIServiceException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -149,13 +146,13 @@ public class TranslationKit {
     }
 
     private void sendErrorToPlayer(Player player, Throwable err) {
-        if (err instanceof OpenAIServiceException openaiErr) {
-            String transKey = "misc.translatorpp.translation.failed.chat.openai." + openaiErr.statusCode();
-            if (openaiErr.statusCode() == 401 && openaiErr.getMessage().contains("organization")) {
+        if (err instanceof OpenAIClientTool.ServiceException openaiErr) {
+            String transKey = "misc.translatorpp.translation.failed.chat.openai." + openaiErr.statusCode;
+            if (openaiErr.statusCode == 401 && openaiErr.getMessage().contains("organization")) {
                 transKey += "_org";
-            } else if (openaiErr.statusCode() == 429 && openaiErr.getMessage().contains("limit reached")) {
+            } else if (openaiErr.statusCode == 429 && openaiErr.getMessage().contains("limit reached")) {
                 transKey += "_limit";
-            } else if (openaiErr.statusCode() == 503 && openaiErr.getMessage().contains("overloaded")) {
+            } else if (openaiErr.statusCode == 503 && openaiErr.getMessage().contains("overloaded")) {
                 transKey += "_over";
             }
             player.sendSystemMessage(Component.translatable(transKey).withStyle(ChatFormatting.RED));
@@ -171,21 +168,11 @@ public class TranslationKit {
 
     public void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String model) {
         try {
-            if (model.isBlank()) {
-                model = api.defaultModel;
-            }
             TranslatorPP.LOGGER.info("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apiKey.isEmpty() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
-            OpenAIClientTool.getInstance().setClientBuilderSup(() ->
-                    OpenAIOkHttpClient.builder()
-                            .apiKey(apiKey)
-                            .baseUrl(api.baseUrl)
-                            .headers(Headers.builder()
-                                    .put("Accept", "*/*")
-                                    .put("User-Agent", "TranslatorPP")
-                                    .build()));
-            OpenAIClientTool.getInstance().refreshClient();
-            OpenAIClientTool.getInstance().setModel(model);
+                    apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
+            OpenAIClientTool.getInstance().setApiKey(apiKey);
+            OpenAIClientTool.getInstance().setApi(api);
+            OpenAIClientTool.getInstance().setModel(model.isBlank() ? api.defaultModel : model);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
         }

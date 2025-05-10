@@ -63,6 +63,20 @@ processResources {
     }
 }
 
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : "Project SUNSET",
+                'Specification-Version'   : "1",
+                'Implementation-Title'    : this.project.name,
+                'Implementation-Version'  : this.project.jar.archiveVersion,
+                'Implementation-Vendor'   : "Project SUNSET",
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
 shadowJar {
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = 'dev-shadow'

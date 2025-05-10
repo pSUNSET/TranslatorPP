@@ -40,8 +40,6 @@ dependencies {
 
     modCompileOnlyApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
-    forgeRuntimeLibrary "com.openai:openai-java:$openai_version"
-
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
@@ -56,6 +54,20 @@ processResources {
                 neoforge_version_range: neoforge_version_range,
                 minecraft_version_neoforge_range: minecraft_version_neoforge_range,
                 architectury_api_version_neoforge_range: architectury_api_version_neoforge_range,
+        ])
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : "Project SUNSET",
+                'Specification-Version'   : "1",
+                'Implementation-Title'    : this.project.name,
+                'Implementation-Version'  : this.project.jar.archiveVersion,
+                'Implementation-Vendor'   : "Project SUNSET",
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }

@@ -3,18 +3,18 @@ package net.psunset.translatorpp.translation;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.core.ClientOptions;
-import com.openai.models.chat.completions.ChatCompletionCreateParams;
-import com.openai.models.models.Model;
+import com.google.gson.*;
 import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class OpenAIClientTool implements TranslationTool {
 
@@ -32,85 +32,241 @@ public class OpenAIClientTool implements TranslationTool {
      */
     private static final Set<String> cacheModels = Sets.newHashSet();
 
+    private static final int CONNECT_TIMEOUT = 10000; // 10 seconds
+    private static final int READ_TIMEOUT = 30000;    // 30 seconds
+
     public static OpenAIClientTool getInstance() {
         return INSTANCE;
     }
 
-    private Supplier<OpenAIOkHttpClient.Builder> clientBuilderSup;
-    private OpenAIClient client;
+    private String apiKey;
+    private Api api;
     private String model;
+    private final Gson gson;
 
     public OpenAIClientTool() {
+        this.gson = new GsonBuilder().create();
+    }
+
+    protected void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    protected void setApi(Api api) {
+        this.api = api;
+        if (api != null && (this.model == null || this.model.isEmpty())) {
+            this.model = api.defaultModel;
+        }
+    }
+
+    public Api getApi() {
+        return this.api;
+    }
+
+    protected void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getModel() {
+        return this.model;
     }
 
     @Override
     public String translate(String q, String sl, String tl) throws Exception {
-        ChatCompletionCreateParams.Builder chatBuilder = ChatCompletionCreateParams.builder()
-                .addUserMessage(PROMPT.formatted(q, sl, tl))
-                .temperature(0.7)
-                .model(this.model);
-        return this._translate(chatBuilder);
-    }
+        if (!isPresent()) {
+            throw new IllegalStateException("OpenAIClientTool is not configured. API key, API provider, and model must be set.");
+        }
 
-    public String _translate(ChatCompletionCreateParams.Builder chatBuilder) {
-        return this.client()
-                .chat()
-                .completions()
-                .create(chatBuilder.build())
-                .choices().getFirst()
-                .message()
-                .content().get().strip();
-    }
+        String formattedPrompt = PROMPT.formatted(q, sl, tl);
 
-    public void setClientBuilderSup(Supplier<OpenAIOkHttpClient.Builder> clientBuilderSup) {
-        this.clientBuilderSup = clientBuilderSup;
-    }
+        // Use a Map to build the request, then serialize with Gson
+        Map<String, Object> requestPayload = Maps.newLinkedHashMap(); // Use LinkedHashMap to preserve insertion order if it matters
+        requestPayload.put("model", this.model);
+        List<Map<String, String>> messages = Lists.newArrayList();
+        Map<String, String> userMessage = Maps.newLinkedHashMap();
+        userMessage.put("role", "user");
+        userMessage.put("content", formattedPrompt);
+        messages.add(userMessage);
+        requestPayload.put("messages", messages);
+        requestPayload.put("temperature", 0.7);
+        // Add other parameters if needed, e.g., max_tokens
 
-    public OpenAIClient client() {
-        return this.client;
-    }
+        String jsonRequestBody = gson.toJson(requestPayload);
 
-    public void refreshClient() {
-        if (this.clientBuilderSup.get() == null) {
-            this.client = null;
-        } else {
-            this.client = this.clientBuilderSup.get().build();
+        HttpURLConnection con = null;
+        try {
+            URL url = new URL(this.api.baseUrl + "chat/completions");
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Authorization", "Bearer " + this.apiKey);
+            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setConnectTimeout(CONNECT_TIMEOUT);
+            con.setReadTimeout(READ_TIMEOUT);
+            con.setDoOutput(true);
+
+            try (DataOutputStream dos = new DataOutputStream(con.getOutputStream())) {
+                dos.write(jsonRequestBody.getBytes(StandardCharsets.UTF_8));
+            }
+
+            int statusCode = con.getResponseCode();
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            boolean isError = statusCode < 200 || statusCode >= 300;
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                    isError ? con.getErrorStream() : con.getInputStream(),
+                    StandardCharsets.UTF_8))) {
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    responseBodyBuilder.append(responseLine);
+                }
+            }
+            String rawResponse = responseBodyBuilder.toString();
+
+            if (isError) {
+                // Try to parse JSON error response from API if possible
+                try {
+                    JsonObject errorJson = gson.fromJson(rawResponse, JsonObject.class);
+                    if (errorJson != null && errorJson.has("error") && errorJson.get("error").isJsonObject()) {
+                        JsonObject errorDetails = errorJson.getAsJsonObject("error");
+                        String errorMessage = errorDetails.has("message") ? errorDetails.get("message").getAsString() : rawResponse;
+                        throw new ServiceException("API call failed: " + errorMessage, statusCode);
+                    }
+                } catch (JsonSyntaxException e) {
+                    // Not a JSON error response, or malformed. Fallback to raw response.
+                }
+                throw new ServiceException("API call failed: " + rawResponse, statusCode);
+            }
+
+            JsonObject responseJson = gson.fromJson(rawResponse, JsonObject.class);
+            JsonArray choices = responseJson.getAsJsonArray("choices");
+            if (choices == null || choices.isEmpty()) {
+                throw new IOException("Invalid response: 'choices' array not found or empty. Response: " + rawResponse);
+            }
+            JsonObject firstChoice = choices.get(0).getAsJsonObject();
+            JsonObject message = firstChoice.getAsJsonObject("message");
+            if (message == null || !message.has("content")) {
+                throw new IOException("Invalid response: 'message.content' not found. Response: " + rawResponse);
+            }
+
+            return message.get("content").getAsString().trim();
+
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    /**
+     * Escapes special characters in a string for use in a JSON string value.
+     */
+    private String escapeJson(String text) {
+        if (text == null) return "";
+        return text.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\b", "\\b")
+                .replace("\f", "\\f")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
+    }
+
+    /**
+     * Unescapes special characters in a string that was part of a JSON string value.
+     */
+    private String unescapeJson(String text) {
+        if (text == null) return "";
+        return text.replace("\\\\", "\\")
+                .replace("\\\"", "\"")
+                .replace("\\b", "\b")
+                .replace("\\f", "\f")
+                .replace("\\n", "\n")
+                .replace("\\r", "\r")
+                .replace("\\t", "\t");
     }
 
     public boolean isPresent() {
-        return this.client != null;
-    }
-
-    public void ifPresent(Consumer<OpenAIClient> consumer) {
-        if (this.client != null) {
-            consumer.accept(this.client);
-        }
+        return this.apiKey != null && !this.apiKey.isEmpty() &&
+                this.api != null && this.model != null && !this.model.isEmpty();
     }
 
     /**
      * Returns the model list from online.
      */
     public Set<String> getModels() {
-        try {
-            return this.client().models().list().data().stream()
-                    .map(Model::id)
-                    .map(it -> it.replace("models/", ""))
-                    .collect(Collectors.toSet());
-        } catch (Exception e) {
-            TranslatorPP.LOGGER.error("Error while getting online model list: {}", e.toString());
+        if (this.apiKey == null || this.apiKey.isEmpty() || this.api == null) {
+            TranslatorPP.LOGGER.error("Cannot get models: API key or API provider not set.");
             return getModelListOffline();
+        }
+
+        HttpURLConnection con = null;
+        try {
+            URL url = new URL(this.api.baseUrl + "models");
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization", "Bearer " + this.apiKey);
+            con.setRequestProperty("Accept", "application/json");
+            con.setConnectTimeout(CONNECT_TIMEOUT);
+            con.setReadTimeout(READ_TIMEOUT);
+
+            int statusCode = con.getResponseCode();
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            boolean isError = statusCode < 200 || statusCode >= 300;
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                    isError ? con.getErrorStream() : con.getInputStream(),
+                    StandardCharsets.UTF_8))) {
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    responseBodyBuilder.append(responseLine);
+                }
+            }
+            String rawResponse = responseBodyBuilder.toString();
+
+            String snippet = rawResponse.substring(0, Math.min(rawResponse.length(), 500));
+            if (isError) {
+                TranslatorPP.LOGGER.error("Error while getting online model list (HTTP {}): {}", statusCode, snippet);
+                return getModelListOffline();
+            }
+
+            Set<String> modelIds = Sets.newHashSet();
+            JsonObject responseJson = gson.fromJson(rawResponse, JsonObject.class);
+            JsonArray dataArray = responseJson.getAsJsonArray("data");
+
+            if (dataArray != null) {
+                for (JsonElement modelElement : dataArray) {
+                    if (modelElement.isJsonObject()) {
+                        JsonObject modelObject = modelElement.getAsJsonObject();
+                        if (modelObject.has("id") && modelObject.get("id").isJsonPrimitive()) {
+                            String id = modelObject.get("id").getAsString();
+                            modelIds.add(id.replace("models/", ""));
+                        }
+                    }
+                }
+            } else {
+                TranslatorPP.LOGGER.warn("No 'data' array found in models response or it's not an array. Response (first 500 chars): " + snippet);
+            }
+
+            return modelIds;
+
+        } catch (JsonSyntaxException e) {
+            TranslatorPP.LOGGER.error("JSON syntax error while parsing models list: {}. Response (first 500 chars): {}", e.getMessage(), (con != null && con.getDoInput() ? "Response too long or unreadable" : "No response available or error during read"));
+            return getModelListOffline();
+        } catch (Exception e) {
+            TranslatorPP.LOGGER.error("Exception while getting online model list: {}", e, e);
+            return getModelListOffline();
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
     /**
      * Returns a copy of {@link OpenAIClientTool#TEMP_AVAILABLE_MODEL_LIST}
      * A suck method that shouldn't be used.
-     * Though we are still using...
+     * We use this method ONLY when something went wrong.
      */
     public Set<String> getModelListOffline() {
         return Sets.newHashSet(TEMP_AVAILABLE_MODEL_LIST);
@@ -126,7 +282,7 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     public enum Api {
-        OpenAI(ClientOptions.PRODUCTION_URL, "gpt-4o-mini"),
+        OpenAI("https://api.openai.com/v1/", "gpt-4o-mini"),
         Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
         Grok("https://api.x.ai/v1", "grok-3"),
         DeepSeek("https://api.deepseek.com/v1", "deepseek-chat");
@@ -141,6 +297,14 @@ public class OpenAIClientTool implements TranslationTool {
         Api(String baseUrl, String defaultModel) {
             this.baseUrl = baseUrl;
             this.defaultModel = defaultModel;
+        }
+    }
+
+    public static class ServiceException extends RuntimeException {
+        public final int statusCode;
+        public ServiceException(String message, int statusCode) {
+            super(message);
+            this.statusCode = statusCode;
         }
     }
 
