@@ -1,7 +1,6 @@
 package net.psunset.translatorpp.compat.clothconfig;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import dev.architectury.event.events.client.ClientTickEvent;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -27,7 +26,6 @@ import java.util.*;
 public class TPPConfigImplCloth implements TPPConfig {
     private static ConfigHolder<General> generalHolder;
     private static ConfigHolder<OpenAI> openaiHolder;
-    private static Set<String> openaiModels = Set.of();
 
     public TPPConfigImplCloth() {
     }
@@ -62,10 +60,6 @@ public class TPPConfigImplCloth implements TPPConfig {
         return openai().openaiBaseUrl;
     }
 
-    public static void refreshOpenAIModels() {
-        openaiModels = Sets.newHashSet(OpenAIClientTool.getInstance().getModels());
-    }
-
     public static General general() {
         return generalHolder.getConfig();
     }
@@ -90,7 +84,7 @@ public class TPPConfigImplCloth implements TPPConfig {
         });
 
         TranslationKit.getInstance().refreshOpenAIClientTool();
-        refreshOpenAIModels();
+        OpenAIClientTool.refreshCacheModels();
     }
 
     @Config(name = TranslatorPP.ID + "-general")
@@ -147,7 +141,7 @@ public class TPPConfigImplCloth implements TPPConfig {
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), general().openaiModel)
-                    .setSelections(openaiModels)
+                    .setSelections(OpenAIClientTool.getCacheModels())
                     .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
                     .setDefaultValue("")
                     .setSaveConsumer(it -> general().openaiModel = it)
@@ -170,7 +164,7 @@ public class TPPConfigImplCloth implements TPPConfig {
                         generalHolder.save();
                         openaiHolder.save();
                         TranslationKit.getInstance().refreshOpenAIClientTool();
-                        refreshOpenAIModels();
+                        OpenAIClientTool.refreshCacheModels();
                     })
                     .setTitle(Component.translatable("config.title.translatorpp"));
 

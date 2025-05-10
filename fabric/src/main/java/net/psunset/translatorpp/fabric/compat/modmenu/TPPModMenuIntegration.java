@@ -4,7 +4,6 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.tool.CompatUtl;
-import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 
 public class TPPModMenuIntegration implements ModMenuApi {
     @Override

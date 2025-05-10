@@ -6,9 +6,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.CompatUtl;
-import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationTool;
 

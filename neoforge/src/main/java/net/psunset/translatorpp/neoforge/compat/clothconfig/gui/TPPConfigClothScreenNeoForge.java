@@ -10,9 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.psunset.translatorpp.compat.clothconfig.TPPClothConfigData;
 import net.psunset.translatorpp.compat.clothconfig.TPPClothConfigDataDecoy;
-import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
@@ -96,7 +94,7 @@ public class TPPConfigClothScreenNeoForge {
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel.get())
-                    .setSelections(TPPConfigImplNeoForge.GENERAL.getOpenaiModels())
+                    .setSelections(OpenAIClientTool.getCacheModels())
                     .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
                     .setDefaultValue("")
                     .setSaveConsumer(config.openaiModel::set)

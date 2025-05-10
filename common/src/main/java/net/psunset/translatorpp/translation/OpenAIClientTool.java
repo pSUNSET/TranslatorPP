@@ -1,5 +1,6 @@
 package net.psunset.translatorpp.translation;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.openai.client.OpenAIClient;
@@ -24,6 +25,12 @@ public class OpenAIClientTool implements TranslationTool {
             So, please translate the following words, "%s", from '%s' language to '%s' language.
             Also, because those words are from modded Minecraft, you can properly adjust your answer.
             Finally, the response you return *MUST* only contain the translated result. No other description.""";
+
+    /**
+     * Grabbing the model list from online wastes too much time.
+     * So set a cache here to let us get it more swiftly.
+     */
+    private static final Set<String> cacheModels = Sets.newHashSet();
 
     public static OpenAIClientTool getInstance() {
         return INSTANCE;
@@ -86,29 +93,36 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     /**
-     * Returns the model list caught online.
+     * Returns the model list from online.
      */
     public Set<String> getModels() {
         try {
-            Set<String> result = this.client().models().list().data().stream()
+            return this.client().models().list().data().stream()
                     .map(Model::id)
                     .map(it -> it.replace("models/", ""))
                     .collect(Collectors.toSet());
-            TranslatorPP.LOGGER.info(String.join(", ", result));
-            return result;
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while getting online model list: {}", e.toString());
-            return getModelOffline();
+            return getModelListOffline();
         }
     }
 
     /**
      * Returns a copy of {@link OpenAIClientTool#TEMP_AVAILABLE_MODEL_LIST}
-     * A suck method that not be used now.
-     * Hope we no longer use this method.
+     * A suck method that shouldn't be used.
+     * Though we are still using...
      */
-    public Set<String> getModelOffline() {
+    public Set<String> getModelListOffline() {
         return Sets.newHashSet(TEMP_AVAILABLE_MODEL_LIST);
+    }
+
+    public static Set<String> getCacheModels() {
+        return cacheModels;
+    }
+
+    public static void refreshCacheModels() {
+        cacheModels.clear();
+        cacheModels.addAll(INSTANCE.getModels());
     }
 
     public enum Api {
@@ -132,11 +146,11 @@ public class OpenAIClientTool implements TranslationTool {
 
     /**
      * A temp-available model list.
-     * So this may not correct in the future.
+     * So this may not be correct in the future.
      * If some models are deprecated or new models get updated, this list won't update in time.
      * This list is created on May 07, 2025.
      */
-    private static final Set<String> TEMP_AVAILABLE_MODEL_LIST = Sets.newHashSet(
+    private static final List<String> TEMP_AVAILABLE_MODEL_LIST = Lists.newArrayList(
             // OpenAI
             "davinci-002",
             "gpt-4o-mini-2024-07-18",

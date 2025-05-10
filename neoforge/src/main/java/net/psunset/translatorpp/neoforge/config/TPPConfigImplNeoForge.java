@@ -1,7 +1,6 @@
 package net.psunset.translatorpp.neoforge.config;
 
 import com.electronwill.nightconfig.core.EnumGetMethod;
-import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
@@ -16,11 +15,11 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge;
 import net.psunset.translatorpp.neoforge.config.gui.TPPConfigNeoForgeScreen;
+import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationTool;
@@ -87,8 +86,6 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         public final ModConfigSpec.EnumValue<TranslationTool.Type> translationTool;
         public final ModConfigSpec.ConfigValue<String> openaiModel;
 
-        private Set<String> openaiModels = Set.of();
-
         private General(ModConfigSpec.Builder builder) {
             Set<String> tlList = Arrays.stream(Locale.getAvailableLocales())
                     .map(Locale::toLanguageTag)
@@ -113,15 +110,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
             this.openaiModel = builder
                     .translation("config.translatorpp.openai_model")
                     .define("openai_model", "", it ->
-                            it == null || it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && openaiModels.contains(it)));
-        }
-
-        public void refreshOpenAIModels() {
-            openaiModels = Sets.newHashSet(OpenAIClientTool.getInstance().getModels());
-        }
-
-        public Set<String> getOpenaiModels() {
-            return openaiModels;
+                            it == null || it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && OpenAIClientTool.getCacheModels().contains(it)));
         }
     }
 
@@ -169,7 +158,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         if (event.getConfig().getSpec().equals(generalSpec)) {
         } else if (event.getConfig().getSpec().equals(openaiSpec)) { // The final config registered in this mod
             TranslationKit.getInstance().refreshOpenAIClientTool();
-            GENERAL.refreshOpenAIModels();
+            OpenAIClientTool.refreshCacheModels();
         }
     }
 
@@ -180,7 +169,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
             TranslationKit.getInstance().clearCache();
         } else if (event.getConfig().getSpec().equals(openaiSpec)) {
             TranslationKit.getInstance().refreshOpenAIClientTool();
-            GENERAL.refreshOpenAIModels();
+            OpenAIClientTool.refreshCacheModels();
         }
     }
 }

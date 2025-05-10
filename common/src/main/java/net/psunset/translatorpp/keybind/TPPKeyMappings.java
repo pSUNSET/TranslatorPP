@@ -5,7 +5,6 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
-import net.psunset.translatorpp.tool.CompatUtl;
 import org.lwjgl.glfw.GLFW;
 
 public class TPPKeyMappings {

@@ -25,8 +25,6 @@ import net.neoforged.fml.config.ModConfigs;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.Locale;
-
 /**
  * An edition of {@link ConfigurationScreen}
  */
