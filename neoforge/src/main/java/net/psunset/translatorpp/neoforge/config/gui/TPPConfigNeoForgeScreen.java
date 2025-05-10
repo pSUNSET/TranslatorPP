@@ -1,5 +1,6 @@
 package net.psunset.translatorpp.neoforge.config.gui;
 
+import com.mojang.datafixers.util.Function4;
 import com.mojang.realmsclient.RealmsMainScreen;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.ChatFormatting;
@@ -13,7 +14,6 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -42,7 +42,7 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
     private static final MutableComponent EMPTY_LINE = Component.literal("\n\n");
 
     protected final ModContainer mod;
-    private final PropertyDispatch.QuadFunction<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
+    private final Function4<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
 
     public ModConfigSpec.RestartType needsRestart = ModConfigSpec.RestartType.NONE;
     // If there is only one config type (and it can be edited, we show that instantly on the way "down" and want to close on the way "up".
@@ -58,7 +58,7 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
     }
 
     @SuppressWarnings("resource")
-    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, PropertyDispatch.QuadFunction<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen) {
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, Function4<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen) {
         super(parent, Minecraft.getInstance().options, Component.translatable(TITLE));
         this.mod = mod;
         this.sectionScreen = sectionScreen;
