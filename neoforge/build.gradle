@@ -38,7 +38,7 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-neoforge:$architectury_api_version"
 
-    modCompileOnlyApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
+    modApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
     forgeRuntimeLibrary "com.openai:openai-java:$openai_version"
 

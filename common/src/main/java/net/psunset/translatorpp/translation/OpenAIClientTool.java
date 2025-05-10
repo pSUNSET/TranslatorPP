@@ -104,6 +104,8 @@ public class OpenAIClientTool implements TranslationTool {
 
     /**
      * Returns a copy of {@link OpenAIClientTool#TEMP_AVAILABLE_MODEL_LIST}
+     * A suck method that not be used now.
+     * Hope we no longer use this method.
      */
     public Set<String> getModelOffline() {
         return Sets.newHashSet(TEMP_AVAILABLE_MODEL_LIST);

@@ -27,6 +27,9 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Locale;
 
+/**
+ * An edition of {@link ConfigurationScreen}
+ */
 @OnlyIn(Dist.CLIENT)
 public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
 
@@ -39,8 +42,6 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
     private static final ChatFormatting FILENAME_TOOLTIP_STYLE = ChatFormatting.GRAY;
 
     private static final MutableComponent EMPTY_LINE = Component.literal("\n\n");
-
-    protected static final ConfigurationScreen.TranslationChecker translationChecker = new ConfigurationScreen.TranslationChecker();
 
     protected final ModContainer mod;
     private final PropertyDispatch.QuadFunction<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
@@ -123,7 +124,6 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
     @SuppressWarnings("incomplete-switch")
     @Override
     public void onClose() {
-        translationChecker.finish();
         switch (needsRestart) {
             case GAME -> {
                 minecraft.setScreen(new TooltipConfirmScreen(b -> {
