@@ -1,12 +1,14 @@
 package net.psunset.translatorpp.translation;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.tool.PlayerUtl;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -75,7 +77,7 @@ public class TranslationKit {
         return this.translated;
     }
 
-    public void start(@Nullable Player player) {
+    public void start(Minecraft client) {
         if (hoveredStack == null || hoveredStack.equals(translatedStack))
             return; // Already translating or translated this exact stack instance
 
@@ -122,9 +124,7 @@ public class TranslationKit {
                 .exceptionally(err -> {
                     TranslatorPP.LOGGER.error("Translation failed for: {}, cause: {}", originalText, err.getCause());
                     translatedResult = Component.translatable("misc.translatorpp.translation.failed").withStyle(ChatFormatting.RED);
-                    if (player != null) {
-                        this.sendErrorToPlayer(player, err.getCause());
-                    }
+                    this.sendErrorToClient(client, err.getCause());
                     return null; // Indicate exception was handled
                 });
     }
@@ -145,7 +145,7 @@ public class TranslationKit {
         this.translationCache.clear();
     }
 
-    private void sendErrorToPlayer(Player player, Throwable err) {
+    private void sendErrorToClient(Minecraft client, Throwable err) {
         if (err instanceof OpenAIClientTool.ServiceException openaiErr) {
             String transKey = "misc.translatorpp.translation.failed.chat.openai." + openaiErr.statusCode;
             if (openaiErr.statusCode == 401 && openaiErr.getMessage().contains("organization")) {
@@ -155,10 +155,10 @@ public class TranslationKit {
             } else if (openaiErr.statusCode == 503 && openaiErr.getMessage().contains("overloaded")) {
                 transKey += "_over";
             }
-            player.sendSystemMessage(Component.translatable(transKey).withStyle(ChatFormatting.RED));
+            PlayerUtl.clientMessage(client, Component.translatable(transKey).withStyle(ChatFormatting.RED));
             return;
         }
-        player.sendSystemMessage(Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
+        PlayerUtl.clientMessage(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
     }
 
     public void refreshOpenAIClientTool() {

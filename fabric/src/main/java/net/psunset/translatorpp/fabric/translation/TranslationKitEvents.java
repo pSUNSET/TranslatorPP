@@ -14,7 +14,7 @@ public class TranslationKitEvents {
             if (_screen instanceof AbstractContainerScreen<?>) {
                 ScreenKeyboardEvents.afterKeyPress(_screen).register((screen, key, scancode, modifiers) -> {
                     if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
-                        TranslationKit.getInstance().start(client.player);
+                        TranslationKit.getInstance().start(client);
                     }
 
                 });

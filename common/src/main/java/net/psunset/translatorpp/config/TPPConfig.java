@@ -9,6 +9,7 @@ import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.CompatUtl;
+import net.psunset.translatorpp.tool.PlayerUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationTool;
 
@@ -82,9 +83,7 @@ public interface TPPConfig {
         public static void init() {
             ClientTickEvent.CLIENT_POST.register(client -> {
                 while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
-                    if (client.player != null) {
-                        client.player.sendSystemMessage(Component.translatable("misc.translatorpp.missing.clothconfig"));
-                    }
+                     PlayerUtl.clientMessage(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
                 }
             });
         }

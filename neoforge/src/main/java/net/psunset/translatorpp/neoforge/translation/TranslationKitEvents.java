@@ -22,7 +22,7 @@ public class TranslationKitEvents {
             }
 
             if (TPPKeyMappings.TRANSLATE_KEY.isActiveAndMatches(InputConstants.Type.KEYSYM.getOrCreate(event.getKeyCode()))) {
-                TranslationKit.getInstance().start(screen.getMinecraft().player);
+                TranslationKit.getInstance().start(screen.getMinecraft());
             }
         }
     }

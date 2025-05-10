@@ -20,6 +20,7 @@ import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge;
 import net.psunset.translatorpp.neoforge.config.gui.TPPConfigNeoForgeScreen;
 import net.psunset.translatorpp.tool.CompatUtl;
+import net.psunset.translatorpp.tool.PlayerUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationTool;
@@ -147,9 +148,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static void afterClientTickIfNoClothConfig(ClientTickEvent.Post event) {
         while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
-            if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("misc.translatorpp.missing.clothconfig"));
-            }
+            PlayerUtl.clientMessage(Component.translatable("misc.translatorpp.missing.clothconfig"));
         }
     }
 
