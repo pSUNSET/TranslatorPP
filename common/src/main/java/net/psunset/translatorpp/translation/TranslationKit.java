@@ -122,7 +122,7 @@ public class TranslationKit {
                     translationCache.put(originalText, it); // Add to cache
                 }, translationExecutor)
                 .exceptionally(err -> {
-                    TranslatorPP.LOGGER.error("Translation failed for: {}, cause: {}", originalText, err.getCause());
+                    TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", originalText, err.getCause());
                     translatedResult = Component.translatable("misc.translatorpp.translation.failed").withStyle(ChatFormatting.RED);
                     this.sendErrorToClient(client, err.getCause());
                     return null; // Indicate exception was handled
@@ -168,7 +168,7 @@ public class TranslationKit {
 
     public void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String model) {
         try {
-            TranslatorPP.LOGGER.info("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
+            TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
                     apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
             OpenAIClientTool.getInstance().setApiKey(apiKey);
             OpenAIClientTool.getInstance().setApi(api);

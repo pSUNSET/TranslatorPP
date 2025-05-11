@@ -1,7 +1,6 @@
 package net.psunset.translatorpp.translation;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.psunset.translatorpp.TranslatorPP;
 
 import java.io.BufferedReader;
@@ -22,7 +21,10 @@ public class GoogleTranslationTool implements TranslationTool {
         return INSTANCE;
     }
 
+    private final Gson gson;
+
     public GoogleTranslationTool() {
+        this.gson = new GsonBuilder().create();
     }
 
     @Override
@@ -54,24 +56,25 @@ public class GoogleTranslationTool implements TranslationTool {
             conn.connect();
 
             StringBuilder response = new StringBuilder();
+            int statusCode = conn.getResponseCode();
+            boolean isError = statusCode < 200 || statusCode >= 300;
 
-            if (conn.getResponseCode() == 200) {
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                }
-                TranslatorPP.LOGGER.info("HTTP response: {}", response);
-            } else {
-                TranslatorPP.LOGGER.error("HTTP error code: {}", conn.getResponseCode());
-
+            if (isError) {
                 try (BufferedReader er = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
                     String errorLine;
                     while ((errorLine = er.readLine()) != null) {
                         response.append(errorLine);
                     }
                 }
+                TranslatorPP.LOGGER.error("HTTP failed with error code {}: {}", statusCode, response);
+            } else { // succeed
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                }
+                TranslatorPP.LOGGER.debug("HTTP successful response: {}", response);
             }
             return response.toString();
         } finally {
@@ -80,7 +83,8 @@ public class GoogleTranslationTool implements TranslationTool {
     }
 
     private String parseResult(String response) {
-        JsonElement json = JsonParser.parseReader(new StringReader(response));
-        return json.getAsJsonArray().get(0).getAsJsonArray().get(0).getAsJsonArray().get(0).getAsString();
+        JsonArray json = gson.fromJson(response, JsonArray.class);
+        // Idk what the contents in the json mean. Just get what I need here.
+        return json.get(0).getAsJsonArray().get(0).getAsJsonArray().get(0).getAsString();
     }
 }

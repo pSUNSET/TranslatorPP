@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -95,7 +96,7 @@ public class OpenAIClientTool implements TranslationTool {
 
         HttpURLConnection con = null;
         try {
-            URL url = new URL(this.api.baseUrl + "chat/completions");
+            URL url = URI.create(this.api.baseUrl + "chat/completions").toURL();
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Authorization", "Bearer " + this.apiKey);
@@ -158,34 +159,6 @@ public class OpenAIClientTool implements TranslationTool {
         }
     }
 
-    /**
-     * Escapes special characters in a string for use in a JSON string value.
-     */
-    private String escapeJson(String text) {
-        if (text == null) return "";
-        return text.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\b", "\\b")
-                .replace("\f", "\\f")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
-    }
-
-    /**
-     * Unescapes special characters in a string that was part of a JSON string value.
-     */
-    private String unescapeJson(String text) {
-        if (text == null) return "";
-        return text.replace("\\\\", "\\")
-                .replace("\\\"", "\"")
-                .replace("\\b", "\b")
-                .replace("\\f", "\f")
-                .replace("\\n", "\n")
-                .replace("\\r", "\r")
-                .replace("\\t", "\t");
-    }
-
     public boolean isPresent() {
         return this.apiKey != null && !this.apiKey.isEmpty() &&
                 this.api != null && this.model != null && !this.model.isEmpty();
@@ -196,7 +169,7 @@ public class OpenAIClientTool implements TranslationTool {
      */
     public Set<String> getModels() {
         if (this.apiKey == null || this.apiKey.isEmpty() || this.api == null) {
-            TranslatorPP.LOGGER.error("Cannot get models: API key or API provider not set.");
+            TranslatorPP.LOGGER.error("Error while getting online model list: API key or API provider not set.");
             return getModelListOffline();
         }
 
@@ -224,9 +197,12 @@ public class OpenAIClientTool implements TranslationTool {
             }
             String rawResponse = responseBodyBuilder.toString();
 
-            String snippet = rawResponse.substring(0, Math.min(rawResponse.length(), 500));
+            String snippet = rawResponse;
+            if (snippet.length() > 500) {
+                snippet = snippet.substring(0, 500) + "...";
+            }
             if (isError) {
-                TranslatorPP.LOGGER.error("Error while getting online model list (HTTP {}): {}", statusCode, snippet);
+                TranslatorPP.LOGGER.error("Got {} error while getting online model list: {}", statusCode, snippet);
                 return getModelListOffline();
             }
 
@@ -245,13 +221,13 @@ public class OpenAIClientTool implements TranslationTool {
                     }
                 }
             } else {
-                TranslatorPP.LOGGER.warn("No 'data' array found in models response or it's not an array. Response (first 500 chars): " + snippet);
+                TranslatorPP.LOGGER.warn("No 'data' array found in models response or it's not an array. Response: {}", snippet);
             }
 
             return modelIds;
 
         } catch (JsonSyntaxException e) {
-            TranslatorPP.LOGGER.error("JSON syntax error while parsing models list: {}. Response (first 500 chars): {}", e.getMessage(), (con != null && con.getDoInput() ? "Response too long or unreadable" : "No response available or error during read"));
+            TranslatorPP.LOGGER.error("JSON syntax error while parsing models list: {}. Response: {}", e.getMessage(), (con != null && con.getDoInput() ? "Response too long or unreadable" : "No response available or error during read"));
             return getModelListOffline();
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Exception while getting online model list: {}", e, e);
