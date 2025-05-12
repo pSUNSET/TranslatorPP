@@ -1,7 +1,6 @@
 package net.psunset.translatorpp.neoforge.config;
 
 import com.electronwill.nightconfig.core.EnumGetMethod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -20,7 +19,7 @@ import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge;
 import net.psunset.translatorpp.neoforge.config.gui.TPPConfigNeoForgeScreen;
 import net.psunset.translatorpp.tool.CompatUtl;
-import net.psunset.translatorpp.tool.PlayerUtl;
+import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationTool;
@@ -148,7 +147,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static void afterClientTickIfNoClothConfig(ClientTickEvent.Post event) {
         while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
-            PlayerUtl.clientMessage(Component.translatable("misc.translatorpp.missing.clothconfig"));
+            ClientUtl.message(Component.translatable("misc.translatorpp.missing.clothconfig"));
         }
     }
 

@@ -4,11 +4,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
-import net.psunset.translatorpp.tool.PlayerUtl;
+import net.psunset.translatorpp.tool.ClientUtl;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -155,10 +154,10 @@ public class TranslationKit {
             } else if (openaiErr.statusCode == 503 && openaiErr.getMessage().contains("overloaded")) {
                 transKey += "_over";
             }
-            PlayerUtl.clientMessage(client, Component.translatable(transKey).withStyle(ChatFormatting.RED));
+            ClientUtl.message(client, Component.translatable(transKey).withStyle(ChatFormatting.RED));
             return;
         }
-        PlayerUtl.clientMessage(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
+        ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
     }
 
     public void refreshOpenAIClientTool() {
