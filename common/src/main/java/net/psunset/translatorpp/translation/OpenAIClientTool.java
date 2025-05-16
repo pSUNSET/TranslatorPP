@@ -260,8 +260,8 @@ public class OpenAIClientTool implements TranslationTool {
     public enum Api {
         OpenAI("https://api.openai.com/v1/", "gpt-4o-mini"),
         Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
-        Grok("https://api.x.ai/v1", "grok-3"),
-        DeepSeek("https://api.deepseek.com/v1", "deepseek-chat");
+        Grok("https://api.x.ai/v1/", "grok-3"),
+        DeepSeek("https://api.deepseek.com/v1/", "deepseek-chat");
 
         public static final Map<String, Api> entries = Util.make(Maps.newHashMap(), map -> {
             Arrays.asList(values()).forEach(it -> map.put(it.name(), it));
