@@ -10,8 +10,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.psunset.translatorpp.compat.clothconfig.TPPClothConfigDataDecoy;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
+import net.psunset.translatorpp.gui.ScreenProvider;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
@@ -43,7 +43,7 @@ public class TPPConfigClothScreenNeoForge {
     /**
      * An edition of {@link net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth.General}
      */
-    private static class General implements TPPClothConfigDataDecoy {
+    private static class General implements ScreenProvider {
 
         public static General INSTANCE = new General();
 
@@ -107,7 +107,7 @@ public class TPPConfigClothScreenNeoForge {
     /**
      * An edition of {@link net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth.OpenAI}
      */
-    private static class OpenAI implements TPPClothConfigDataDecoy {
+    private static class OpenAI implements ScreenProvider {
 
         public static OpenAI INSTANCE = new OpenAI();
 

@@ -139,7 +139,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
     public static void clientInit(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigNeoForgeScreen::new);
         if (CompatUtl.ClothConfig.isLoaded()) {
-            TPPConfigClothScreenNeoForge.init();
+            TPPConfigClothScreenNeoForge.init(); // register the afterClientTickIfHasClothConfig event callback
         } else {
             NeoForge.EVENT_BUS.addListener(TPPConfigImplNeoForge::afterClientTickIfNoClothConfig);
         }

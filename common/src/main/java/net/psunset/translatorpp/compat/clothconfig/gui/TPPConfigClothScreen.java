@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.psunset.translatorpp.compat.clothconfig.TPPClothConfigDataDecoy;
+import net.psunset.translatorpp.gui.ScreenProvider;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -21,7 +21,7 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
     private static final String CATEGORY_PREFIX = "config.category.translatorpp.";
     private static final String TOOLTIP = "config.translatorpp.category.tooltip";
 
-    private final ImmutableList<TPPClothConfigDataDecoy> configs;
+    private final ImmutableList<ScreenProvider> configs;
     // If there is only one config type (and it can be edited, we show that instantly on the way "down" and want to close on the way "up".
     // But when returning from the restart/reload confirmation screens, we need to stay open.
     private boolean autoClose = false;
@@ -34,7 +34,7 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
      * For NeoForge-sided edition, {@link net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge}.
      */
     @ApiStatus.Internal
-    public TPPConfigClothScreen(final Screen parent, Iterable<? extends TPPClothConfigDataDecoy> configs) {
+    public TPPConfigClothScreen(final Screen parent, Iterable<? extends ScreenProvider> configs) {
         super(parent, Minecraft.getInstance().options, Component.translatable(TITLE));
         this.configs = ImmutableList.copyOf(configs);
     }
@@ -43,7 +43,7 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
     protected void addOptions() {
         Button btn = null;
         int count = 0;
-        for (final TPPClothConfigDataDecoy config : this.configs) {
+        for (final ScreenProvider config : this.configs) {
             String configName = config.getClass().getSimpleName().toLowerCase();
             String displayName = I18n.get(CATEGORY_PREFIX + configName);
             btn = Button.builder(Component.literal("%s...".formatted(displayName)),

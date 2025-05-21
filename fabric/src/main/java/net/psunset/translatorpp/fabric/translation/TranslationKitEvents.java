@@ -10,25 +10,22 @@ import net.psunset.translatorpp.translation.TranslationKit;
 public class TranslationKitEvents {
 
     public static void commonInit() {
-        ScreenEvents.AFTER_INIT.register((client, _screen, scaledWidth, scaledHeight) -> {
-            if (_screen instanceof AbstractContainerScreen<?>) {
-                ScreenKeyboardEvents.afterKeyPress(_screen).register((screen, key, scancode, modifiers) -> {
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof AbstractContainerScreen<?>) {
+                ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifiers) -> {
                     if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
                         TranslationKit.getInstance().start(client);
                     }
-
                 });
 
-                ScreenKeyboardEvents.afterKeyRelease(_screen).register(((screen, key, scancode, modifiers) -> {
+                ScreenKeyboardEvents.afterKeyRelease(screen).register(((_screen, key, scancode, modifiers) -> {
                     if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
                         TranslationKit.getInstance().stop();
-
                     }
                 }));
 
-                ScreenEvents.remove(_screen).register(screen -> {
+                ScreenEvents.remove(screen).register(_screen -> {
                     TranslationKit.getInstance().stop();
-
                 });
             }
         });

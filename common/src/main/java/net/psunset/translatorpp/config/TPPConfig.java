@@ -48,6 +48,10 @@ public interface TPPConfig {
 
     class Default implements TPPConfig {
 
+        /**
+         * The instance of the TPPConfig.
+         * Not only works for the default one.
+         */
         public static TPPConfig INSTANCE;
 
         @Override

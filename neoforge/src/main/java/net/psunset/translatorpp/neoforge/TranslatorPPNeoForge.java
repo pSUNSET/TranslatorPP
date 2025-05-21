@@ -4,6 +4,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 
