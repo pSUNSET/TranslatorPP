@@ -27,7 +27,7 @@ public interface TPPConfig {
     OpenAIClientTool.Api getOpenaiBaseUrl();
 
     @Environment(EnvType.CLIENT)
-    static void init() {
+    public static void init() {
         if (Platform.isNeoForge()) {
             TranslatorPP.LOGGER.debug("NeoForge is loaded, using neoforge for Translator++ Config.");
             // Injected
@@ -42,11 +42,11 @@ public interface TPPConfig {
         }
     }
 
-    static TPPConfig getInstance() {
+    public static TPPConfig getInstance() {
         return Default.INSTANCE;
     }
 
-    class Default implements TPPConfig {
+    public class Default implements TPPConfig {
 
         /**
          * The instance of the TPPConfig.
