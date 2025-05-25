@@ -1,5 +1,10 @@
 package net.psunset.translatorpp.translation;
 
+import com.google.common.collect.Lists;
+import dev.architectury.event.events.client.ClientScreenInputEvent;
+import dev.architectury.event.events.client.ClientTooltipEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -12,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +30,9 @@ public class TranslationKit {
 
     private static final AtomicInteger taskCounter = new AtomicInteger(0);
     private static final ExecutorService translationExecutor = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "Translation-Worker-" + taskCounter.incrementAndGet());
-        t.setDaemon(true); // Allow JVM to exit even if this thread is running
-        return t;
+        Thread translationThread = new Thread(r, "Translation-Worker-" + taskCounter.incrementAndGet());
+        translationThread.setDaemon(true); // Allow JVM to exit even if this thread is running
+        return translationThread;
     });
 
     public static TranslationKit getInstance() {
@@ -177,9 +183,22 @@ public class TranslationKit {
         }
     }
 
+    public void addResultToTooltip(List<Component> lines) {
+        List<Component> clone = List.copyOf(lines);
+        lines.add(1, TranslationKit.getInstance().getTranslatedResult());
+    }
+
+    @Environment(EnvType.CLIENT)
     public static void init() {
         TranslatorPP.LOGGER.debug("Initializing TranslationKit");
         INSTANCE = new TranslationKit();
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
+
+        ClientTooltipEvent.ITEM.register((stack, lines, tooltipContext, flag) -> {
+            if (TranslationKit.getInstance().isTranslated() && stack.equals(TranslationKit.getInstance().getTranslatedStack()) &&
+                    TranslationKit.getInstance().getTranslatedResult() != null) {
+                TranslationKit.getInstance().addResultToTooltip(lines);
+            }
+        });
     }
 }

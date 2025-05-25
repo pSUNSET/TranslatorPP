@@ -35,7 +35,7 @@ modId = "architectury"
 type = "required"
 versionRange = "${architectury_api_version_neoforge_range}"
 ordering = "AFTER"
-side = "BOTH"
+side = "CLIENT"
 
 [[mixins]]
 config = "${mod_id}.mixins.json"

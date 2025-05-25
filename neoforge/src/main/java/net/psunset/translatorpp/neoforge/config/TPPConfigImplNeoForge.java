@@ -22,6 +22,7 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
+import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,6 +48,11 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         final Pair<OpenAI, ModConfigSpec> openaiPair = new ModConfigSpec.Builder().configure(OpenAI::new);
         OPENAI = openaiPair.getLeft();
         openaiSpec = openaiPair.getRight();
+    }
+
+    @Override
+    public TranslationMode getTranslationMode() {
+        return GENERAL.translationMode.get();
     }
 
     @Override
@@ -81,6 +87,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static class General {
 
+        public final ModConfigSpec.EnumValue<TranslationMode> translationMode;
         public final ModConfigSpec.ConfigValue<String> sourceLanguage;
         public final ModConfigSpec.ConfigValue<String> targetLanguage;
         public final ModConfigSpec.EnumValue<TranslationTool.Type> translationTool;
@@ -94,6 +101,10 @@ public class TPPConfigImplNeoForge implements TPPConfig {
             Set<String> slList = new HashSet<>(tlList.size() + 1);
             slList.add("auto");
             slList.addAll(tlList);
+
+            this.translationMode = builder
+                    .translation("config.translatorpp.translation_mode")
+                    .defineEnum("translation_mode", TranslationMode.NAME_ONLY, EnumGetMethod.NAME_IGNORECASE);
 
             this.sourceLanguage = builder
                     .translation("config.translatorpp.source_language")

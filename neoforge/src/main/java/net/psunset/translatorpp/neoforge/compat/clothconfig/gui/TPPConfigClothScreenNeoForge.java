@@ -15,6 +15,7 @@ import net.psunset.translatorpp.gui.ScreenProvider;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
+import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
 
 import java.util.ArrayList;
@@ -72,6 +73,12 @@ public class TPPConfigClothScreenNeoForge {
             List<String> slList = new ArrayList<>(tlList.size() + 1);
             slList.add("auto");
             slList.addAll(tlList);
+
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, config.translationMode.get())
+                    .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
+                    .setDefaultValue(TranslationMode.NAME_ONLY)
+                    .setSaveConsumer(config.translationMode::set)
+                    .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), config.sourceLanguage.get())
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))

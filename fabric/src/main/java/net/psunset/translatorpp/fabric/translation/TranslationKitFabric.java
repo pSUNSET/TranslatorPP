@@ -2,14 +2,13 @@ package net.psunset.translatorpp.fabric.translation;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.translation.TranslationKit;
 
-public class TranslationKitEvents {
+public class TranslationKitFabric {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
@@ -30,13 +29,6 @@ public class TranslationKitEvents {
                 ScreenEvents.remove(screen).register(_screen -> {
                     TranslationKit.getInstance().stop();
                 });
-            }
-        });
-
-        ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
-            if (TranslationKit.getInstance().isTranslated() && stack.equals(TranslationKit.getInstance().getTranslatedStack()) &&
-                    TranslationKit.getInstance().getTranslatedResult() != null) {
-                lines.add(1, TranslationKit.getInstance().getTranslatedResult());
             }
         });
     }

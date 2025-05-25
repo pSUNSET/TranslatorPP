@@ -19,6 +19,7 @@ import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
+import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
 
 import java.util.*;
@@ -28,6 +29,11 @@ public class TPPConfigImplCloth implements TPPConfig {
     private static ConfigHolder<OpenAI> openaiHolder;
 
     public TPPConfigImplCloth() {
+    }
+
+    @Override
+    public TranslationMode getTranslationMode() {
+        return general().translationMode;
     }
 
     @Override
@@ -89,6 +95,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
     @Config(name = TranslatorPP.ID + "-general")
     public static class General implements TPPClothConfigData {
+        private TranslationMode translationMode = TranslationMode.NAME_ONLY;
         private String sourceLanguage = "auto";
         private String targetLanguage = "ja-JP";
         private TranslationTool.Type translationTool = TranslationTool.Type.GoogleTranslation;
@@ -119,6 +126,12 @@ public class TPPConfigImplCloth implements TPPConfig {
             List<String> slList = new ArrayList<>(tlList.size() + 1);
             slList.add("auto");
             slList.addAll(tlList);
+
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, general().translationMode)
+                    .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
+                    .setDefaultValue(TranslationMode.NAME_ONLY)
+                    .setSaveConsumer(it -> general().translationMode = it)
+                    .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), general().sourceLanguage)
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))

@@ -58,6 +58,11 @@ public interface TPPConfig {
         public static TPPConfig INSTANCE;
 
         @Override
+        public TranslationMode getTranslationMode() {
+            return TranslationMode.NAME_ONLY;
+        }
+
+        @Override
         public String getSourceLanguage() {
             return "auto";
         }
