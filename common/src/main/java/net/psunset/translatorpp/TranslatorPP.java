@@ -12,11 +12,8 @@ public final class TranslatorPP {
     public static final String ID = "translatorpp";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static void commonInit() {
-    }
-
     @Environment(EnvType.CLIENT)
-    public static void clientInit() {
+    public static void init() {
         TPPKeyMappings.init();
         TranslationKit.init();
         TPPConfig.init();

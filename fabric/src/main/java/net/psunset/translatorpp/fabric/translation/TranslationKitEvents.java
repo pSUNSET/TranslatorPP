@@ -1,5 +1,7 @@
 package net.psunset.translatorpp.fabric.translation;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -9,7 +11,8 @@ import net.psunset.translatorpp.translation.TranslationKit;
 
 public class TranslationKitEvents {
 
-    public static void commonInit() {
+    @Environment(EnvType.CLIENT)
+    public static void init() {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof AbstractContainerScreen<?>) {
                 ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifiers) -> {

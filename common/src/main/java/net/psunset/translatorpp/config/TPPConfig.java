@@ -11,9 +11,12 @@ import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
+import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
 
 public interface TPPConfig {
+    TranslationMode getTranslationMode();
+
     String getSourceLanguage();
 
     String getTargetLanguage();

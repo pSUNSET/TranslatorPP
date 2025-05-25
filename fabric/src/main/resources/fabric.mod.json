@@ -16,11 +16,8 @@
   "icon": "icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
-      "${group}.${mod_id}.fabric.TranslatorPPFabric"
-    ],
     "client": [
-      "${group}.${mod_id}.fabric.TranslatorPPFabricClient"
+      "${group}.${mod_id}.fabric.TranslatorPPFabric"
     ],
     "modmenu": [
       "${group}.${mod_id}.fabric.compat.modmenu.TPPModMenuIntegration"

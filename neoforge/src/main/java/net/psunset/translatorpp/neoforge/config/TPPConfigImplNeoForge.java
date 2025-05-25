@@ -130,13 +130,11 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         }
     }
 
-    public static void commonInit(ModContainer container) {
+    @OnlyIn(Dist.CLIENT)
+    public static void init(ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, generalSpec, TranslatorPP.ID + "-general.toml");
         container.registerConfig(ModConfig.Type.CLIENT, openaiSpec, TranslatorPP.ID + "-openai.toml");
-    }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void clientInit(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigNeoForgeScreen::new);
         if (CompatUtl.ClothConfig.isLoaded()) {
             TPPConfigClothScreenNeoForge.init(); // register the afterClientTickIfHasClothConfig event callback
