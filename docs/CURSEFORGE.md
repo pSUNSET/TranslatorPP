@@ -14,13 +14,14 @@ This mod is compatible with both **Fabric** and **NeoForge** mod loaders.
 
 ### Fabric
 
-*   **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Required)
 *   **[Architectury API](https://www.curseforge.com/minecraft/mc-mods/architectury-api)** (Required)
-*   **[Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu)** (Recommended for easy access to settings)
+*   **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Required for settings)
+*   **[Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu)** (Optional)
 
 ### NeoForge
 
 *   **[Architectury API](https://www.curseforge.com/minecraft/mc-mods/architectury-api)** (Required)
+*   **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Optional)
 
 ## Usage
 
@@ -34,8 +35,8 @@ This mod is compatible with both **Fabric** and **NeoForge** mod loaders.
 
 You can configure the mod's settings, such as the target language for translation.
 
-*   **Fabric:** Access the settings screen via the Mod Menu or by pressing the settings keybind (default: **O**).
-*   **NeoForge:** Access the settings screen through the standard mod configuration menu provided by NeoForge.
+1. Press the settings keybind (default: **O**).
+2. Through the Mod Menu mod in Fabric or standard mod list in NeoForge.
 
 ## Development
 
