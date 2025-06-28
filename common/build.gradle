@@ -7,6 +7,10 @@ repositories {
         name = "Shedaniel"
         url = "https://maven.shedaniel.me/"
     }
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
 }
 
 dependencies {
@@ -18,4 +22,6 @@ dependencies {
     modImplementation "dev.architectury:architectury:$architectury_api_version"
 
     modCompileOnlyApi "me.shedaniel.cloth:cloth-config:$cloth_config_version"
+
+    modCompileOnlyApi "mezz.jei:jei-$minecraft_version-common-api:$jei_version"
 }
