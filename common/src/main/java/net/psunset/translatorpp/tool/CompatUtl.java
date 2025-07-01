@@ -8,9 +8,22 @@ public class CompatUtl {
             return Platform.isForgeLike() ? Platform.isModLoaded("cloth_config") : Platform.isModLoaded("cloth-config");
         }
     }
+
     public static class JEI {
         public static boolean isLoaded() {
             return Platform.isModLoaded("jei");
+        }
+    }
+
+    public static class REI {
+        public static boolean isLoaded() {
+            return Platform.isModLoaded("roughlyenoughitems");
+        }
+    }
+
+    public static class Jade {
+        public static boolean isLoaded() {
+            return Platform.isModLoaded("roughlyenoughitems");
         }
     }
 }

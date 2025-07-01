@@ -24,6 +24,8 @@ public class OpenAIClientTool implements TranslationTool {
             I'm playing modded Minecraft.
             But there are some words I didn't understand.
             So, please translate the following words, "%s", from '%s' language to '%s' language.
+            If you find there are some <#> patterns in the sentences, they are simply to separate components.
+            Do *NOT* break the structures of them in the sentences.
             Also, because those words are from modded Minecraft, you can properly adjust your answer.
             Finally, the response you return *MUST* only contain the translated result. No other description.""";
 

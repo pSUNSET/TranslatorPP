@@ -1,32 +1,35 @@
 package net.psunset.translatorpp.translation;
 
-import com.google.common.collect.Lists;
-import dev.architectury.event.events.client.ClientScreenInputEvent;
 import dev.architectury.event.events.client.ClientTooltipEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.tool.ClientUtl;
+import net.psunset.translatorpp.tool.TooltipUtl;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public class TranslationKit {
 
     protected static TranslationKit INSTANCE;
+
+    public static final String COMPONENT_SEP = "<@>";
+    public static final String SUCCESS = "<O>";
+    public static final String PROCESSING = "<?>";
+    public static final String ERROR = "<X>";
 
     private static final AtomicInteger taskCounter = new AtomicInteger(0);
     private static final ExecutorService translationExecutor = Executors.newSingleThreadExecutor(r -> {
@@ -51,65 +54,91 @@ public class TranslationKit {
     );
 
     @Nullable
-    private ItemStack hoveredStack = null;
+    private String hoveredText = null;
     @Nullable
-    private ItemStack translatedStack = null;
+    private String translatedText = null;
     @Nullable
-    private volatile MutableComponent translatedResult = null;
+    private volatile String translatedResult = null;
     private volatile boolean translated = false;
+    private boolean translateKeyDown = false;
     private CompletableFuture<Void> translationFuture = null;
 
     public TranslationKit() {
     }
 
-    public void setHoveredStack(@Nullable ItemStack stack) {
-        this.hoveredStack = stack;
+    public void setHoveredText(@Nullable ItemStack stack, Minecraft client) {
+        if (stack == null) {
+            this.hoveredText = null;
+            return;
+        }
+        this.hoveredText = TooltipUtl.getCombinedTooltipTexts(stack, client);
     }
 
-    public @Nullable ItemStack getHoveredStack() {
-        return hoveredStack;
+    public void setHoveredText(List<Component> tooltip) {
+        if (tooltip.isEmpty()) {
+            this.hoveredText = null;
+            return;
+        }
+        this.hoveredText = TooltipUtl.getCombinedTooltipTexts(tooltip);
     }
 
-    public @Nullable ItemStack getTranslatedStack() {
-        return translatedStack;
+    public void setHoveredText(@Nullable String text) {
+        this.hoveredText = text;
     }
 
-    public @Nullable MutableComponent getTranslatedResult() {
+    public @Nullable String getHoveredText() {
+        return hoveredText;
+    }
+
+    public @Nullable String getTranslatedText() {
+        return translatedText;
+    }
+
+    public @Nullable String getTranslatedResult() {
         return translatedResult;
     }
 
     public boolean isTranslated() {
-        return this.translated;
+        return translated;
+    }
+
+    public boolean isTranslateKeyDown() {
+        return translateKeyDown;
+    }
+
+    public void setTranslateKeyDown(boolean isKeyDown) {
+        translateKeyDown = isKeyDown;
     }
 
     public void start(Minecraft client) {
-        if (hoveredStack == null || hoveredStack.equals(translatedStack))
-            return; // Already translating or translated this exact stack instance
+        if (hoveredText == null || hoveredText.equals(translatedText)) {
+            // Already translating or translated this exact stack instance
+            return;
+        }
 
         // Cancel any previous ongoing translation
         this.stop();
 
-        translatedStack = hoveredStack;
-        String originalText = translatedStack.getHoverName().getString();
+        translatedText = hoveredText;
 
         // Check cache first
-        String cachedResult = translationCache.get(originalText);
+        String cachedResult = translationCache.get(translatedText);
         if (cachedResult != null) {
-            TranslatorPP.LOGGER.debug("Cache hit for: {}", originalText);
-            translatedResult = Component.translatable("misc.translatorpp.translation", cachedResult);
+            TranslatorPP.LOGGER.debug("Cache hit for: {}", translatedText);
+            translatedResult = I18n.get("misc.translatorpp.translation", cachedResult) + SUCCESS;
             translated = true;
             translationFuture = CompletableFuture.completedFuture(null); // Create a completed future
             return; // Skip API call
         }
 
-        translatedResult = Component.translatable("misc.translatorpp.translation.waiting").withStyle(ChatFormatting.GRAY); // Initial placeholder
+        translatedResult = I18n.get("misc.translatorpp.translation.processing") + PROCESSING; // Initial placeholder
         translated = true; // Set translated flag immediately
 
         translationFuture = CompletableFuture
                 .supplyAsync(() -> {
                     try {
                         return TPPConfig.getInstance().getTranslationTool().getTool().translate(
-                                originalText,
+                                translatedText,
                                 TPPConfig.getInstance().getSourceLanguage(),
                                 TPPConfig.getInstance().getTargetLanguage()
                         );
@@ -123,12 +152,12 @@ public class TranslationKit {
                 }, translationExecutor)
                 .thenAcceptAsync(it -> {
                     // Update the result and cache it
-                    translatedResult = Component.translatable("misc.translatorpp.translation", it);
-                    translationCache.put(originalText, it); // Add to cache
+                    translatedResult = I18n.get("misc.translatorpp.translation", it) + SUCCESS;
+                    translationCache.put(translatedText, it); // Add to cache
                 }, translationExecutor)
                 .exceptionally(err -> {
-                    TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", originalText, err.getCause());
-                    translatedResult = Component.translatable("misc.translatorpp.translation.failed").withStyle(ChatFormatting.RED);
+                    TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", translatedText, err.getCause());
+                    translatedResult = I18n.get("misc.translatorpp.translation.failed") + ERROR;
                     this.sendErrorToClient(client, err.getCause());
                     return null; // Indicate exception was handled
                 });
@@ -140,7 +169,7 @@ public class TranslationKit {
                 translationFuture.cancel(true);
             }
             translated = false;
-            translatedStack = null;
+            translatedText = null;
             translatedResult = null;
             translationFuture = null;
         }
@@ -184,8 +213,46 @@ public class TranslationKit {
     }
 
     public void addResultToTooltip(List<Component> lines) {
-        List<Component> clone = List.copyOf(lines);
-        lines.add(1, TranslationKit.getInstance().getTranslatedResult());
+
+        Style appliedStyle = Style.EMPTY;
+
+        switch (translatedResult.substring(translatedResult.length() - 3)) {
+            case PROCESSING -> appliedStyle = appliedStyle.withColor(ChatFormatting.DARK_GRAY);
+            case ERROR -> appliedStyle = appliedStyle.withColor(ChatFormatting.RED);
+            default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
+        }
+
+        String combinedText = translatedResult.substring(0, translatedResult.length() - 3);
+        String[] texts = combinedText.split(COMPONENT_SEP);
+
+        switch (TPPConfig.getInstance().getTranslationMode()) {
+            case NAME_ONLY -> {
+                lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
+            }
+            case NAME_TOP -> {
+                lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
+
+                // 15 < ${max_length_of_lines} < 30
+                lines.add(Component.literal("-".repeat(Math.min(30, Math.max(15, Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt())))).withStyle(ChatFormatting.DARK_GRAY));
+                if (texts.length > 1) {
+                    for (int i = 1; i < texts.length; i++) {
+                        lines.add(Component.literal(texts[i]).withStyle(appliedStyle));
+                    }
+                }
+            }
+            case ALL_IN_END -> {
+                // 15 < ${max_length_of_lines} < 30
+                lines.add(Component.literal("-".repeat(Math.min(30, Math.max(15, Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt())))).withStyle(ChatFormatting.DARK_GRAY));
+                for (String text : texts) {
+                    lines.add(Component.literal(text).withStyle(appliedStyle));
+                }
+            }
+            case LINE_BY_LINE -> {
+                for (int i = 0; i < texts.length; i++) {
+                    lines.add(i * 2 + 1, Component.literal(texts[i]).withStyle(appliedStyle));
+                }
+            }
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -195,8 +262,11 @@ public class TranslationKit {
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
         ClientTooltipEvent.ITEM.register((stack, lines, tooltipContext, flag) -> {
-            if (TranslationKit.getInstance().isTranslated() && stack.equals(TranslationKit.getInstance().getTranslatedStack()) &&
-                    TranslationKit.getInstance().getTranslatedResult() != null) {
+            TranslationKit.getInstance().setHoveredText(lines);
+
+            if (TranslationKit.getInstance().isTranslated() &&
+                    TranslationKit.getInstance().getTranslatedResult() != null &&
+                    TooltipUtl.getCombinedTooltipTexts(lines).equals(TranslationKit.getInstance().translatedText)) {
                 TranslationKit.getInstance().addResultToTooltip(lines);
             }
         });

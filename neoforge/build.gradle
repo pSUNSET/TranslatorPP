@@ -35,6 +35,13 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+    maven {
+        name = "Curse Maven"
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -42,10 +49,23 @@ dependencies {
 
     modImplementation "dev.architectury:architectury-neoforge:$architectury_api_version"
 
+    // Cloth Config
     modCompileOnlyApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
-    modCompileOnlyApi "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    // JEI, REI, EMI?
+//    modCompileOnlyApi "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
+//    modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+
+    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
+//    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+
+    // FTB Quests
+    modImplementation "curse.maven:ftb-quests-forge-289412:6661413"
+    modImplementation "curse.maven:ftb-library-forge-404465:6711324"
+    modImplementation "curse.maven:ftb-teams-forge-404468:6119437"
+
+    // Jade
+    modImplementation "curse.maven:jade-324717:6667790"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
