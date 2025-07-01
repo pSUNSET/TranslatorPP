@@ -1,4 +1,4 @@
 package net.psunset.translatorpp.compat.jei;
 
-public class JEICompat {
+public class TPPCompatJEI {
 }

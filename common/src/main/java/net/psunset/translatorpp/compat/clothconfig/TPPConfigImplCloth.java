@@ -22,7 +22,10 @@ import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class TPPConfigImplCloth implements TPPConfig {
     private static ConfigHolder<General> generalHolder;

@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.tool;
 
-import com.sun.java.accessibility.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

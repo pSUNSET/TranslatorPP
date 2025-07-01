@@ -23,7 +23,7 @@ public class CompatUtl {
 
     public static class Jade {
         public static boolean isLoaded() {
-            return Platform.isModLoaded("roughlyenoughitems");
+            return Platform.isModLoaded("jade");
         }
     }
 }

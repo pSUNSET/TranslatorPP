@@ -3,8 +3,10 @@ package net.psunset.translatorpp;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.psunset.translatorpp.compat.jade.TPPCompatJade;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
+import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.TranslationKit;
 import org.slf4j.Logger;
 
@@ -17,5 +19,6 @@ public final class TranslatorPP {
         TPPKeyMappings.init();
         TranslationKit.init();
         TPPConfig.init();
+        if (CompatUtl.Jade.isLoaded()) TPPCompatJade.init();
     }
 }
