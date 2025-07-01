@@ -60,12 +60,9 @@ dependencies {
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
 
     // FTB Quests
-    modImplementation "curse.maven:ftb-quests-forge-289412:6661413"
-    modImplementation "curse.maven:ftb-library-forge-404465:6711324"
-    modImplementation "curse.maven:ftb-teams-forge-404468:6119437"
 
     // Jade
-    modImplementation "curse.maven:jade-324717:6667790"
+    modImplementation "curse.maven:jade-324717:$jade_neoforge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

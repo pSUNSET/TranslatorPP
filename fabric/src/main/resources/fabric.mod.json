@@ -21,6 +21,9 @@
     ],
     "modmenu": [
       "${group}.${mod_id}.fabric.compat.modmenu.TPPModMenuIntegration"
+    ],
+    "jade": [
+      "${group}.${mod_id}.compat.jade.TPPCompatJade"
     ]
   },
   "mixins": [

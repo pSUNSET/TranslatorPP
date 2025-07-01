@@ -46,7 +46,7 @@ repositories {
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version+$minecraft_version"
 
     modImplementation "dev.architectury:architectury-fabric:$architectury_api_version"
 
@@ -64,12 +64,9 @@ dependencies {
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
 
     // FTB Quests
-//    modImplementation "curse.maven:ftb-quests-fabric-438496:6661412"
-//    modImplementation "curse.maven:ftb-library-fabric-438495:6711325"
-//    modImplementation "curse.maven:ftb-teams-fabric-438497:6119436"
 
     // Jade
-    modImplementation "curse.maven:jade-324717:6494189"
+    modImplementation "curse.maven:jade-324717:$jade_fabric_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
