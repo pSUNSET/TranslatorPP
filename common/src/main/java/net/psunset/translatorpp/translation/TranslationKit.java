@@ -231,10 +231,9 @@ public class TranslationKit {
             }
             case NAME_TOP -> {
                 lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
-
-                // 15 < ${max_length_of_lines} < 30
-                lines.add(Component.literal("-".repeat(Math.min(30, Math.max(15, Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt())))).withStyle(ChatFormatting.DARK_GRAY));
                 if (texts.length > 1) {
+                    // 15 < ${max_length_of_lines} < 30
+                    lines.add(Component.literal("-".repeat(Math.min(30, Math.max(15, Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt())))).withStyle(ChatFormatting.DARK_GRAY));
                     for (int i = 1; i < texts.length; i++) {
                         lines.add(Component.literal(texts[i]).withStyle(appliedStyle));
                     }
