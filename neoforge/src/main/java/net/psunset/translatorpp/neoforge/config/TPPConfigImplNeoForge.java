@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@EventBusSubscriber(modid = TranslatorPP.ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = TranslatorPP.ID)
 public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static final General GENERAL;

@@ -3,43 +3,76 @@ package net.psunset.translatorpp.compat.jade;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.psunset.translatorpp.tool.RLUtl;
+import net.psunset.translatorpp.tool.TooltipUtl;
 import net.psunset.translatorpp.translation.TranslationKit;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.IWailaClientRegistration;
+import snownee.jade.api.*;
+import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.impl.Tooltip;
+import snownee.jade.impl.ui.TextElementImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TPPCompatJade_18 {
-    public static void registerClient(IWailaClientRegistration registration) {
-        registration.addTooltipCollectedCallback((box, accessor) -> {
-            if (Minecraft.getInstance().screen == null) {
-                List<FormattedText> hoveredTexts = new ArrayList<>(1); // TODO: Remove initial capacity
+public class TPPJadeExtension {
 
-                outer:
-                for (Tooltip.Line line : ((snownee.jade.impl.Tooltip) box.getTooltip()).lines) {
-                    for (var element : line.sortedElements()) {
-                        if (element instanceof snownee.jade.impl.ui.TextElement textElement) {
-                            hoveredTexts.add(textElement.text);
-                            break outer; // TODO: Make it continuously collects texts
-                        }
-                    }
-                }
-                setHoveredText(TranslationKit.getInstance(), hoveredTexts);
+    public static final IBlockComponentProvider BLOCK = new Block();
+    public static final ResourceLocation BLOCK_LOC = RLUtl.of("block_translation");
+    public static final IEntityComponentProvider ENTITY = new Entity();
+    public static final ResourceLocation ENTITY_LOC = RLUtl.of("entity_translation");
 
-                if (TranslationKit.getInstance().isTranslated() &&
-                        TranslationKit.getInstance().getTranslatedResult() != null &&
-                        getCombinedTooltipTexts(hoveredTexts).equals(TranslationKit.getInstance().getTranslatedText())) {
-                    addResultToTooltip(TranslationKit.getInstance(), box.getTooltip());
-                }
-            }
-        });
+    public static final class Block implements IBlockComponentProvider {
+
+        @Override
+        public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+            tooltipCallback((Tooltip) tooltip);
+        }
+
+        @Override
+        public ResourceLocation getUid() {
+            return BLOCK_LOC;
+        }
     }
 
-    public static void addResultToTooltip(TranslationKit kit, ITooltip tooltip) {
+    public static final class Entity implements IEntityComponentProvider {
+
+        @Override
+        public void appendTooltip(ITooltip tooltip, EntityAccessor accessor, IPluginConfig config) {
+            tooltipCallback((Tooltip) tooltip);
+        }
+
+        @Override
+        public ResourceLocation getUid() {
+            return ENTITY_LOC;
+        }
+    }
+
+    public static void tooltipCallback(Tooltip tooltip) {
+        if (Minecraft.getInstance().screen == null) {
+            List<Component> hoveredTexts = new ArrayList<>(1); // TODO: Remove initial capacity
+
+            outer:
+            for (var line : tooltip.lines) {
+                for (var element : line.elements()) {
+                    if (element instanceof TextElementImpl textElement) {
+                        hoveredTexts.add(textElement.getNarration());
+                        break outer; // TODO: Make it continuously collects texts
+                    }
+                }
+            }
+            TranslationKit.getInstance().setHoveredText(hoveredTexts);
+
+            if (TranslationKit.getInstance().isTranslated() &&
+                    TranslationKit.getInstance().getTranslatedResult() != null &&
+                    TooltipUtl.getCombinedTooltipTexts(hoveredTexts).equals(TranslationKit.getInstance().getTranslatedText())) {
+                addResultToTooltip(TranslationKit.getInstance(), tooltip);
+            }
+        }
+    }
+
+    public static void addResultToTooltip(TranslationKit kit, Tooltip tooltip) {
         Style appliedStyle = Style.EMPTY;
 
         switch (kit.getTranslatedResult().substring(kit.getTranslatedResult().length() - 3)) {
@@ -80,21 +113,5 @@ public class TPPCompatJade_18 {
 //                }
 //            }
 //        }
-    }
-
-    public static void setHoveredText(TranslationKit kit, List<FormattedText> tooltip) {
-        if (tooltip.isEmpty()) {
-            kit.setHoveredText((String) null);
-            return;
-        }
-        kit.setHoveredText(getCombinedTooltipTexts(tooltip));
-    }
-
-    public static List<String> getTooltipTexts(List<FormattedText> tooltip) {
-        return tooltip.stream().map(FormattedText::getString).toList();
-    }
-
-    public static String getCombinedTooltipTexts(List<FormattedText> tooltip) {
-        return String.join(TranslationKit.COMPONENT_SEP, getTooltipTexts(tooltip));
     }
 }

@@ -7,12 +7,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -155,11 +157,11 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
     private void onDisconnect() {
         boolean flag = this.minecraft.isLocalServer();
         ServerData serverdata = this.minecraft.getCurrentServer();
-        this.minecraft.level.disconnect();
+        this.minecraft.level.disconnect(ClientLevel.DEFAULT_QUIT_MESSAGE);
         if (flag) {
-            this.minecraft.disconnect(new GenericMessageScreen(ConfigurationScreen.SAVING_LEVEL));
+            this.minecraft.disconnectWithSavingScreen();
         } else {
-            this.minecraft.disconnect();
+            this.minecraft.disconnectWithProgressScreen();
         }
 
         TitleScreen titlescreen = new TitleScreen();
@@ -174,26 +176,14 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
 
 
     private static final class TooltipConfirmScreen extends ConfirmScreen {
-        boolean seenYes = false;
-
         private TooltipConfirmScreen(BooleanConsumer callback, Component title, Component message, Component yesButton, Component noButton) {
             super(callback, title, message, yesButton, noButton);
         }
 
         @Override
-        protected void init() {
-            seenYes = false;
-            super.init();
-        }
-
-        @Override
-        protected void addExitButton(Button button) {
-            if (seenYes) {
-                button.setTooltip(Tooltip.create(ConfigurationScreen.RESTART_NO_TOOLTIP));
-            } else {
-                seenYes = true;
-            }
-            super.addExitButton(button);
+        protected void addButtons(LinearLayout layout) {
+            super.addButtons(layout);
+            this.noButton.setTooltip(Tooltip.create(ConfigurationScreen.RESTART_NO_TOOLTIP));
         }
     }
 }

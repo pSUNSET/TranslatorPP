@@ -4,8 +4,9 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Block;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -30,6 +31,8 @@ public class TPPCompatJade implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         IWailaPlugin.super.registerClient(registration);
-        TPPCompatJade_18.registerClient(registration);
+
+        registration.registerBlockComponent(TPPJadeExtension.BLOCK, Block.class);
+        registration.registerEntityComponent(TPPJadeExtension.ENTITY, Entity.class);
     }
 }
