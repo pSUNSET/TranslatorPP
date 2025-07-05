@@ -9,6 +9,10 @@ architectury {
 }
 
 allprojects {
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
+
     group = maven_group
     version = "${mod_version}+${minecraft_version}"
 
@@ -41,11 +45,13 @@ allprojects {
 
 subprojects {
     apply plugin: 'dev.architectury.loom'
-    apply plugin: 'architectury-plugin'
-    apply plugin: 'maven-publish'
 
     base {
         archivesName = "$mod_id-$project.name"
+    }
+
+    loom {
+        silentMojangMappingsLicense()
     }
 
     repositories {
