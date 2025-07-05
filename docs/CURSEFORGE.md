@@ -4,40 +4,40 @@ A Minecraft mod for swift, light, and convenient auto translation.
 
 ## Important Notes
 
-*   **This mod is client-sided only.** It performs translations directly within your game client.
+* This mod is **client-sided** only.
+* The process of translation requires the **internet**.
+* Only **Fabric** and **NeoForge** loaders are supported.
 
-## Compatibility
+## Dependencies
 
-This mod is compatible with both **Fabric** and **NeoForge** mod loaders.
-
-## Requirements
-
-### Fabric
-
-*   **[Architectury API](https://www.curseforge.com/minecraft/mc-mods/architectury-api)** (Required)
-*   **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Required for settings)
-*   **[Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu)** (Optional)
-
-### NeoForge
-
-*   **[Architectury API](https://www.curseforge.com/minecraft/mc-mods/architectury-api)** (Required)
-*   **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Optional)
+* **[Architectury API](https://www.curseforge.com/minecraft/mc-mods/architectury-api)** (Required)
+* **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Required in Fabric, Compatible in NeoForge)
+* **[Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu)** (Compatible in Fabric)
+* **[Just Enough Items (JEI)](https://www.curseforge.com/minecraft/mc-mods/jei)** (Compatible)
+* **[Roughly Enough Items (REI)](https://www.curseforge.com/minecraft/mc-mods/roughly-enough-items)** (Compatible)
+* **[EMI](https://www.curseforge.com/minecraft/mc-mods/emi)** (Compatible)
+* **[Jade 🔍](https://www.curseforge.com/minecraft/mc-mods/jade)** (Compatible)
 
 ## Usage
 
 ### Translating Items
 
-1.  Hover your mouse cursor over the item you want to translate in your inventory or any container.
-2.  Press the translate keybind (default: **T**).
-3.  The translated name will appear.
+1. Hover your mouse cursor over an item in your inventory, any container, or the JEI-like recipe sidebar.
+2. Press the translate keybind (default: **T**).
+3. The translated result will appear.
+
+### Translating with Jade 🔍
+
+1. Look at a block or an entity with Jade showing its information.
+2. Press the translate keybind (default: **T**).
+3. The translated result will appear.
 
 ### Configuration
 
-You can configure the mod's settings, such as the target language for translation.
-
-1. Press the settings keybind (default: **O**).
-2. Through the Mod Menu mod in Fabric or standard mod list in NeoForge.
+* Press the settings keybind (default: **O**).
+* Through the Mod Menu mod in Fabric or standard mod list in NeoForge.
 
 ## Development
 
-You can find the source code and contribute to the project on [Translator++ GitHub Repository](https://github.com/pSUNSET/TranslatorPP).
+You can find the source code and contribute to the project
+on [Translator++ GitHub Repository](https://github.com/pSUNSET/TranslatorPP).
