@@ -10,8 +10,8 @@ import net.psunset.translatorpp.tool.TooltipUtl;
 import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.ui.TextElement;
 import snownee.jade.impl.Tooltip;
-import snownee.jade.impl.ui.TextElementImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class TPPJadeExtension {
             outer:
             for (var line : tooltip.lines) {
                 for (var element : line.elements()) {
-                    if (element instanceof TextElementImpl textElement) {
+                    if (element instanceof TextElement textElement) {
                         hoveredTexts.add(textElement.getNarration());
                         break outer; // TODO: Make it continuously collects texts
                     }

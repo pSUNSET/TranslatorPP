@@ -25,7 +25,7 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:$neoforge_version"
 
-    modImplementation "dev.architectury:architectury-neoforge:$architectury_api_version"
+    modApi "dev.architectury:architectury-neoforge:$architectury_api_version"
 
     // Cloth Config
     modCompileOnlyApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
@@ -40,7 +40,7 @@ dependencies {
     // FTB Quests
 
     // Jade
-    modImplementation "curse.maven:jade-324717:$jade_neoforge_version"
+    modApi "curse.maven:jade-324717:$jade_neoforge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

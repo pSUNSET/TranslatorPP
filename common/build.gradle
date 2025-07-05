@@ -6,9 +6,9 @@ dependencies {
     // We depend on Fabric Loader here to use the Fabric @Environment annotations,
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
-    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    modCompileOnlyApi "net.fabricmc:fabric-loader:$fabric_loader_version"
 
-    modImplementation "dev.architectury:architectury:$architectury_api_version"
+    modCompileOnlyApi "dev.architectury:architectury:$architectury_api_version"
 
     modCompileOnlyApi "me.shedaniel.cloth:cloth-config:$cloth_config_version"
 
@@ -17,5 +17,5 @@ dependencies {
 //    modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api:$rei_version"
 
     // Jade (using fabric)
-    modCompileOnly "curse.maven:jade-324717:$jade_fabric_version"
+    modCompileOnlyApi "curse.maven:jade-324717:$jade_fabric_version"
 }
