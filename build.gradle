@@ -5,7 +5,7 @@ plugins {
 }
 
 architectury {
-    minecraft = project.minecraft_version
+    minecraft = "$minecraft_version"
 }
 
 allprojects {
