@@ -27,7 +27,7 @@ public class OpenAIClientTool implements TranslationTool {
             I'm playing modded Minecraft.
             But there are some words I didn't understand.
             So, please translate the following words, "%s", from '%s' language to '%s' language.
-            If you find there are some <#> patterns in the sentences, they are simply to separate components.
+            If you find there are some %s patterns in the sentences, they are simply to separate components.
             Do *NOT* break the structures of them in the sentences.
             Also, because those words are from modded Minecraft, you can properly adjust your answer.
             Finally, the response you return *MUST* only contain the translated result. No other description.""";
@@ -83,7 +83,7 @@ public class OpenAIClientTool implements TranslationTool {
             throw new IllegalStateException("OpenAIClientTool is not configured. API key, API provider, and model must be set.");
         }
 
-        String formattedPrompt = PROMPT.formatted(q, sl, tl);
+        String formattedPrompt = PROMPT.formatted(q, sl, tl, TranslationKit.COMPONENT_SEP);
 
         // Use a Map to build the request, then serialize with Gson
         Map<String, Object> requestPayload = Maps.newLinkedHashMap(); // Use LinkedHashMap to preserve insertion order if it matters
