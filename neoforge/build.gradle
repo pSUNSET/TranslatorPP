@@ -47,15 +47,15 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', version
+    inputs.property 'version', "$version"
 
     filesMatching('META-INF/neoforge.mods.toml') {
         expand([
-                mod_id: mod_id,
-                version: version,
-                neoforge_version_range: neoforge_version_range,
-                minecraft_version_neoforge_range: minecraft_version_neoforge_range,
-                architectury_api_version_neoforge_range: architectury_api_version_neoforge_range,
+                mod_id: "$mod_id",
+                version: "$version",
+                neoforge_version_range: "$neoforge_version_range",
+                minecraft_version_neoforge_range: "$minecraft_version_neoforge_range",
+                architectury_api_version_neoforge_range: "$architectury_api_version_neoforge_range",
         ])
     }
 }
@@ -63,7 +63,7 @@ processResources {
 jar {
     manifest {
         attributes([
-                'Specification-Title'     : mod_id,
+                'Specification-Title'     : "$mod_id",
                 'Specification-Vendor'    : "Project SUNSET",
                 'Specification-Version'   : "1",
                 'Implementation-Title'    : this.project.name,

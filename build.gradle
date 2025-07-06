@@ -5,7 +5,7 @@ plugins {
 }
 
 architectury {
-    minecraft = project.minecraft_version
+    minecraft = "$minecraft_version"
 }
 
 allprojects {
@@ -13,7 +13,7 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'java'
 
-    group = maven_group
+    group = "$maven_group"
     version = "${mod_version}+${minecraft_version}"
 
     repositories {
@@ -47,7 +47,7 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
 
     base {
-        archivesName = "$mod_id-$project.name"
+        archivesName = "$mod_id-$name"
     }
 
     loom {

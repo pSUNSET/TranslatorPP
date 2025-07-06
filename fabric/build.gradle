@@ -51,18 +51,18 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', project.version
-    inputs.property 'group', project.group
+    inputs.property 'version', "$version"
+    inputs.property 'group', "$group"
 
     filesMatching('fabric.mod.json') {
         expand(
-                mod_id: mod_id,
-                version: project.version,
-                group: project.group,
-                minecraft_version_fabric_range: minecraft_version_fabric_range,
-                architectury_api_version_fabric_range: architectury_api_version_fabric_range,
-                fabric_loader_version_range: fabric_loader_version_range,
-                fabric_api_version_range: fabric_api_version_range
+                mod_id: "$mod_id",
+                version: "$version",
+                group: "$group",
+                minecraft_version_fabric_range: "$minecraft_version_fabric_range",
+                architectury_api_version_fabric_range: "$architectury_api_version_fabric_range",
+                fabric_loader_version_range: "$fabric_loader_version_range",
+                fabric_api_version_range: "$fabric_api_version_range"
         )
     }
 }
@@ -70,7 +70,7 @@ processResources {
 jar {
     manifest {
         attributes([
-                'Specification-Title'     : mod_id,
+                'Specification-Title'     : "$mod_id",
                 'Specification-Vendor'    : "Project SUNSET",
                 'Specification-Version'   : "1",
                 'Implementation-Title'    : this.project.name,
