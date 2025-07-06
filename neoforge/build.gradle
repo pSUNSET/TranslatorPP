@@ -47,12 +47,12 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', "$version"
+    inputs.property 'version', "$mod_version"
 
     filesMatching('META-INF/neoforge.mods.toml') {
         expand([
                 mod_id: "$mod_id",
-                version: "$version",
+                version: "$mod_version",
                 neoforge_version_range: "$neoforge_version_range",
                 minecraft_version_neoforge_range: "$minecraft_version_neoforge_range",
                 architectury_api_version_neoforge_range: "$architectury_api_version_neoforge_range",
