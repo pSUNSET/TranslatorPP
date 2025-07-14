@@ -19,6 +19,8 @@
   "config.translatorpp.openai_apikey.tooltip": "Your OpenAI API key for authentication.",
   "config.translatorpp.openai_baseurl": "Model Provider (Base URL)",
   "config.translatorpp.openai_baseurl.tooltip": "The API to receive requests from OpenAI client. (API which provides AI models)",
+  "config.translatorpp.openai_custom_baseurl": "Custom Model Provider (Optional)",
+  "config.translatorpp.openai_custom_baseurl.tooltip": "If your API is exclusive, set Model Provider to 'Custom', then provide URL here.",
   "key.categories.translatorpp.general": "Translator++",
   "key.translatorpp.translate": "Translate",
   "key.translatorpp.config": "Open Translation Options",

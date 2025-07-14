@@ -146,6 +146,12 @@ public class TPPConfigClothScreenNeoForge {
                     .setSaveConsumer(config.openaiBaseUrl::set)
                     .build());
 
+            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), config.openaiCustomBaseUrl.get())
+                    .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
+                    .setDefaultValue("https://custom.api.url/")
+                    .setSaveConsumer(config.openaiCustomBaseUrl::set)
+                    .build());
+
             return builder.build();
         }
     }

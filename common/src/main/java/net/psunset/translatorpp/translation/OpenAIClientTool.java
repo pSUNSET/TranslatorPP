@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -46,7 +47,7 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     private String apiKey;
-    private Api api;
+    private String baseUrl;
     private String model;
     private final Gson gson;
 
@@ -54,22 +55,20 @@ public class OpenAIClientTool implements TranslationTool {
         this.gson = new GsonBuilder().create();
     }
 
-    protected void setApiKey(String apiKey) {
+    private void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
 
-    protected void setApi(Api api) {
-        this.api = api;
-        if (api != null && (this.model == null || this.model.isEmpty())) {
-            this.model = api.defaultModel;
-        }
+    private void setBaseUrl(String baseUrl) {
+        if (!baseUrl.endsWith("/")) baseUrl = baseUrl + "/";
+        this.baseUrl = baseUrl;
     }
 
-    public Api getApi() {
-        return this.api;
+    public String getBaseUrl() {
+        return this.baseUrl;
     }
 
-    protected void setModel(String model) {
+    private void setModel(String model) {
         this.model = model;
     }
 
@@ -77,9 +76,15 @@ public class OpenAIClientTool implements TranslationTool {
         return this.model;
     }
 
+    protected void setApi(String apiKey, Api api, String customApiUrl, String model) {
+        this.setApiKey(apiKey);
+        this.setBaseUrl(api.baseUrl != null ? api.baseUrl : customApiUrl);
+        this.setModel(model.isEmpty() ? api.defaultModel : model);
+    }
+
     @Override
     public String translate(String q, String sl, String tl) throws Exception {
-        if (!isPresent()) {
+        if (!this.isPresent()) {
             throw new IllegalStateException("OpenAIClientTool is not configured. API key, API provider, and model must be set.");
         }
 
@@ -101,7 +106,7 @@ public class OpenAIClientTool implements TranslationTool {
 
         HttpURLConnection con = null;
         try {
-            URL url = URI.create(this.api.baseUrl + "chat/completions").toURL();
+            URL url = URI.create(this.baseUrl + "chat/completions").toURL();
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Authorization", "Bearer " + this.apiKey);
@@ -165,22 +170,22 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     public boolean isPresent() {
-        return this.apiKey != null && !this.apiKey.isEmpty() &&
-                this.api != null && this.model != null && !this.model.isEmpty();
+        return this.apiKey != null && !this.apiKey.isBlank() &&
+                !this.baseUrl.isBlank() && !this.model.isEmpty();
     }
 
     /**
      * Returns the model list from online.
      */
     public Set<String> getModels() {
-        if (this.apiKey == null || this.apiKey.isEmpty() || this.api == null) {
+        if (this.apiKey == null || this.apiKey.isBlank() || this.baseUrl.isBlank()) {
             TranslatorPP.LOGGER.error("Error while getting online model list: API key or API provider not set.");
             return getModelListOffline();
         }
 
         HttpURLConnection con = null;
         try {
-            URL url = new URL(this.api.baseUrl + "models");
+            URL url = new URL(this.baseUrl + "models");
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization", "Bearer " + this.apiKey);
@@ -266,16 +271,18 @@ public class OpenAIClientTool implements TranslationTool {
         OpenAI("https://api.openai.com/v1/", "gpt-4o-mini"),
         Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
         Grok("https://api.x.ai/v1/", "grok-3"),
-        DeepSeek("https://api.deepseek.com/v1/", "deepseek-chat");
+        DeepSeek("https://api.deepseek.com/v1/", "deepseek-chat"),
+        Custom(null, "");
 
         public static final Map<String, Api> entries = Util.make(Maps.newHashMap(), map -> {
             Arrays.asList(values()).forEach(it -> map.put(it.name(), it));
         });
 
+        @Nullable
         public final String baseUrl;
         public final String defaultModel;
 
-        Api(String baseUrl, String defaultModel) {
+        Api(@Nullable String baseUrl, String defaultModel) {
             this.baseUrl = baseUrl;
             this.defaultModel = defaultModel;
         }
@@ -283,6 +290,7 @@ public class OpenAIClientTool implements TranslationTool {
 
     public static class ServiceException extends RuntimeException {
         public final int statusCode;
+
         public ServiceException(String message, int statusCode) {
             super(message);
             this.statusCode = statusCode;

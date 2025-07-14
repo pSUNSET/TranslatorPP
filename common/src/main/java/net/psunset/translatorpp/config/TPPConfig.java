@@ -13,6 +13,7 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
+import org.jetbrains.annotations.Nullable;
 
 public interface TPPConfig {
     TranslationMode getTranslationMode();
@@ -28,6 +29,8 @@ public interface TPPConfig {
     String getOpenaiApiKey();
 
     OpenAIClientTool.Api getOpenaiBaseUrl();
+
+    String getOpenaiCustomBaseUrl();
 
     @Environment(EnvType.CLIENT)
     public static void init() {
@@ -90,6 +93,11 @@ public interface TPPConfig {
         @Override
         public OpenAIClientTool.Api getOpenaiBaseUrl() {
             return null;
+        }
+
+        @Override
+        public String getOpenaiCustomBaseUrl() {
+            return "";
         }
 
         public static void init() {

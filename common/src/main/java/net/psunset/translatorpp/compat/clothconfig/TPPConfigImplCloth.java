@@ -69,6 +69,11 @@ public class TPPConfigImplCloth implements TPPConfig {
         return openai().openaiBaseUrl;
     }
 
+    @Override
+    public String getOpenaiCustomBaseUrl() {
+        return openai().openaiCustomBaseUrl;
+    }
+
     public static General general() {
         return generalHolder.getConfig();
     }
@@ -171,6 +176,7 @@ public class TPPConfigImplCloth implements TPPConfig {
     public static class OpenAI implements TPPClothConfigData {
         private String openaiApiKey = "";
         private OpenAIClientTool.Api openaiBaseUrl = OpenAIClientTool.Api.OpenAI;
+        private String openaiCustomBaseUrl = "";
 
         @Override
         public Screen createScreen(Screen parent) {
@@ -198,6 +204,12 @@ public class TPPConfigImplCloth implements TPPConfig {
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
                     .setDefaultValue(OpenAIClientTool.Api.OpenAI)
                     .setSaveConsumer(it -> openai().openaiBaseUrl = it)
+                    .build());
+
+            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), openai().openaiCustomBaseUrl)
+                    .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
+                    .setDefaultValue("https://custom.api.url/")
+                    .setSaveConsumer(it -> openai().openaiCustomBaseUrl = it)
                     .build());
 
             return builder.build();
