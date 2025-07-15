@@ -196,17 +196,15 @@ public class TranslationKit {
     }
 
     public void refreshOpenAIClientTool() {
-        refreshOpenAIClientTool(TPPConfig.getInstance().getOpenaiApiKey(),
-                TPPConfig.getInstance().getOpenaiBaseUrl(), TPPConfig.getInstance().getOpenaiModel());
+        refreshOpenAIClientTool(TPPConfig.getInstance().getOpenaiApiKey(), TPPConfig.getInstance().getOpenaiBaseUrl(),
+                TPPConfig.getInstance().getOpenaiCustomBaseUrl(), TPPConfig.getInstance().getOpenaiModel());
     }
 
-    public void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String model) {
+    public void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
         try {
             TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
                     apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
-            OpenAIClientTool.getInstance().setApiKey(apiKey);
-            OpenAIClientTool.getInstance().setApi(api);
-            OpenAIClientTool.getInstance().setModel(model.isBlank() ? api.defaultModel : model);
+            OpenAIClientTool.getInstance().setApi(apiKey, api, customApi, model);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
         }

@@ -85,6 +85,11 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         return OPENAI.openaiBaseUrl.get();
     }
 
+    @Override
+    public String getOpenaiCustomBaseUrl() {
+        return OPENAI.openaiCustomBaseUrl.get();
+    }
+
     public static class General {
 
         public final ModConfigSpec.EnumValue<TranslationMode> translationMode;
@@ -129,6 +134,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
         public final ModConfigSpec.ConfigValue<String> openaiApiKey;
         public final ModConfigSpec.ConfigValue<OpenAIClientTool.Api> openaiBaseUrl;
+        public final ModConfigSpec.ConfigValue<String> openaiCustomBaseUrl;
 
         private OpenAI(ModConfigSpec.Builder builder) {
             this.openaiApiKey = builder
@@ -138,6 +144,10 @@ public class TPPConfigImplNeoForge implements TPPConfig {
             this.openaiBaseUrl = builder
                     .translation("config.translatorpp.openai_baseurl")
                     .defineEnum("openai_baseurl", OpenAIClientTool.Api.OpenAI, EnumGetMethod.NAME_IGNORECASE);
+
+            this.openaiCustomBaseUrl = builder
+                    .translation("config.translatorpp.openai_custom_baseurl")
+                    .define("openai_custom_baseurl", "https://custom.api.url/");
         }
     }
 
