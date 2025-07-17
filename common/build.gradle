@@ -1,5 +1,5 @@
 architectury {
-    common enabled_platforms.split(',')
+    common('fabric', 'neoforge')
 }
 
 dependencies {
