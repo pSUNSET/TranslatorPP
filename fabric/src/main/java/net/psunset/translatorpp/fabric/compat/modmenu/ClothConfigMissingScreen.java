@@ -46,9 +46,9 @@ public class ClothConfigMissingScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         super.render(guiGraphics, i, j, f);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 16777215);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, -1);
         for (int k = 0; k < MISSING_DESC_LINE; k++) {
-            guiGraphics.drawCenteredString(this.font, Component.translatable(MISSING_DESC_PREFIX + k), this.width / 2, this.height / 4 + 60 + k * 12, 16777215);
+            guiGraphics.drawCenteredString(this.font, Component.translatable(MISSING_DESC_PREFIX + k), this.width / 2, this.height / 4 + 60 + k * 12, -1);
         }
     }
 }
