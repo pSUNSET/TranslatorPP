@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "translatorpp",
   "version": "${version}",
   "name": "Translator++",
   "description": "A mod for swift, light and convenient auto translation.",

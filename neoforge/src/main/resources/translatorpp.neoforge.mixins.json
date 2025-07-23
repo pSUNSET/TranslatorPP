@@ -7,7 +7,6 @@
     "ConfigurationSectionScreenMixin"
   ],
   "mixins": [
-    "PlatformMixin",
     "TPPConfigMixin"
   ],
   "injectors": {

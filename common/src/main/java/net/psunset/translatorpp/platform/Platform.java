@@ -1,15 +1,18 @@
 package net.psunset.translatorpp.platform;
 
 public class Platform {
+
+    public static TPPPlatform INSTANCE;
+
     public static boolean isNeoForge() {
-        throw new UnsupportedOperationException("This method is not implemented for the current platform.");
+        return INSTANCE.isNeoForge();
     }
 
     public static boolean isFabric() {
-        throw new UnsupportedOperationException("This method is not implemented for the current platform.");
+        return INSTANCE.isFabric();
     }
 
     public static boolean isModLoaded(String modId) {
-        throw new UnsupportedOperationException("This method is not implemented for the current platform.");
+        return INSTANCE.isModLoaded(modId);
     }
 }
