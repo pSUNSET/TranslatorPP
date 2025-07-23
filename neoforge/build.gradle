@@ -26,7 +26,7 @@ dependencies {
     neoForge "net.neoforged:neoforge:$neoforge_version"
 
     // Cloth Config
-    modCompileOnlyApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
+    modApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
     // JEI, REI, EMI?
 //    modCompileOnlyApi "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
