@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TPPConfig.class)
 public interface TPPConfigMixin {
 
-    @Inject(method = "init()V", at = @At(value = "INVOKE", target = "Ldev/architectury/platform/Platform;isNeoForge()Z", shift = At.Shift.AFTER))
+    @Inject(method = "init()V", at = @At(value = "INVOKE", target = "Lnet/psunset/translatorpp/platform/Platform;isNeoForge()Z", shift = At.Shift.AFTER))
     private static void onInit(CallbackInfo ci) {
         TPPConfig.Default.INSTANCE = new TPPConfigImplNeoForge();
     }

@@ -1,11 +1,11 @@
 package net.psunset.translatorpp.compat.jade;
 
-import dev.architectury.event.events.client.ClientTickEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
+import net.psunset.translatorpp.event.TPPEvents;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.IWailaClientRegistration;
@@ -17,7 +17,7 @@ public class TPPCompatJade implements IWailaPlugin {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        ClientTickEvent.CLIENT_POST.register(client -> {
+        TPPEvents.CLIENT_TICK_POST.register(client -> {
             if (Minecraft.getInstance().screen == null) {
                 if (TPPKeyMappings.TRANSLATE_KEY.isDown()) {
                     TranslationKit.getInstance().start(client);

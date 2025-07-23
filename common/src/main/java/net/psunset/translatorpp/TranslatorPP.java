@@ -17,7 +17,6 @@ public final class TranslatorPP {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        TPPKeyMappings.init();
         TranslationKit.init();
         TPPConfig.init();
         if (CompatUtl.Jade.isLoaded()) {

@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.translation;
 
-import dev.architectury.event.events.client.ClientTooltipEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -11,6 +10,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
 import org.jetbrains.annotations.Nullable;
@@ -258,7 +259,7 @@ public class TranslationKit {
         INSTANCE = new TranslationKit();
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
-        ClientTooltipEvent.ITEM.register((stack, lines, tooltipContext, flag) -> {
+        TPPEvents.ITEM_TOOLTIP.register((stack, tooltipContext, flag, lines) -> {
             TranslationKit.getInstance().setHoveredText(lines);
 
             if (TranslationKit.getInstance().isTranslated() &&
@@ -266,6 +267,22 @@ public class TranslationKit {
                     TooltipUtl.getCombinedTooltipTexts(lines).equals(TranslationKit.getInstance().translatedText)) {
                 TranslationKit.getInstance().addResultToTooltip(lines);
             }
+        });
+
+        TPPEvents.SCREEN_KEY_PRESSED_POST.register((screen, key, scancode, modifiers) -> {
+            if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
+                TranslationKit.getInstance().start(Minecraft.getInstance());
+            }
+        });
+
+        TPPEvents.SCREEN_KEY_RELEASED_POST.register(((screen, key, scancode, modifiers) -> {
+            if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
+                TranslationKit.getInstance().stop();
+            }
+        }));
+
+        TPPEvents.SCREEN_REMOVED.register(screen -> {
+            TranslationKit.getInstance().stop();
         });
     }
 }
