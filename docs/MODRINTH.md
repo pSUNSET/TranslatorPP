@@ -7,16 +7,17 @@ A Minecraft mod for swift, light, and convenient auto translation.
 * This mod is **client-sided** only.
 * The process of translation requires the **internet**.
 * Only **Fabric** and **NeoForge** loaders are supported.
+* Starting with `v2.0.0` (inclusive), this mod no longer requires the **Architectury API**.
 
 ## Dependencies
 
-* **[Architectury API](https://modrinth.com/mod/architectury-api)** (Required)
 * **[Cloth Config API](https://modrinth.com/mod/cloth-config)** (Required in Fabric, Compatible in NeoForge)
 * **[Mod Menu](https://modrinth.com/mod/modmenu)** (Compatible in Fabric)
 * **[Just Enough Items (JEI)](https://modrinth.com/mod/jei)** (Compatible)
 * **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei)** (Compatible)
 * **[EMI](https://modrinth.com/mod/emi)** (Compatible)
 * **[Jade 🔍](https://modrinth.com/mod/jade)** (Compatible)
+* ~~**[Architectury API](https://modrinth.com/mod/architectury-api)**~~ (Required by `v1.x.x` only)
 
 ## Usage
 
