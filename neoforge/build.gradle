@@ -25,8 +25,6 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:$neoforge_version"
 
-    modApi "dev.architectury:architectury-neoforge:$architectury_api_version"
-
     // Cloth Config
     modApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
@@ -51,11 +49,9 @@ processResources {
 
     filesMatching('META-INF/neoforge.mods.toml') {
         expand([
-                mod_id                                 : "$mod_id",
-                version                                : "$mod_version",
-                neoforge_version_range                 : "$neoforge_version_range",
-                minecraft_version_neoforge_range       : "$minecraft_version_neoforge_range",
-                architectury_api_version_neoforge_range: "$architectury_api_version_neoforge_range",
+                version                         : "$mod_version",
+                neoforge_version_range          : "$neoforge_version_range",
+                minecraft_version_neoforge_range: "$minecraft_version_neoforge_range",
         ])
     }
 }

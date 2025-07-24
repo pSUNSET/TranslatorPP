@@ -9,39 +9,32 @@ credits = "Everyone who contributed to this mod"
 license = "MIT"
 
 [[mods]]
-modId = "${mod_id}"
+modId = "translatorpp"
 version = "${version}"
 displayName = "Translator++"
 description = '''
 A mod for swift, light and convenient auto translation.
 '''
 
-[[dependencies.${mod_id}]]
+[[dependencies.translatorpp]]
 modId = "neoforge"
 type = "required"
 versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "CLIENT"
 
-[[dependencies.${mod_id}]]
+[[dependencies.translatorpp]]
 modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version_neoforge_range}"
 ordering = "NONE"
 side = "CLIENT"
 
-[[dependencies.${mod_id}]]
-modId = "architectury"
-type = "required"
-versionRange = "${architectury_api_version_neoforge_range}"
-ordering = "AFTER"
-side = "CLIENT"
+[[mixins]]
+config = "translatorpp.mixins.json"
 
 [[mixins]]
-config = "${mod_id}.mixins.json"
-
-[[mixins]]
-config = "${mod_id}.neoforge.mixins.json"
+config = "translatorpp.neoforge.mixins.json"
 
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"

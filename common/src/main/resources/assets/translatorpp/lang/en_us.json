@@ -21,6 +21,8 @@
   "config.translatorpp.openai_baseurl.tooltip": "The API to receive requests from OpenAI client. (API which provides AI models)",
   "config.translatorpp.openai_custom_baseurl": "Custom Base URL (Optional)",
   "config.translatorpp.openai_custom_baseurl.tooltip": "If your API is exclusive, set Model Provider to 'Custom', then provide URL here.",
+  "config.jade.plugin_translatorpp.block_translation": "Block Translation",
+  "config.jade.plugin_translatorpp.entity_translation": "Entity Translation",
   "key.categories.translatorpp.general": "Translator++",
   "key.translatorpp.translate": "Translate",
   "key.translatorpp.config": "Open Translation Options",

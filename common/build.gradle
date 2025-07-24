@@ -3,12 +3,8 @@ architectury {
 }
 
 dependencies {
-    // We depend on Fabric Loader here to use the Fabric @Environment annotations,
-    // which get remapped to the correct annotations on each platform.
-    // Do NOT use other classes from Fabric Loader.
+    // For using @Environment and EnvType
     modCompileOnlyApi "net.fabricmc:fabric-loader:$fabric_loader_version"
-
-    modApi "dev.architectury:architectury:$architectury_api_version"
 
     modCompileOnlyApi "me.shedaniel.cloth:cloth-config:$cloth_config_version"
 
