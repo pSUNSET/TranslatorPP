@@ -8,10 +8,12 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
 
 @FunctionalInterface
-public interface ItemTooltipCallback extends TPPEvent.Callback {
+public interface ItemTooltipCallbacks extends Event.Callback {
     void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines);
 
-    static ItemTooltipCallback merge(Iterable<ItemTooltipCallback> callbacks) {
+    Event<ItemTooltipCallbacks> EVENT = new Event<>(ItemTooltipCallbacks.class, ItemTooltipCallbacks::merge);
+
+    private static ItemTooltipCallbacks merge(ItemTooltipCallbacks[] callbacks) {
         return (stack, tooltipContext, tooltipType, lines) -> {
             for (var callback : callbacks) {
                 callback.getTooltip(stack, tooltipContext, tooltipType, lines);

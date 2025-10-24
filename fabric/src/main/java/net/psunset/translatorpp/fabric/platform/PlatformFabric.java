@@ -3,10 +3,10 @@ package net.psunset.translatorpp.fabric.platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.psunset.translatorpp.platform.IPlatform;
 import net.psunset.translatorpp.platform.Platform;
-import net.psunset.translatorpp.platform.TPPPlatform;
 
-public class TPPPlatformFabric implements TPPPlatform {
+public class PlatformFabric implements IPlatform {
     @Override
     public boolean isNeoForge() {
         return false;
@@ -24,6 +24,6 @@ public class TPPPlatformFabric implements TPPPlatform {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        Platform.INSTANCE = new TPPPlatformFabric();
+        Platform.INSTANCE = new PlatformFabric();
     }
 }

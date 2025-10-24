@@ -26,11 +26,11 @@ dependencies {
     neoForge "net.neoforged:neoforge:$neoforge_version"
 
     // Cloth Config
-    modApi "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
+    modImplementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
     // JEI, REI, EMI?
-//    modCompileOnlyApi "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
-//    modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+//    modCompileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
+//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
 
     modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
@@ -38,7 +38,7 @@ dependencies {
     // FTB Quests
 
     // Jade
-    modApi "curse.maven:jade-324717:$jade_neoforge_version"
+    modImplementation "curse.maven:jade-324717:$jade_neoforge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
@@ -60,11 +60,11 @@ jar {
     manifest {
         attributes([
                 'Specification-Title'     : "$mod_id",
-                'Specification-Vendor'    : "Project SUNSET",
+                'Specification-Vendor'    : "Project-SUNSET",
                 'Specification-Version'   : "1",
-                'Implementation-Title'    : this.project.name,
+                'Implementation-Title'    : "$archiveBaseName",
                 'Implementation-Version'  : this.project.jar.archiveVersion,
-                'Implementation-Vendor'   : "Project SUNSET",
+                'Implementation-Vendor'   : "Project-SUNSET",
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

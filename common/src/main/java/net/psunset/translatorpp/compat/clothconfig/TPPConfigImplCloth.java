@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.config.TPPConfig;
-import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
@@ -91,7 +91,7 @@ public class TPPConfigImplCloth implements TPPConfig {
         generalHolder = AutoConfig.register(General.class, Toml4jConfigSerializer::new);
         openaiHolder = AutoConfig.register(OpenAI.class, Toml4jConfigSerializer::new);
 
-        TPPEvents.CLIENT_TICK_POST.register(client -> {
+        ClientTickCallbacks.POST.register(client -> {
             if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
                 client.setScreen(new TPPConfigClothScreen(client.screen));
             }

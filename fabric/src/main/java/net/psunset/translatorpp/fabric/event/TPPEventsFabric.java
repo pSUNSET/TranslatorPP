@@ -6,22 +6,24 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.event.ClientTickCallbacks;
+import net.psunset.translatorpp.event.ItemTooltipCallbacks;
+import net.psunset.translatorpp.event.ScreenCallbacks;
 
 public class TPPEventsFabric {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        ClientTickEvents.END_CLIENT_TICK.register(TPPEvents.CLIENT_TICK_POST.merge()::afterTick);
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickCallbacks.POST.merge()::afterTick);
 
-        ItemTooltipCallback.EVENT.register(TPPEvents.ITEM_TOOLTIP.merge()::getTooltip);
+        ItemTooltipCallback.EVENT.register(ItemTooltipCallbacks.EVENT.merge()::getTooltip);
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            ScreenKeyboardEvents.afterKeyPress(screen).register(TPPEvents.SCREEN_KEY_PRESSED_POST.merge()::afterKeyPress);
+            ScreenKeyboardEvents.afterKeyPress(screen).register(ScreenCallbacks.KEY_PRESSED_POST.merge()::afterKeyPress);
 
-            ScreenKeyboardEvents.afterKeyRelease(screen).register(TPPEvents.SCREEN_KEY_RELEASED_POST.merge()::afterKeyRelease);
+            ScreenKeyboardEvents.afterKeyRelease(screen).register(ScreenCallbacks.KEY_RELEASED_POST.merge()::afterKeyRelease);
 
-            ScreenEvents.remove(screen).register(TPPEvents.SCREEN_REMOVED.merge()::onRemove);
+            ScreenEvents.remove(screen).register(ScreenCallbacks.REMOVED.merge()::onRemove);
         });
     }
 }

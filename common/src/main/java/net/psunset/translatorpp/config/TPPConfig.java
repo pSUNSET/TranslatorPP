@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
-import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.platform.Platform;
 import net.psunset.translatorpp.tool.ClientUtl;
@@ -13,7 +13,6 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
-import org.jetbrains.annotations.Nullable;
 
 public interface TPPConfig {
     TranslationMode getTranslationMode();
@@ -101,7 +100,7 @@ public interface TPPConfig {
         }
 
         public static void init() {
-            TPPEvents.CLIENT_TICK_POST.register(client -> {
+            ClientTickCallbacks.POST.register(client -> {
                 while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
                      ClientUtl.message(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
                 }

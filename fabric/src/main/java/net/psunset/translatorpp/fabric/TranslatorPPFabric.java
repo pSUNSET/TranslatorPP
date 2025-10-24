@@ -4,12 +4,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.fabric.event.TPPEventsFabric;
 import net.psunset.translatorpp.fabric.keybind.TPPKeyMappingsFabric;
-import net.psunset.translatorpp.fabric.platform.TPPPlatformFabric;
+import net.psunset.translatorpp.fabric.platform.PlatformFabric;
 
 public final class TranslatorPPFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        TPPPlatformFabric.init();
+        PlatformFabric.init();
 
         /* Earlier */
 

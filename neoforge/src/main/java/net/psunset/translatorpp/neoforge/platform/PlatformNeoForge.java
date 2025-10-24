@@ -3,10 +3,10 @@ package net.psunset.translatorpp.neoforge.platform;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModList;
-import net.psunset.translatorpp.platform.TPPPlatform;
+import net.psunset.translatorpp.platform.IPlatform;
 import net.psunset.translatorpp.platform.Platform;
 
-public class TPPPlatformNeoForge implements TPPPlatform {
+public class PlatformNeoForge implements IPlatform {
 
     @Override
     public boolean isNeoForge() {
@@ -25,6 +25,6 @@ public class TPPPlatformNeoForge implements TPPPlatform {
 
     @OnlyIn(Dist.CLIENT)
     public static void init() {
-        Platform.INSTANCE = new TPPPlatformNeoForge();
+        Platform.INSTANCE = new PlatformNeoForge();
     }
 }

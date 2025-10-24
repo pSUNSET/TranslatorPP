@@ -8,13 +8,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
 import net.psunset.translatorpp.neoforge.event.TPPEventsNeoForge;
-import net.psunset.translatorpp.neoforge.platform.TPPPlatformNeoForge;
+import net.psunset.translatorpp.neoforge.platform.PlatformNeoForge;
 
 @Mod(value = TranslatorPP.ID, dist = Dist.CLIENT)
 public final class TranslatorPPNeoForge {
     public TranslatorPPNeoForge(ModContainer container, IEventBus modBus, Dist dist) {
         var gameBus = NeoForge.EVENT_BUS;
-        TPPPlatformNeoForge.init();
+        PlatformNeoForge.init();
 
         /* Earlier */
 

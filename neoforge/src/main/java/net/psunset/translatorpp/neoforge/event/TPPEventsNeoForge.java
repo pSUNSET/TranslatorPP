@@ -5,24 +5,26 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.event.ClientTickCallbacks;
+import net.psunset.translatorpp.event.ItemTooltipCallbacks;
+import net.psunset.translatorpp.event.ScreenCallbacks;
 
 public class TPPEventsNeoForge {
 
     public static void init(IEventBus gameBus, IEventBus modBus) {
-        var mergedClientTickPost = TPPEvents.CLIENT_TICK_POST.merge();
-        gameBus.addListener(ClientTickEvent.Post.class, event -> mergedClientTickPost.afterTick(Minecraft.getInstance()));
+        ClientTickCallbacks.POST.merge();
+        gameBus.addListener(ClientTickEvent.Post.class, event -> ClientTickCallbacks.POST.getInvoker().afterTick(Minecraft.getInstance()));
 
-        var mergedItemTooltip = TPPEvents.ITEM_TOOLTIP.merge();
-        gameBus.addListener(ItemTooltipEvent.class, event -> mergedItemTooltip.getTooltip(event.getItemStack(), event.getContext(), event.getFlags(), event.getToolTip()));
+        ItemTooltipCallbacks.EVENT.merge();
+        gameBus.addListener(ItemTooltipEvent.class, event -> ItemTooltipCallbacks.EVENT.getInvoker().getTooltip(event.getItemStack(), event.getContext(), event.getFlags(), event.getToolTip()));
 
-        var mergedScreenKeyPressedPost = TPPEvents.SCREEN_KEY_PRESSED_POST.merge();
-        gameBus.addListener(ScreenEvent.KeyPressed.Post.class, event -> mergedScreenKeyPressedPost.afterKeyPress(event.getScreen(), event.getKeyCode(), event.getScanCode(), event.getModifiers()));
+        ScreenCallbacks.KEY_PRESSED_POST.merge();
+        gameBus.addListener(ScreenEvent.KeyPressed.Post.class, event -> ScreenCallbacks.KEY_PRESSED_POST.getInvoker().afterKeyPress(event.getScreen(), event.getKeyCode(), event.getScanCode(), event.getModifiers()));
 
-        var mergedScreenKeyReleasedPost = TPPEvents.SCREEN_KEY_RELEASED_POST.merge();
-        gameBus.addListener(ScreenEvent.KeyReleased.Post.class, event -> mergedScreenKeyReleasedPost.afterKeyRelease(event.getScreen(), event.getKeyCode(), event.getScanCode(), event.getModifiers()));
+        ScreenCallbacks.KEY_RELEASED_POST.merge();
+        gameBus.addListener(ScreenEvent.KeyReleased.Post.class, event -> ScreenCallbacks.KEY_RELEASED_POST.getInvoker().afterKeyRelease(event.getScreen(), event.getKeyCode(), event.getScanCode(), event.getModifiers()));
 
-        var mergedScreenRemoved = TPPEvents.SCREEN_REMOVED.merge();
-        gameBus.addListener(ScreenEvent.Closing.class, event -> mergedScreenRemoved.onRemove(event.getScreen()));
+        ScreenCallbacks.REMOVED.merge();
+        gameBus.addListener(ScreenEvent.Closing.class, event -> ScreenCallbacks.REMOVED.getInvoker().onRemove(event.getScreen()));
     }
 }
