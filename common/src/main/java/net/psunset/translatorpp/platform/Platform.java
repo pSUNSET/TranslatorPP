@@ -2,7 +2,7 @@ package net.psunset.translatorpp.platform;
 
 public class Platform {
 
-    public static TPPPlatform INSTANCE;
+    public static IPlatform INSTANCE;
 
     public static boolean isNeoForge() {
         return INSTANCE.isNeoForge();

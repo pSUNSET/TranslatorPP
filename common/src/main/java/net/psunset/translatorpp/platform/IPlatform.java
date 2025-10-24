@@ -1,6 +1,6 @@
 package net.psunset.translatorpp.platform;
 
-public interface TPPPlatform {
+public interface IPlatform {
     boolean isNeoForge();
     boolean isFabric();
     boolean isModLoaded(String modId);

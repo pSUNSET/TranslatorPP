@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
-import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.platform.Platform;
 import net.psunset.translatorpp.tool.ClientUtl;
@@ -32,7 +32,7 @@ public interface TPPConfig {
     String getOpenaiCustomBaseUrl();
 
     @Environment(EnvType.CLIENT)
-    public static void init() {
+    static void init() {
         if (Platform.isNeoForge()) {
             TranslatorPP.LOGGER.debug("NeoForge is loaded, using neoforge for Translator++ Config.");
             // Injected
@@ -47,11 +47,11 @@ public interface TPPConfig {
         }
     }
 
-    public static TPPConfig getInstance() {
+    static TPPConfig getInstance() {
         return Default.INSTANCE;
     }
 
-    public class Default implements TPPConfig {
+    class Default implements TPPConfig {
 
         /**
          * The instance of the TPPConfig.
@@ -100,7 +100,7 @@ public interface TPPConfig {
         }
 
         public static void init() {
-            TPPEvents.CLIENT_TICK_POST.register(client -> {
+            ClientTickCallbacks.POST.register(client -> {
                 while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
                     ClientUtl.message(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
                 }

@@ -10,7 +10,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
-import net.psunset.translatorpp.event.TPPEvents;
+import net.psunset.translatorpp.event.ItemTooltipCallbacks;
+import net.psunset.translatorpp.event.ScreenCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
@@ -214,14 +215,15 @@ public class TranslationKit {
     public void addResultToTooltip(List<Component> lines) {
 
         Style appliedStyle = Style.EMPTY;
+        String result = this.translatedResult;
 
-        switch (translatedResult.substring(translatedResult.length() - 3)) {
+        switch (result.substring(result.length() - 3)) {
             case PROCESSING -> appliedStyle = appliedStyle.withColor(ChatFormatting.DARK_GRAY);
             case ERROR -> appliedStyle = appliedStyle.withColor(ChatFormatting.RED);
             default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
         }
 
-        String combinedText = translatedResult.substring(0, translatedResult.length() - 3);
+        String combinedText = result.substring(0, result.length() - 3);
         String[] texts = combinedText.split(COMPONENT_SEP);
 
         switch (TPPConfig.getInstance().getTranslationMode()) {
@@ -259,7 +261,7 @@ public class TranslationKit {
         INSTANCE = new TranslationKit();
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
-        TPPEvents.ITEM_TOOLTIP.register((stack, tooltipContext, flag, lines) -> {
+        ItemTooltipCallbacks.EVENT.register((stack, tooltipContext, flag, lines) -> {
             TranslationKit.getInstance().setHoveredText(lines);
 
             if (TranslationKit.getInstance().isTranslated() &&
@@ -269,19 +271,19 @@ public class TranslationKit {
             }
         });
 
-        TPPEvents.SCREEN_KEY_PRESSED_POST.register((screen, key, scancode, modifiers) -> {
+        ScreenCallbacks.KEY_PRESSED_POST.register((screen, key, scancode, modifiers) -> {
             if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
                 TranslationKit.getInstance().start(Minecraft.getInstance());
             }
         });
 
-        TPPEvents.SCREEN_KEY_RELEASED_POST.register(((screen, key, scancode, modifiers) -> {
+        ScreenCallbacks.KEY_RELEASED_POST.register(((screen, key, scancode, modifiers) -> {
             if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
                 TranslationKit.getInstance().stop();
             }
         }));
 
-        TPPEvents.SCREEN_REMOVED.register(screen -> {
+        ScreenCallbacks.REMOVED.register(screen -> {
             TranslationKit.getInstance().stop();
         });
     }
