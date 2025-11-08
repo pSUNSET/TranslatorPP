@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-@Mixin(value = ChatComponent.class, remap = false)
+@Mixin(value = ChatComponent.class)
 public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     @Unique
     private final int[] translatorpp$messageIndexTrimmedToAll = Util.make(new int[100], arr -> Arrays.fill(arr, -1));

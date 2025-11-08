@@ -3,6 +3,7 @@ package net.psunset.translatorpp.keybind;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.psunset.translatorpp.tool.RLUtl;
 import org.lwjgl.glfw.GLFW;
 
 public class TPPKeyMappings {
@@ -13,23 +14,23 @@ public class TPPKeyMappings {
             "key.translatorpp.translate",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_T,
-            "key.category.translatorpp.general"
+            Categories.GENERAL
     );
 
     public static KeyMapping CLOTH_CONFIG_KEY = register(
             "key.translatorpp.config",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
-            "key.category.translatorpp.general"
+            Categories.GENERAL
     );
 
-    private static KeyMapping register(String translation, InputConstants.Type type, int keyCode, String category) {
+    private static KeyMapping register(String translation, InputConstants.Type type, int keyCode, KeyMapping.Category category) {
         var key = new KeyMapping(translation, type, keyCode, category);
         ENTRIES.add(key);
         return key;
     }
 
-    private static KeyMapping register(String translation, int keyCode, String category) {
+    private static KeyMapping register(String translation, int keyCode, KeyMapping.Category category) {
         var key = new KeyMapping(translation, keyCode, category);
         ENTRIES.add(key);
         return key;
@@ -37,5 +38,9 @@ public class TPPKeyMappings {
 
     public static ImmutableSet<KeyMapping> getEntries() {
         return ENTRIES.build();
+    }
+
+    interface Categories {
+        KeyMapping.Category GENERAL = KeyMapping.Category.register(RLUtl.of("general"));
     }
 }

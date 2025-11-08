@@ -335,15 +335,15 @@ public class TranslationKit {
             }
         });
 
-        ScreenCallbacks.KEY_PRESSED_POST.register((screen, key, scancode, modifiers) -> {
-            if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
+        ScreenCallbacks.KEY_PRESSED_POST.register((screen, context) -> {
+            if (TPPKeyMappings.TRANSLATE_KEY.matches(context)) {
                 TranslationKit.getInstance().start(Minecraft.getInstance());
                 TranslationKit.getInstance().setKeyDown(true);
             }
         });
 
-        ScreenCallbacks.KEY_RELEASED_POST.register(((screen, key, scancode, modifiers) -> {
-            if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
+        ScreenCallbacks.KEY_RELEASED_POST.register(((screen, context) -> {
+            if (TPPKeyMappings.TRANSLATE_KEY.matches(context)) {
                 TranslationKit.getInstance().stop();
                 TranslationKit.getInstance().setKeyDown(false);
             }

@@ -41,8 +41,7 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
 
     @Override
     protected void addOptions() {
-        Button btn = null;
-        int count = 0;
+        Button btn;
         for (final ScreenProvider config : this.configs) {
             String configName = config.getClass().getSimpleName().toLowerCase();
             String displayName = I18n.get(CATEGORY_PREFIX + configName);
@@ -50,13 +49,6 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
                     button -> minecraft.setScreen(config.createScreen(this))).width(310).build();
             btn.setTooltip(Tooltip.create(Component.translatable(TOOLTIP, displayName)));
             list.addSmall(btn, null);
-            count++;
-        }
-
-        // In fact, this is completely unaccessible
-        if (count == 1) {
-            autoClose = true;
-            btn.onPress();
         }
     }
 

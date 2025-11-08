@@ -1,6 +1,7 @@
 package net.psunset.translatorpp.event;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 
 public interface ScreenCallbacks {
 
@@ -11,12 +12,12 @@ public interface ScreenCallbacks {
     interface KeyPressed {
         @FunctionalInterface
         interface Post extends Event.Callback {
-            void afterKeyPress(Screen screen, int key, int scancode, int modifiers);
+            void afterKeyPress(Screen screen, KeyEvent context);
 
             static Post merge(Post[] callbacks) {
-                return (screen, key, scancode, modifiers) -> {
+                return (screen, context) -> {
                     for (var callback : callbacks) {
-                        callback.afterKeyPress(screen, key, scancode, modifiers);
+                        callback.afterKeyPress(screen, context);
                     }
                 };
             }
@@ -26,12 +27,12 @@ public interface ScreenCallbacks {
     interface KeyReleased {
         @FunctionalInterface
         interface Post extends Event.Callback {
-            void afterKeyRelease(Screen screen, int key, int scancode, int modifiers);
+            void afterKeyRelease(Screen screen, KeyEvent context);
 
             static Post merge(Post[] callbacks) {
-                return (screen, key, scancode, modifiers) -> {
+                return (screen, context) -> {
                     for (var callback : callbacks) {
-                        callback.afterKeyRelease(screen, key, scancode, modifiers);
+                        callback.afterKeyRelease(screen, context);
                     }
                 };
             }

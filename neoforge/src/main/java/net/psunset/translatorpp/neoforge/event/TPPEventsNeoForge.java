@@ -19,10 +19,10 @@ public class TPPEventsNeoForge {
         gameBus.addListener(ItemTooltipEvent.class, event -> ItemTooltipCallbacks.EVENT.getInvoker().getTooltip(event.getItemStack(), event.getContext(), event.getFlags(), event.getToolTip()));
 
         ScreenCallbacks.KEY_PRESSED_POST.merge();
-        gameBus.addListener(ScreenEvent.KeyPressed.Post.class, event -> ScreenCallbacks.KEY_PRESSED_POST.getInvoker().afterKeyPress(event.getScreen(), event.getKeyCode(), event.getScanCode(), event.getModifiers()));
+        gameBus.addListener(ScreenEvent.KeyPressed.Post.class, event -> ScreenCallbacks.KEY_PRESSED_POST.getInvoker().afterKeyPress(event.getScreen(), event.getKeyEvent()));
 
         ScreenCallbacks.KEY_RELEASED_POST.merge();
-        gameBus.addListener(ScreenEvent.KeyReleased.Post.class, event -> ScreenCallbacks.KEY_RELEASED_POST.getInvoker().afterKeyRelease(event.getScreen(), event.getKeyCode(), event.getScanCode(), event.getModifiers()));
+        gameBus.addListener(ScreenEvent.KeyReleased.Post.class, event -> ScreenCallbacks.KEY_RELEASED_POST.getInvoker().afterKeyRelease(event.getScreen(), event.getKeyEvent()));
 
         ScreenCallbacks.REMOVED.merge();
         gameBus.addListener(ScreenEvent.Closing.class, event -> ScreenCallbacks.REMOVED.getInvoker().onRemove(event.getScreen()));

@@ -67,47 +67,23 @@ public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
 
     @Override
     protected void addOptions() {
-        Button btn = null;
-        int count = 0;
+        Button btn;
         for (final ModConfig.Type type : ModConfig.Type.values()) {
-//            boolean headerAdded = false;
             for (final ModConfig modConfig : ModConfigs.getConfigSet(type)) {
                 if (modConfig.getModId().equals(mod.getModId())) {
                     String configName = modConfig.getFileName().substring(13, modConfig.getFileName().length() - 5);
-                    // No need header here
-//                    if (!headerAdded) {
-//                        list.addSmall(new StringWidget(ConfigurationScreen.BIG_BUTTON_WIDTH, Button.DEFAULT_HEIGHT,
-//                                Component.translatable(LANG_PREFIX + type.name().toLowerCase(Locale.ENGLISH)).withStyle(ChatFormatting.UNDERLINE), font).alignLeft(), null);
-//                        headerAdded = true;
-//                    }
                     btn = Button.builder(Component.translatable(SECTION, Component.translatable(CATEGORY_PREFIX + configName)),
                             button -> minecraft.setScreen(sectionScreen.apply(this, type, modConfig, Component.translatable(SUBTITLE_PREFIX + configName)))).width(ConfigurationScreen.BIG_BUTTON_WIDTH).build();
                     MutableComponent tooltip = Component.empty();
                     if (!((ModConfigSpec) modConfig.getSpec()).isLoaded()) {
                         tooltip.append(ConfigurationScreen.TOOLTIP_CANNOT_EDIT_NOT_LOADED).append(EMPTY_LINE);
                         btn.active = false;
-                        count = 99; // prevent autoClose
                     }
-                    // This mod is client-sided only.
-//                    else if (type == ModConfig.Type.SERVER && minecraft.getCurrentServer() != null && !minecraft.isSingleplayer()) {
-//                        tooltip.append(ConfigurationScreen.TOOLTIP_CANNOT_EDIT_THIS_WHILE_ONLINE).append(EMPTY_LINE);
-//                        btn.active = false;
-//                        count = 99; // prevent autoClose
-//                    } else if (type == ModConfig.Type.SERVER && minecraft.hasSingleplayerServer() && minecraft.getSingleplayerServer().isPublished()) {
-//                        tooltip.append(ConfigurationScreen.TOOLTIP_CANNOT_EDIT_THIS_WHILE_OPEN_TO_LAN).append(EMPTY_LINE);
-//                        btn.active = false;
-//                        count = 99; // prevent autoClose
-//                    }
                     tooltip.append(Component.translatable(FILENAME_TOOLTIP, modConfig.getFileName()).withStyle(FILENAME_TOOLTIP_STYLE));
                     btn.setTooltip(Tooltip.create(tooltip));
                     list.addSmall(btn, null);
-                    count++;
                 }
             }
-        }
-        if (count == 1) {
-            autoClose = true;
-            btn.onPress();
         }
     }
 
