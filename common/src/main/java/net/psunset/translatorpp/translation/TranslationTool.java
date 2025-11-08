@@ -3,7 +3,6 @@ package net.psunset.translatorpp.translation;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Supplier;
 
