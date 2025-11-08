@@ -3,8 +3,8 @@ package net.psunset.translatorpp.fabric.platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import net.psunset.translatorpp.platform.Platform;
 import net.psunset.translatorpp.platform.IPlatform;
+import net.psunset.translatorpp.platform.Platform;
 
 public class PlatformFabric implements IPlatform {
 
