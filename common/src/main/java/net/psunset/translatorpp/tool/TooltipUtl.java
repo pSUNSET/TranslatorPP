@@ -5,7 +5,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.translation.TranslationKit;
 
 import java.util.List;
@@ -20,16 +19,15 @@ public class TooltipUtl {
         return getTooltipComponents(stack, client).stream().map(Component::getString).toList();
     }
 
-    public static String getCombinedTooltipTexts(ItemStack stack, Minecraft client) {
-        TranslatorPP.LOGGER.info(String.join(TranslationKit.COMPONENT_SEP, getTooltipTexts(stack, client)));
-        return String.join(TranslationKit.COMPONENT_SEP, getTooltipTexts(stack, client));
+    public static String getCombinedTooltipText(ItemStack stack, Minecraft client) {
+        return String.join(TranslationKit.SEPARATOR, getTooltipTexts(stack, client));
     }
 
     public static List<String> getTooltipTexts(List<Component> tooltip) {
         return tooltip.stream().map(Component::getString).toList();
     }
 
-    public static String getCombinedTooltipTexts(List<Component> tooltip) {
-        return String.join(TranslationKit.COMPONENT_SEP, getTooltipTexts(tooltip));
+    public static String getCombinedTooltipText(List<Component> tooltip) {
+        return String.join(TranslationKit.SEPARATOR, getTooltipTexts(tooltip));
     }
 }

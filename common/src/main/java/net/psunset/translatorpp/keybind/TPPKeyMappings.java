@@ -13,14 +13,14 @@ public class TPPKeyMappings {
             "key.translatorpp.translate",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_T,
-            "key.categories.translatorpp.general"
+            "key.category.translatorpp.general"
     );
 
     public static KeyMapping CLOTH_CONFIG_KEY = register(
             "key.translatorpp.config",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
-            "key.categories.translatorpp.general"
+            "key.category.translatorpp.general"
     );
 
     private static KeyMapping register(String translation, InputConstants.Type type, int keyCode, String category) {

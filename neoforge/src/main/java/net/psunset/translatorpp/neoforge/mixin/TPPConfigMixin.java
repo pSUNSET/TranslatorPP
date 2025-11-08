@@ -12,6 +12,6 @@ public interface TPPConfigMixin {
 
     @Inject(method = "init()V", at = @At(value = "INVOKE", target = "Lnet/psunset/translatorpp/platform/Platform;isNeoForge()Z", shift = At.Shift.AFTER))
     private static void onInit(CallbackInfo ci) {
-        TPPConfig.Default.INSTANCE = new TPPConfigImplNeoForge();
+        TPPConfig.Dummy.INSTANCE = new TPPConfigImplNeoForge();
     }
 }

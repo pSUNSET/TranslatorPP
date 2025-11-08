@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.compat.clothconfig;
 
-import com.google.common.collect.Lists;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -83,7 +82,7 @@ public class TPPConfigImplCloth implements TPPConfig {
     }
 
     public static List<TPPClothConfigData> configs() {
-        return Lists.newArrayList(general(), openai());
+        return List.of(general(), openai());
     }
 
     @Environment(EnvType.CLIENT)
@@ -102,12 +101,12 @@ public class TPPConfigImplCloth implements TPPConfig {
     }
 
     @Config(name = TranslatorPP.ID + "-general")
-    public static class General implements TPPClothConfigData {
-        private TranslationMode translationMode = TranslationMode.NAME_ONLY;
-        private String sourceLanguage = "auto";
-        private String targetLanguage = "ja-JP";
-        private TranslationTool.Type translationTool = TranslationTool.Type.GoogleTranslation;
-        private String openaiModel = "gpt-4o-mini";
+    private static class General implements TPPClothConfigData {
+        private TranslationMode translationMode = Default.translationMode;
+        private String sourceLanguage = Default.sourceLanguage;
+        private String targetLanguage = Default.targetLanguage;
+        private TranslationTool.Type translationTool = Default.translationTool;
+        private String openaiModel = Default.openaiModel;
 
         @Override
         public Screen createScreen(Screen parent) {
@@ -137,34 +136,34 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, general().translationMode)
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
-                    .setDefaultValue(TranslationMode.NAME_ONLY)
-                    .setSaveConsumer(it -> general().translationMode = it)
+                    .setDefaultValue(Default.translationMode)
+                    .setSaveConsumer(it -> this.translationMode = it)
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), general().sourceLanguage)
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
                     .setSelections(slList)
-                    .setDefaultValue("auto")
-                    .setSaveConsumer(it -> general().sourceLanguage = it)
+                    .setDefaultValue(Default.sourceLanguage)
+                    .setSaveConsumer(it -> this.sourceLanguage = it)
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), general().targetLanguage)
                     .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
                     .setSelections(tlList)
-                    .setDefaultValue("ja-JP")
-                    .setSaveConsumer(it -> general().targetLanguage = it)
+                    .setDefaultValue(Default.targetLanguage)
+                    .setSaveConsumer(it -> this.targetLanguage = it)
                     .build());
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, general().translationTool)
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
-                    .setDefaultValue(TranslationTool.Type.GoogleTranslation)
+                    .setDefaultValue(Default.translationTool)
                     .setSaveConsumer(it -> general().translationTool = it)
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), general().openaiModel)
                     .setSelections(OpenAIClientTool.getCacheModels())
                     .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
-                    .setDefaultValue("")
+                    .setDefaultValue(Default.openaiModel)
                     .setSaveConsumer(it -> general().openaiModel = it)
                     .build());
 
@@ -173,10 +172,10 @@ public class TPPConfigImplCloth implements TPPConfig {
     }
 
     @Config(name = TranslatorPP.ID + "-openai")
-    public static class OpenAI implements TPPClothConfigData {
-        private String openaiApiKey = "";
-        private OpenAIClientTool.Api openaiBaseUrl = OpenAIClientTool.Api.OpenAI;
-        private String openaiCustomBaseUrl = "";
+    private static class OpenAI implements TPPClothConfigData {
+        private String openaiApiKey = Default.openaiApiKey;
+        private OpenAIClientTool.Api openaiBaseUrl = Default.openaiBaseUrl;
+        private String openaiCustomBaseUrl = Default.openaiCustomBaseUrl;
 
         @Override
         public Screen createScreen(Screen parent) {
@@ -196,19 +195,19 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), openai().openaiApiKey)
                     .setTooltip(Component.translatable("config.translatorpp.openai_apikey.tooltip"))
-                    .setDefaultValue("")
+                    .setDefaultValue(Default.openaiApiKey)
                     .setSaveConsumer(it -> openai().openaiApiKey = it)
                     .build());
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, openai().openaiBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
-                    .setDefaultValue(OpenAIClientTool.Api.OpenAI)
+                    .setDefaultValue(Default.openaiBaseUrl)
                     .setSaveConsumer(it -> openai().openaiBaseUrl = it)
                     .build());
 
             category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), openai().openaiCustomBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
-                    .setDefaultValue("https://custom.api.url/")
+                    .setDefaultValue(Default.openaiCustomBaseUrl)
                     .setSaveConsumer(it -> openai().openaiCustomBaseUrl = it)
                     .build());
 

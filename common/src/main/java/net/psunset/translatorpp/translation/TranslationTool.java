@@ -17,7 +17,7 @@ public interface TranslationTool {
         OpenAIClient("OpenAI Client", OpenAIClientTool::getInstance);
 
         public static final Map<String, Type> entries = Util.make(Maps.newHashMap(), map -> {
-            Arrays.asList(values()).forEach(it -> map.put(it.displayName, it));
+            for (Type type : values()) map.put(type.displayName, type);
         });
 
         private final String displayName;

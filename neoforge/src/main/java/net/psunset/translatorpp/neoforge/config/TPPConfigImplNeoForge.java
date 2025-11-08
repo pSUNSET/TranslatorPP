@@ -109,23 +109,23 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
             this.translationMode = builder
                     .translation("config.translatorpp.translation_mode")
-                    .defineEnum("translation_mode", TranslationMode.NAME_ONLY, EnumGetMethod.NAME_IGNORECASE);
+                    .defineEnum("translation_mode", Default.translationMode, EnumGetMethod.NAME_IGNORECASE);
 
             this.sourceLanguage = builder
                     .translation("config.translatorpp.source_language")
-                    .defineInList("source_language", "auto", slList);
+                    .defineInList("source_language", Default.sourceLanguage, slList);
 
             this.targetLanguage = builder
                     .translation("config.translatorpp.target_language")
-                    .defineInList("target_language", "ja-JP", tlList);
+                    .defineInList("target_language", Default.targetLanguage, tlList);
 
             this.translationTool = builder
                     .translation("config.translatorpp.translation_tool")
-                    .defineEnum("translation_tool", TranslationTool.Type.GoogleTranslation, EnumGetMethod.NAME_IGNORECASE);
+                    .defineEnum("translation_tool", Default.translationTool, EnumGetMethod.NAME_IGNORECASE);
 
             this.openaiModel = builder
                     .translation("config.translatorpp.openai_model")
-                    .define("openai_model", "", it ->
+                    .define("openai_model", Default.openaiModel, it ->
                             it == null || it.toString().isBlank() || !OpenAIClientTool.getInstance().isPresent() || (OpenAIClientTool.getInstance().isPresent() && OpenAIClientTool.getCacheModels().contains(it)));
         }
     }
@@ -139,15 +139,15 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         private OpenAI(ModConfigSpec.Builder builder) {
             this.openaiApiKey = builder
                     .translation("config.translatorpp.openai_apikey")
-                    .define("openai_apikey", "");
+                    .define("openai_apikey", Default.openaiApiKey);
 
             this.openaiBaseUrl = builder
                     .translation("config.translatorpp.openai_baseurl")
-                    .defineEnum("openai_baseurl", OpenAIClientTool.Api.OpenAI, EnumGetMethod.NAME_IGNORECASE);
+                    .defineEnum("openai_baseurl", Default.openaiBaseUrl, EnumGetMethod.NAME_IGNORECASE);
 
             this.openaiCustomBaseUrl = builder
                     .translation("config.translatorpp.openai_custom_baseurl")
-                    .define("openai_custom_baseurl", "https://custom.api.url/");
+                    .define("openai_custom_baseurl", Default.openaiCustomBaseUrl);
         }
     }
 
@@ -160,7 +160,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         if (CompatUtl.ClothConfig.isLoaded()) {
             TPPConfigClothScreenNeoForge.init(); // register the afterClientTickIfHasClothConfig event callback
         } else {
-            NeoForge.EVENT_BUS.addListener(TPPConfigImplNeoForge::afterClientTickIfNoClothConfig);
+            NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, TPPConfigImplNeoForge::afterClientTickIfNoClothConfig);
         }
     }
 
@@ -172,8 +172,9 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     @SubscribeEvent
     public static void onConfigLoading(ModConfigEvent.Loading event) {
-        if (event.getConfig().getSpec().equals(generalSpec)) {
-        } else if (event.getConfig().getSpec().equals(openaiSpec)) { // The final config registered in this mod
+//        if (event.getConfig().getSpec().equals(generalSpec)) {
+//        } else
+        if (event.getConfig().getSpec().equals(openaiSpec)) { // The final config registered in this mod
             TranslationKit.getInstance().refreshOpenAIClientTool();
             OpenAIClientTool.refreshCacheModels();
         }

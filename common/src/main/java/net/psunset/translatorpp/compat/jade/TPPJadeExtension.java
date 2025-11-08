@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.compat.jade;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -66,23 +65,16 @@ public class TPPJadeExtension {
 
             if (TranslationKit.getInstance().isTranslated() &&
                     TranslationKit.getInstance().getTranslatedResult() != null &&
-                    TooltipUtl.getCombinedTooltipTexts(hoveredTexts).equals(TranslationKit.getInstance().getTranslatedText())) {
+                    TooltipUtl.getCombinedTooltipText(hoveredTexts).equals(TranslationKit.getInstance().getTranslatedText())) {
                 addResultToTooltip(TranslationKit.getInstance(), tooltip);
             }
         }
     }
 
     public static void addResultToTooltip(TranslationKit kit, Tooltip tooltip) {
-        Style appliedStyle = Style.EMPTY;
-
-        switch (kit.getTranslatedResult().substring(kit.getTranslatedResult().length() - 3)) {
-            case TranslationKit.PROCESSING -> appliedStyle = appliedStyle.withColor(ChatFormatting.DARK_GRAY);
-            case TranslationKit.ERROR -> appliedStyle = appliedStyle.withColor(ChatFormatting.RED);
-            default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
-        }
-
-        String combinedText = kit.getTranslatedResult().substring(0, kit.getTranslatedResult().length() - 3);
-        String[] texts = combinedText.split(TranslationKit.COMPONENT_SEP);
+        var styledResult = kit.getStyledResultLines();
+        Style appliedStyle = styledResult.getLeft();
+        String[] texts = styledResult.getRight();
 
         // TODO: Make Jade HUD can adapt to TranslationMode
         tooltip.add(1, Component.literal(texts[0]).withStyle(appliedStyle));

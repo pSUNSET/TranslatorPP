@@ -27,7 +27,7 @@ public class TPPConfigClothScreenNeoForge {
 
     @OnlyIn(Dist.CLIENT)
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(TPPConfigClothScreenNeoForge::afterClientTickIfHasClothConfig);
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, TPPConfigClothScreenNeoForge::afterClientTickIfHasClothConfig);
     }
 
     public static void afterClientTickIfHasClothConfig(ClientTickEvent.Post event) {
@@ -36,7 +36,7 @@ public class TPPConfigClothScreenNeoForge {
         }
     }
 
-    public static TPPConfigClothScreen create(Screen parent) {
+    private static TPPConfigClothScreen create(Screen parent) {
         return new TPPConfigClothScreen(parent,
                 List.of(General.INSTANCE, OpenAI.INSTANCE));
     }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @FunctionalInterface
 public interface ItemTooltipCallbacks extends Event.Callback {
-    void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines);
+    void getTooltip(ItemStack stack, Item.TooltipContext context, TooltipFlag flag, List<Component> lines);
 
     Event<ItemTooltipCallbacks> EVENT = new Event<>(ItemTooltipCallbacks.class, ItemTooltipCallbacks::merge);
 
