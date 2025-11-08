@@ -22,10 +22,9 @@ public class GoogleTranslationTool implements TranslationTool {
         return INSTANCE;
     }
 
-    private final Gson gson;
+    private final Gson gson = new GsonBuilder().create();;
 
     public GoogleTranslationTool() {
-        this.gson = new GsonBuilder().create();
     }
 
     @Override

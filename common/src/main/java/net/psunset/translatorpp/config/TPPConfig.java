@@ -32,71 +32,71 @@ public interface TPPConfig {
     String getOpenaiCustomBaseUrl();
 
     @Environment(EnvType.CLIENT)
-    public static void init() {
+    static void init() {
         if (Platform.isNeoForge()) {
             TranslatorPP.LOGGER.debug("NeoForge is loaded, using neoforge for Translator++ Config.");
             // Injected
         } else if (CompatUtl.ClothConfig.isLoaded()) {
             TranslatorPP.LOGGER.debug("Cloth Config is loaded, using cloth config for Translator++ Config.");
-            Default.INSTANCE = new TPPConfigImplCloth();
+            Dummy.INSTANCE = new TPPConfigImplCloth();
             TPPConfigImplCloth.init();
         } else {
             TranslatorPP.LOGGER.debug("No config API is loaded, using default values for Translator++ Config.");
-            Default.INSTANCE = new TPPConfig.Default();
-            Default.init();
+            Dummy.INSTANCE = new TPPConfig.Dummy();
+            Dummy.init();
         }
     }
 
-    public static TPPConfig getInstance() {
-        return Default.INSTANCE;
+    static TPPConfig getInstance() {
+        return Dummy.INSTANCE;
     }
 
-    public class Default implements TPPConfig {
+    class Dummy implements TPPConfig {
 
         /**
          * The instance of the TPPConfig.
-         * Not only works for the default one.
+         * Not only works for the dummy one.
          */
         public static TPPConfig INSTANCE;
 
         @Override
         public TranslationMode getTranslationMode() {
-            return TranslationMode.NAME_ONLY;
+            return Default.translationMode;
         }
 
         @Override
         public String getSourceLanguage() {
-            return "auto";
+            return Default.sourceLanguage;
         }
 
         @Override
         public String getTargetLanguage() {
-            return "ja-JP";
+            return Default.targetLanguage;
         }
 
         @Override
         public TranslationTool.Type getTranslationTool() {
-            return TranslationTool.Type.GoogleTranslation;
+            return Default.translationTool;
         }
 
         @Override
         public String getOpenaiModel() {
-            return "";
+            return Default.openaiModel;
         }
 
         @Override
         public String getOpenaiApiKey() {
-            return "";
+            return Default.openaiApiKey;
         }
 
         @Override
         public OpenAIClientTool.Api getOpenaiBaseUrl() {
-            return null;
+            return Default.openaiBaseUrl;
         }
 
         @Override
         public String getOpenaiCustomBaseUrl() {
-            return "";
+            return Default.openaiCustomBaseUrl;
         }
 
         public static void init() {
@@ -106,5 +106,16 @@ public interface TPPConfig {
                 }
             });
         }
+    }
+
+    interface Default {
+        TranslationMode translationMode = TranslationMode.NAME_ONLY;
+        String sourceLanguage = "auto";
+        String targetLanguage = "zh-CN";
+        TranslationTool.Type translationTool = TranslationTool.Type.GoogleTranslation;
+        String openaiModel = "";
+        String openaiApiKey = "";
+        OpenAIClientTool.Api openaiBaseUrl = OpenAIClientTool.Api.OpenAI;
+        String openaiCustomBaseUrl = "https://custom.api.url/";
     }
 }

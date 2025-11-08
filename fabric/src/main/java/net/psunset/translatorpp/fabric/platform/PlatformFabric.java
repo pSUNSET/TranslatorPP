@@ -7,6 +7,11 @@ import net.psunset.translatorpp.platform.IPlatform;
 import net.psunset.translatorpp.platform.Platform;
 
 public class PlatformFabric implements IPlatform {
+
+    static {
+        Platform.INSTANCE = new PlatformFabric();
+    }
+
     @Override
     public boolean isNeoForge() {
         return false;
@@ -24,6 +29,5 @@ public class PlatformFabric implements IPlatform {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        Platform.INSTANCE = new PlatformFabric();
     }
 }

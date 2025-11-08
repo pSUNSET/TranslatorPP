@@ -23,7 +23,7 @@
   "config.translatorpp.openai_custom_baseurl.tooltip": "If your API is exclusive, set Model Provider to 'Custom', then provide URL here.",
   "config.jade.plugin_translatorpp.block_translation": "Block Translation",
   "config.jade.plugin_translatorpp.entity_translation": "Entity Translation",
-  "key.categories.translatorpp.general": "Translator++",
+  "key.category.translatorpp.general": "Translator++",
   "key.translatorpp.translate": "Translate",
   "key.translatorpp.config": "Open Translation Options",
   "misc.translatorpp.translation.failed": "Translation failed...",

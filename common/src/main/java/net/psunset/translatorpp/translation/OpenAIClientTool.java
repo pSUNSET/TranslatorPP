@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,18 +24,17 @@ public class OpenAIClientTool implements TranslationTool {
 
     private static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
     public static final String PROMPT = """
-            I'm playing modded Minecraft.
-            But there are some words I didn't understand.
-            So, please translate the following words, "%s", from '%s' language to '%s' language.
-            If you find there are some %s patterns in the sentences, they are simply to separate components.
-            Do *NOT* break the structures of them in the sentences.
-            Also, because those words are from modded Minecraft, you can properly adjust your answer.
-            Finally, the response you return *MUST* only contain the translated result. No other description.""";
+            You are a precise translation assistant.
+            Translate from '%s' to '%s', keeping '%s' (split pattern) as-is.
+            
+            Text:
+            \"""
+            %s
+            \"""
+            
+            Only provide the translated text as output, without any additional explanations or formatting.
+            """;
 
-    /**
-     * Grabbing the model list from online wastes too much time.
-     * So set a cache here to let us get it more swiftly.
-     */
     private static final Set<String> cacheModels = Sets.newHashSet();
 
     private static final int CONNECT_TIMEOUT = 10000; // 10 seconds
@@ -49,10 +47,9 @@ public class OpenAIClientTool implements TranslationTool {
     private String apiKey;
     private String baseUrl;
     private String model;
-    private final Gson gson;
+    private final Gson gson = new GsonBuilder().create();
 
     public OpenAIClientTool() {
-        this.gson = new GsonBuilder().create();
     }
 
     private void setApiKey(String apiKey) {
@@ -60,8 +57,7 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     private void setBaseUrl(String baseUrl) {
-        if (!baseUrl.endsWith("/")) baseUrl = baseUrl + "/";
-        this.baseUrl = baseUrl;
+        this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     }
 
     public String getBaseUrl() {
@@ -76,10 +72,19 @@ public class OpenAIClientTool implements TranslationTool {
         return this.model;
     }
 
-    protected void setApi(String apiKey, Api api, String customApiUrl, String model) {
-        this.setApiKey(apiKey);
-        this.setBaseUrl(api.baseUrl != null ? api.baseUrl : customApiUrl);
-        this.setModel(model.isEmpty() ? api.defaultModel : model);
+    protected void setApi(String apiKey, Api api, @Nullable String customApiUrl, String model) {
+        this.setApiKey(apiKey.isBlank() ? "" : apiKey.strip());
+        if (api.baseUrl != null) {
+            this.setBaseUrl(api.baseUrl);
+        } else {
+            if (customApiUrl == null || customApiUrl.isBlank()) {
+                this.setBaseUrl("");
+                throw new IllegalArgumentException("Custom API URL must be provided when API provider is set to Custom.");
+            } else {
+                this.setBaseUrl(customApiUrl);
+            }
+        }
+        this.setModel(model.isBlank() ? api.defaultModel : model.strip());
     }
 
     @Override
@@ -88,7 +93,7 @@ public class OpenAIClientTool implements TranslationTool {
             throw new IllegalStateException("OpenAIClientTool is not configured. API key, API provider, and model must be set.");
         }
 
-        String formattedPrompt = PROMPT.formatted(q, sl, tl, TranslationKit.COMPONENT_SEP);
+        String formattedPrompt = PROMPT.formatted(sl, tl, TranslationKit.SEPARATOR, q);
 
         // Use a Map to build the request, then serialize with Gson
         Map<String, Object> requestPayload = Maps.newLinkedHashMap(); // Use LinkedHashMap to preserve insertion order if it matters
@@ -170,22 +175,21 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     public boolean isPresent() {
-        return this.apiKey != null && !this.apiKey.isBlank() &&
-                !this.baseUrl.isBlank() && !this.model.isEmpty();
+        return !this.apiKey.isEmpty() && !this.baseUrl.isEmpty() && !this.model.isEmpty();
     }
 
     /**
      * Returns the model list from online.
      */
     public Set<String> getModels() {
-        if (this.apiKey == null || this.apiKey.isBlank() || this.baseUrl.isBlank()) {
-            TranslatorPP.LOGGER.error("Error while getting online model list: API key or API provider not set.");
+        if (this.apiKey.isEmpty() || this.baseUrl.isEmpty()) {
+            TranslatorPP.LOGGER.warn("Error while getting online model list: API key or API provider not set, using offline one instead.");
             return getModelListOffline();
         }
 
         HttpURLConnection con = null;
         try {
-            URL url = new URL(this.baseUrl + "models");
+            URL url = URI.create(this.baseUrl + "models").toURL();
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Authorization", "Bearer " + this.apiKey);
@@ -275,7 +279,7 @@ public class OpenAIClientTool implements TranslationTool {
         Custom(null, "");
 
         public static final Map<String, Api> entries = Util.make(Maps.newHashMap(), map -> {
-            Arrays.asList(values()).forEach(it -> map.put(it.name(), it));
+            for (var api : values()) map.put(api.name(), api);
         });
 
         @Nullable
@@ -301,7 +305,7 @@ public class OpenAIClientTool implements TranslationTool {
      * A temp-available model list.
      * So this may not be correct in the future.
      * If some models are deprecated or new models get updated, this list won't update in time.
-     * This list is created on May 07, 2025.
+     * Latest edited on May 07, 2025.
      */
     private static final List<String> TEMP_AVAILABLE_MODEL_LIST = Lists.newArrayList(
             // OpenAI

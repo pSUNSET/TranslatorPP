@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
 }
 
 architectury {
@@ -38,7 +38,7 @@ dependencies {
     // FTB Quests
 
     // Jade
-    modImplementation "curse.maven:jade-324717:$jade_neoforge_version"
+    modImplementation "maven.modrinth:jade:$jade_neoforge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

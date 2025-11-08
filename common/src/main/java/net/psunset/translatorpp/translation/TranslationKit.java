@@ -15,6 +15,7 @@ import net.psunset.translatorpp.event.ScreenCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -28,7 +29,7 @@ public class TranslationKit {
 
     protected static TranslationKit INSTANCE;
 
-    public static final String COMPONENT_SEP = "<@>";
+    public static final String SEPARATOR = "<@>";
     public static final String SUCCESS = "<O>";
     public static final String PROCESSING = "<?>";
     public static final String ERROR = "<X>";
@@ -44,13 +45,13 @@ public class TranslationKit {
         return INSTANCE;
     }
 
-    // LRU Cache implementation
+    // TODO: Make cache size configurable
     private static final int MAX_CACHE_SIZE = 100;
     private final Map<String, String> translationCache = Collections.synchronizedMap(
             new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
                 @Override
                 protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
-                    return size() > MAX_CACHE_SIZE; // Remove eldest if size exceeds limit
+                    return size() > MAX_CACHE_SIZE;
                 }
             }
     );
@@ -68,12 +69,16 @@ public class TranslationKit {
     public TranslationKit() {
     }
 
+    public @Nullable String getHoveredText() {
+        return hoveredText;
+    }
+
     public void setHoveredText(@Nullable ItemStack stack, Minecraft client) {
         if (stack == null) {
             this.hoveredText = null;
             return;
         }
-        this.hoveredText = TooltipUtl.getCombinedTooltipTexts(stack, client);
+        this.hoveredText = TooltipUtl.getCombinedTooltipText(stack, client);
     }
 
     public void setHoveredText(List<Component> tooltip) {
@@ -81,15 +86,11 @@ public class TranslationKit {
             this.hoveredText = null;
             return;
         }
-        this.hoveredText = TooltipUtl.getCombinedTooltipTexts(tooltip);
+        this.hoveredText = TooltipUtl.getCombinedTooltipText(tooltip);
     }
 
     public void setHoveredText(@Nullable String text) {
         this.hoveredText = text;
-    }
-
-    public @Nullable String getHoveredText() {
-        return hoveredText;
     }
 
     public @Nullable String getTranslatedText() {
@@ -104,11 +105,11 @@ public class TranslationKit {
         return translated;
     }
 
-    public boolean isTranslateKeyDown() {
+    public boolean isKeyDown() {
         return translateKeyDown;
     }
 
-    public void setTranslateKeyDown(boolean isKeyDown) {
+    private void setKeyDown(boolean isKeyDown) {
         translateKeyDown = isKeyDown;
     }
 
@@ -165,22 +166,6 @@ public class TranslationKit {
                 });
     }
 
-    public void stop() {
-        if (this.translated) {
-            if (translationFuture != null && !translationFuture.isDone()) {
-                translationFuture.cancel(true);
-            }
-            translated = false;
-            translatedText = null;
-            translatedResult = null;
-            translationFuture = null;
-        }
-    }
-
-    public void clearCache() {
-        this.translationCache.clear();
-    }
-
     private void sendErrorToClient(Minecraft client, Throwable err) {
         if (err instanceof OpenAIClientTool.ServiceException openaiErr) {
             String transKey = "misc.translatorpp.translation.failed.chat.openai." + openaiErr.statusCode;
@@ -197,12 +182,28 @@ public class TranslationKit {
         ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
     }
 
+    public void stop() {
+        if (this.translated) {
+            if (translationFuture != null && !translationFuture.isDone()) {
+                translationFuture.cancel(true);
+            }
+            translated = false;
+            translatedText = null;
+            translatedResult = null;
+            translationFuture = null;
+        }
+    }
+
+    public void clearCache() {
+        this.translationCache.clear();
+    }
+
     public void refreshOpenAIClientTool() {
         refreshOpenAIClientTool(TPPConfig.getInstance().getOpenaiApiKey(), TPPConfig.getInstance().getOpenaiBaseUrl(),
                 TPPConfig.getInstance().getOpenaiCustomBaseUrl(), TPPConfig.getInstance().getOpenaiModel());
     }
 
-    public void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
+    private void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
         try {
             TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
                     apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
@@ -212,18 +213,24 @@ public class TranslationKit {
         }
     }
 
-    public void addResultToTooltip(List<Component> lines) {
-
+    public Pair<Style, String[]> getStyledResultLines() {
         Style appliedStyle = Style.EMPTY;
+        String resultText = this.translatedResult;
 
-        switch (translatedResult.substring(translatedResult.length() - 3)) {
+        switch (resultText.substring(resultText.length() - 3)) {
             case PROCESSING -> appliedStyle = appliedStyle.withColor(ChatFormatting.DARK_GRAY);
             case ERROR -> appliedStyle = appliedStyle.withColor(ChatFormatting.RED);
             default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
         }
 
-        String combinedText = translatedResult.substring(0, translatedResult.length() - 3);
-        String[] texts = combinedText.split(COMPONENT_SEP);
+        String[] texts = resultText.substring(0, resultText.length() - 3).split(SEPARATOR);
+        return Pair.of(appliedStyle, texts);
+    }
+
+    public void addResultToTooltip(List<Component> lines) {
+        var styledResult = getStyledResultLines();
+        Style appliedStyle = styledResult.getLeft();
+        String[] texts = styledResult.getRight();
 
         switch (TPPConfig.getInstance().getTranslationMode()) {
             case NAME_ONLY -> {
@@ -254,6 +261,18 @@ public class TranslationKit {
         }
     }
 
+    public Component createResultForChat() {
+        var styledResult = getStyledResultLines();
+        Style appliedStyle = styledResult.getLeft();
+        String[] texts = styledResult.getRight();
+
+        var component = Component.literal("").withStyle(appliedStyle);
+        for (String text : texts) {
+            component.append(text);
+        }
+        return component;
+    }
+
     @Environment(EnvType.CLIENT)
     public static void init() {
         TranslatorPP.LOGGER.debug("Initializing TranslationKit");
@@ -265,7 +284,7 @@ public class TranslationKit {
 
             if (TranslationKit.getInstance().isTranslated() &&
                     TranslationKit.getInstance().getTranslatedResult() != null &&
-                    TooltipUtl.getCombinedTooltipTexts(lines).equals(TranslationKit.getInstance().translatedText)) {
+                    TooltipUtl.getCombinedTooltipText(lines).equals(TranslationKit.getInstance().translatedText)) {
                 TranslationKit.getInstance().addResultToTooltip(lines);
             }
         });
@@ -273,17 +292,20 @@ public class TranslationKit {
         ScreenCallbacks.KEY_PRESSED_POST.register((screen, key, scancode, modifiers) -> {
             if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
                 TranslationKit.getInstance().start(Minecraft.getInstance());
+                TranslationKit.getInstance().setKeyDown(true);
             }
         });
 
         ScreenCallbacks.KEY_RELEASED_POST.register(((screen, key, scancode, modifiers) -> {
             if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
                 TranslationKit.getInstance().stop();
+                TranslationKit.getInstance().setKeyDown(false);
             }
         }));
 
         ScreenCallbacks.REMOVED.register(screen -> {
             TranslationKit.getInstance().stop();
+            TranslationKit.getInstance().setKeyDown(false);
         });
     }
 }
