@@ -134,37 +134,37 @@ public class TPPConfigImplCloth implements TPPConfig {
             slList.add("auto");
             slList.addAll(tlList);
 
-            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, general().translationMode)
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, this.translationMode)
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
                     .setDefaultValue(Default.translationMode)
                     .setSaveConsumer(it -> this.translationMode = it)
                     .build());
 
-            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), general().sourceLanguage)
+            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), this.sourceLanguage)
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
                     .setSelections(slList)
                     .setDefaultValue(Default.sourceLanguage)
                     .setSaveConsumer(it -> this.sourceLanguage = it)
                     .build());
 
-            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), general().targetLanguage)
+            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), this.targetLanguage)
                     .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
                     .setSelections(tlList)
                     .setDefaultValue(Default.targetLanguage)
                     .setSaveConsumer(it -> this.targetLanguage = it)
                     .build());
 
-            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, general().translationTool)
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, this.translationTool)
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
                     .setDefaultValue(Default.translationTool)
-                    .setSaveConsumer(it -> general().translationTool = it)
+                    .setSaveConsumer(it -> this.translationTool = it)
                     .build());
 
-            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), general().openaiModel)
+            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), this.openaiModel)
                     .setSelections(OpenAIClientTool.getCacheModels())
                     .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
                     .setDefaultValue(Default.openaiModel)
-                    .setSaveConsumer(it -> general().openaiModel = it)
+                    .setSaveConsumer(it -> this.openaiModel = it)
                     .build());
 
             return builder.build();
@@ -193,22 +193,22 @@ public class TPPConfigImplCloth implements TPPConfig {
             // The translation of the component doesn't exist because it's completely unaccessible.
             ConfigCategory category = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.default"));
 
-            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), openai().openaiApiKey)
+            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), this.openaiApiKey)
                     .setTooltip(Component.translatable("config.translatorpp.openai_apikey.tooltip"))
                     .setDefaultValue(Default.openaiApiKey)
-                    .setSaveConsumer(it -> openai().openaiApiKey = it)
+                    .setSaveConsumer(it -> this.openaiApiKey = it)
                     .build());
 
-            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, openai().openaiBaseUrl)
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, this.openaiBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
                     .setDefaultValue(Default.openaiBaseUrl)
-                    .setSaveConsumer(it -> openai().openaiBaseUrl = it)
+                    .setSaveConsumer(it -> this.openaiBaseUrl = it)
                     .build());
 
-            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), openai().openaiCustomBaseUrl)
+            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), this.openaiCustomBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
                     .setDefaultValue(Default.openaiCustomBaseUrl)
-                    .setSaveConsumer(it -> openai().openaiCustomBaseUrl = it)
+                    .setSaveConsumer(it -> this.openaiCustomBaseUrl = it)
                     .build());
 
             return builder.build();
