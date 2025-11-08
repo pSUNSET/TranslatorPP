@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
+import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.gui.ScreenProvider;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.neoforge.config.TPPConfigImplNeoForge;
@@ -76,34 +77,34 @@ public class TPPConfigClothScreenNeoForge {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, config.translationMode.get())
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
-                    .setDefaultValue(TranslationMode.NAME_ONLY)
+                    .setDefaultValue(TPPConfig.Default.translationMode)
                     .setSaveConsumer(config.translationMode::set)
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), config.sourceLanguage.get())
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
                     .setSelections(slList)
-                    .setDefaultValue("auto")
+                    .setDefaultValue(TPPConfig.Default.sourceLanguage)
                     .setSaveConsumer(config.sourceLanguage::set)
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), config.targetLanguage.get())
                     .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
                     .setSelections(tlList)
-                    .setDefaultValue("ja-JP")
+                    .setDefaultValue(TPPConfig.Default.targetLanguage)
                     .setSaveConsumer(config.targetLanguage::set)
                     .build());
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, config.translationTool.get())
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
-                    .setDefaultValue(TranslationTool.Type.GoogleTranslation)
+                    .setDefaultValue(TPPConfig.Default.translationTool)
                     .setSaveConsumer(config.translationTool::set)
                     .build());
 
             category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel.get())
                     .setSelections(OpenAIClientTool.getCacheModels())
                     .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
-                    .setDefaultValue("")
+                    .setDefaultValue(TPPConfig.Default.openaiModel)
                     .setSaveConsumer(config.openaiModel::set)
                     .build());
 
@@ -136,19 +137,19 @@ public class TPPConfigClothScreenNeoForge {
 
             category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), config.openaiApiKey.get())
                     .setTooltip(Component.translatable("config.translatorpp.openai_apikey.tooltip"))
-                    .setDefaultValue("")
+                    .setDefaultValue(TPPConfig.Default.openaiApiKey)
                     .setSaveConsumer(config.openaiApiKey::set)
                     .build());
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, config.openaiBaseUrl.get())
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
-                    .setDefaultValue(OpenAIClientTool.Api.OpenAI)
+                    .setDefaultValue(TPPConfig.Default.openaiBaseUrl)
                     .setSaveConsumer(config.openaiBaseUrl::set)
                     .build());
 
             category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), config.openaiCustomBaseUrl.get())
                     .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
-                    .setDefaultValue("https://custom.api.url/")
+                    .setDefaultValue(TPPConfig.Default.openaiCustomBaseUrl)
                     .setSaveConsumer(config.openaiCustomBaseUrl::set)
                     .build());
 
