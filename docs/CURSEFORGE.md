@@ -19,19 +19,25 @@ A Minecraft mod for swift, light, and convenient auto translation.
 * **[Jade 🔍](https://www.curseforge.com/minecraft/mc-mods/jade)** (Compatible)
 * ~~**[Architectury API](https://www.curseforge.com/minecraft/mc-mods/architectury-api)**~~ (Required by `v1.x.x` only)
 
-## Usage
+## Usages
 
-### Translating Items
+### Translate Items
 
-1. Hover your mouse cursor over an item in your inventory, any container, or the JEI-like recipe sidebar.
+1. Hover cursor over an item in your inventory, any container, or the JEI-like recipe sidebar.
 2. Press the translate keybind (default: **T**).
 3. The translated result will appear.
 
-### Translating with Jade 🔍
+### Translate with Jade 🔍
 
 1. Look at a block or an entity with Jade showing its information.
-2. Press the translate keybind (default: **T**).
+2. Press the translate keybind.
 3. The translated result will appear.
+
+### Translate Chat Messages
+1. Hover cursor over a chat message.
+2. Press the translate keybind.
+3. The translated result will appear.
+* Note that keybind is recommended setting to non-symbolic key (`alt`, `ctrl`, etc.) to avoid typing conflict.
 
 ### Configuration
 
