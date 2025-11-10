@@ -8,7 +8,7 @@ import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 
 @EventBusSubscriber(modid = TranslatorPP.ID, value = Dist.CLIENT)
-public class TPPKeyMappingsNeoForge {
+public final class TPPKeyMappingsNeoForge {
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {

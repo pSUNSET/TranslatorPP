@@ -10,7 +10,7 @@ import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.event.ItemTooltipCallbacks;
 import net.psunset.translatorpp.event.ScreenCallbacks;
 
-public class TPPEventsFabric {
+public final class TPPEventsFabric {
 
     @Environment(EnvType.CLIENT)
     public static void init() {

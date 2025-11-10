@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class ClientUtl {
 
     /**
-     * {@link Player#sendSystemMessage(Component)} is not defined in higher 1.21.x versions.
+     * {@link Player#sendSystemMessage(Component)} is not defined after 1.21.1 versions.
      * But this function is compatible with all 1.21.x versions.
      */
     @Environment(EnvType.CLIENT)
@@ -21,7 +21,7 @@ public class ClientUtl {
     }
 
     /**
-     * {@link Player#sendSystemMessage(Component)} is not defined in higher 1.21.x versions.
+     * {@link Player#sendSystemMessage(Component)} is not defined in after 1.21.1 versions.
      * But this function is compatible with all 1.21.x versions.
      */
     @Environment(EnvType.CLIENT)
@@ -32,7 +32,7 @@ public class ClientUtl {
     }
 
     /**
-     * {@link Player#sendSystemMessage(Component)} is not defined in higher 1.21.x versions.
+     * {@link Player#sendSystemMessage(Component)} is not defined in after 1.21.1 versions.
      * But this function is compatible with all 1.21.x versions.
      */
     public static void message(Minecraft client, Component component) {

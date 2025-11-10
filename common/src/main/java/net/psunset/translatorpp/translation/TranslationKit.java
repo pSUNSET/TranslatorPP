@@ -91,7 +91,7 @@ public class TranslationKit {
 
     private CompletableFuture<Void> translationFuture = null;
 
-    public TranslationKit() {
+    private TranslationKit() {
     }
 
     public @Nullable String getHoveredText() {
@@ -225,6 +225,9 @@ public class TranslationKit {
         }
     }
 
+    /**
+     * Clear the translation cache.
+     */
     public void clearCache() {
         this.translationCache.clear();
     }
@@ -243,7 +246,7 @@ public class TranslationKit {
     private void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
         try {
             TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
+                    apiKey.isBlank() ? "NOT_SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
             OpenAIClientTool.getInstance().setApi(apiKey, api, customApi, model);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());

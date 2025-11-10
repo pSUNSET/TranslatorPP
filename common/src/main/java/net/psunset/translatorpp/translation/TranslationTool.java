@@ -19,16 +19,12 @@ public interface TranslationTool {
             for (Type type : values()) map.put(type.displayName, type);
         });
 
-        private final String displayName;
+        public final String displayName;
         private final Supplier<? extends TranslationTool> toolSup;
 
         Type(String displayName, Supplier<? extends TranslationTool> toolSup) {
             this.displayName = displayName;
             this.toolSup = toolSup;
-        }
-
-        public String getDisplayName() {
-            return displayName;
         }
 
         public TranslationTool getTool() {

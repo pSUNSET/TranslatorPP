@@ -24,7 +24,7 @@ public class GoogleTranslationTool implements TranslationTool {
 
     private final Gson gson = new GsonBuilder().create();;
 
-    public GoogleTranslationTool() {
+    private GoogleTranslationTool() {
     }
 
     @Override

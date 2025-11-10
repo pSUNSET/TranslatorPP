@@ -1,7 +1,10 @@
 package net.psunset.translatorpp.platform;
 
-public class Platform {
+import org.jetbrains.annotations.ApiStatus;
 
+public final class Platform {
+
+    @ApiStatus.Internal
     public static IPlatform INSTANCE;
 
     public static boolean isNeoForge() {

@@ -38,8 +38,7 @@ public class TPPConfigClothScreenNeoForge {
     }
 
     private static TPPConfigClothScreen create(Screen parent) {
-        return new TPPConfigClothScreen(parent,
-                List.of(General.INSTANCE, OpenAI.INSTANCE));
+        return new TPPConfigClothScreen(parent, new ScreenProvider[]{General.INSTANCE, OpenAI.INSTANCE});
     }
 
     /**
@@ -47,12 +46,12 @@ public class TPPConfigClothScreenNeoForge {
      */
     private static class General implements ScreenProvider {
 
-        public static General INSTANCE = new General();
+        private static final General INSTANCE = new General();
 
         @Override
         public Screen createScreen(Screen parent) {
 
-            TPPConfigImplNeoForge.General config = TPPConfigImplNeoForge.GENERAL;
+            var config = TPPConfigImplNeoForge.GENERAL;
 
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)
@@ -117,12 +116,12 @@ public class TPPConfigClothScreenNeoForge {
      */
     private static class OpenAI implements ScreenProvider {
 
-        public static OpenAI INSTANCE = new OpenAI();
+        private static final OpenAI INSTANCE = new OpenAI();
 
         @Override
         public Screen createScreen(Screen parent) {
 
-            TPPConfigImplNeoForge.OpenAI config = TPPConfigImplNeoForge.OPENAI;
+            var config = TPPConfigImplNeoForge.OPENAI;
 
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)

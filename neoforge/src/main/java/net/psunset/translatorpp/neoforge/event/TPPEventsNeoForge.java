@@ -9,7 +9,7 @@ import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.event.ItemTooltipCallbacks;
 import net.psunset.translatorpp.event.ScreenCallbacks;
 
-public class TPPEventsNeoForge {
+public final class TPPEventsNeoForge {
 
     public static void init(IEventBus gameBus, IEventBus modBus) {
         ClientTickCallbacks.POST.merge();

@@ -17,10 +17,10 @@ import java.util.List;
 
 public class TPPJadeExtension {
 
-    public static final IBlockComponentProvider BLOCK = new Block();
-    public static final ResourceLocation BLOCK_LOC = RLUtl.of("block_translation");
-    public static final IEntityComponentProvider ENTITY = new Entity();
-    public static final ResourceLocation ENTITY_LOC = RLUtl.of("entity_translation");
+    static final IBlockComponentProvider BLOCK = new Block();
+    private static final ResourceLocation BLOCK_LOC = RLUtl.of("block_translation");
+    static final IEntityComponentProvider ENTITY = new Entity();
+    private static final ResourceLocation ENTITY_LOC = RLUtl.of("entity_translation");
 
     public static final class Block implements IBlockComponentProvider {
 
@@ -48,7 +48,7 @@ public class TPPJadeExtension {
         }
     }
 
-    public static void tooltipCallback(Tooltip tooltip) {
+    private static void tooltipCallback(Tooltip tooltip) {
         if (Minecraft.getInstance().screen == null) {
             List<Component> hoveredTexts = new ArrayList<>(1); // TODO: Remove initial capacity
 
@@ -71,7 +71,7 @@ public class TPPJadeExtension {
         }
     }
 
-    public static void addResultToTooltip(TranslationKit kit, Tooltip tooltip) {
+    private static void addResultToTooltip(TranslationKit kit, Tooltip tooltip) {
         var styledResult = kit.getStyledResultLines();
         Style appliedStyle = styledResult.getLeft();
         String[] texts = styledResult.getRight();

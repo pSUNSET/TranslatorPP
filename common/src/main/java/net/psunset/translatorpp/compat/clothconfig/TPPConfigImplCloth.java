@@ -20,6 +20,7 @@ import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,16 +74,17 @@ public class TPPConfigImplCloth implements TPPConfig {
         return openai().openaiCustomBaseUrl;
     }
 
-    public static General general() {
+    static General general() {
         return generalHolder.getConfig();
     }
 
-    public static OpenAI openai() {
+    static OpenAI openai() {
         return openaiHolder.getConfig();
     }
 
-    public static List<TPPClothConfigData> configs() {
-        return List.of(general(), openai());
+    @ApiStatus.Internal
+    public static TPPClothConfigData[] configs() {
+        return new TPPClothConfigData[]{general(), openai()};
     }
 
     @Environment(EnvType.CLIENT)

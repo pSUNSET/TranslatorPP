@@ -25,6 +25,7 @@ import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,10 +36,14 @@ import java.util.stream.Collectors;
 @EventBusSubscriber(modid = TranslatorPP.ID)
 public class TPPConfigImplNeoForge implements TPPConfig {
 
+    @ApiStatus.Internal
     public static final General GENERAL;
+    @ApiStatus.Internal
     public static final ModConfigSpec generalSpec;
 
+    @ApiStatus.Internal
     public static final OpenAI OPENAI;
+    @ApiStatus.Internal
     public static final ModConfigSpec openaiSpec;
 
     static {

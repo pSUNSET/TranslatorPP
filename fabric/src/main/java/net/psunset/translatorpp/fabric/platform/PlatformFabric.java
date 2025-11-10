@@ -6,7 +6,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.psunset.translatorpp.platform.IPlatform;
 import net.psunset.translatorpp.platform.Platform;
 
-public class PlatformFabric implements IPlatform {
+public final class PlatformFabric implements IPlatform {
 
     static {
         Platform.INSTANCE = new PlatformFabric();

@@ -59,7 +59,7 @@ public class OpenAIClientTool implements TranslationTool {
 
     private final Gson gson = new GsonBuilder().create();
 
-    public OpenAIClientTool() {
+    private OpenAIClientTool() {
     }
 
     private void setApiKey(@NotNull String apiKey) {
@@ -82,7 +82,7 @@ public class OpenAIClientTool implements TranslationTool {
         return this.model;
     }
 
-    protected void setApi(String apiKey, Api api, @Nullable String customApiUrl, String model) {
+    void setApi(String apiKey, Api api, @Nullable String customApiUrl, String model) {
         this.setApiKey(apiKey.isBlank() ? "" : apiKey.strip());
         if (api.baseUrl != null) {
             this.setBaseUrl(api.baseUrl);
@@ -189,9 +189,12 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     /**
-     * Returns the model list from online.
+     * This is a private method.
+     * Please use {@link #refreshCacheModels()} and {@link #getCacheModels()} instead.
+     * <br>
+     * Returns the model list from online if possible; otherwise, returns the offline one.
      */
-    public Set<String> getModels() {
+    private Set<String> getModels() {
         if (this.apiKey.isEmpty() || this.baseUrl.isEmpty()) {
             TranslatorPP.LOGGER.warn("Error while getting online model list: API key or API provider not set, using offline one instead.");
             return getModelListOffline();
@@ -274,6 +277,8 @@ public class OpenAIClientTool implements TranslationTool {
 
     /**
      * Get the cached model list.
+     * To refresh the list, call {@link #refreshCacheModels()}.
+     * @see #refreshCacheModels()
      */
     public static Set<String> getCacheModels() {
         return cacheModels;
@@ -281,6 +286,8 @@ public class OpenAIClientTool implements TranslationTool {
 
     /**
      * Refresh the cached model list.
+     * To get the list, call {@link #getCacheModels()}.
+     * @see #getCacheModels()
      */
     public static void refreshCacheModels() {
         cacheModels.clear();

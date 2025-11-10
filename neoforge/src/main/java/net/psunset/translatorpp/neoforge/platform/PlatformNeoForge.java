@@ -6,7 +6,11 @@ import net.neoforged.fml.ModList;
 import net.psunset.translatorpp.platform.IPlatform;
 import net.psunset.translatorpp.platform.Platform;
 
-public class PlatformNeoForge implements IPlatform {
+public final class PlatformNeoForge implements IPlatform {
+
+    static {
+        Platform.INSTANCE = new PlatformNeoForge();
+    }
 
     @Override
     public boolean isNeoForge() {
@@ -25,6 +29,5 @@ public class PlatformNeoForge implements IPlatform {
 
     @OnlyIn(Dist.CLIENT)
     public static void init() {
-        Platform.INSTANCE = new PlatformNeoForge();
     }
 }
