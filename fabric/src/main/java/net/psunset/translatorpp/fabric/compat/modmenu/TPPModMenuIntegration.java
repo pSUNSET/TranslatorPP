@@ -6,7 +6,7 @@ import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.fabric.platform.PlatformFabric;
 import net.psunset.translatorpp.tool.CompatUtl;
 
-public class TPPModMenuIntegration implements ModMenuApi {
+public final class TPPModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         PlatformFabric.init(); // Prevent potential issues if ModMenu is loaded before Translator++.

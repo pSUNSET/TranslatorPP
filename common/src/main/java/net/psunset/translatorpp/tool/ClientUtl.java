@@ -5,9 +5,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ClientUtl {
+public final class ClientUtl {
 
     /**
      * {@link Player#sendSystemMessage(Component)} is not defined after 1.21.1 versions.
@@ -35,7 +36,7 @@ public class ClientUtl {
      * {@link Player#sendSystemMessage(Component)} is not defined in after 1.21.1 versions.
      * But this function is compatible with all 1.21.x versions.
      */
-    public static void message(Minecraft client, Component component) {
+    public static void message(@NotNull Minecraft client, Component component) {
         client.getChatListener().handleSystemMessage(component, false);
     }
 }

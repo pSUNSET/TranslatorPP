@@ -31,7 +31,8 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
     }
 
     /**
-     * For NeoForge-sided edition, {@link net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge}.
+     * Used by NeoForge-sided edition.
+     * @see net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge
      */
     @ApiStatus.Internal
     public TPPConfigClothScreen(final Screen parent, ScreenProvider[] configs) {

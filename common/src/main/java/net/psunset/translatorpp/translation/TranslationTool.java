@@ -2,6 +2,7 @@ package net.psunset.translatorpp.translation;
 
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -29,6 +30,10 @@ public interface TranslationTool {
 
         public TranslationTool getTool() {
             return toolSup.get();
+        }
+
+        public Component toComponent() {
+            return Component.literal(this.displayName);
         }
     }
 }

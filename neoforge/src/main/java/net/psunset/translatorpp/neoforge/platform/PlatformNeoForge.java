@@ -12,6 +12,9 @@ public final class PlatformNeoForge implements IPlatform {
         Platform.INSTANCE = new PlatformNeoForge();
     }
 
+    private PlatformNeoForge() {
+    }
+
     @Override
     public boolean isNeoForge() {
         return true;

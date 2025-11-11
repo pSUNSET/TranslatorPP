@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -312,6 +313,10 @@ public class OpenAIClientTool implements TranslationTool {
         Api(@Nullable String baseUrl, String defaultModel) {
             this.baseUrl = baseUrl;
             this.defaultModel = defaultModel;
+        }
+
+        public Component toComponent() {
+            return Component.literal(this.name());
         }
     }
 

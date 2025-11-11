@@ -12,6 +12,9 @@ public final class PlatformFabric implements IPlatform {
         Platform.INSTANCE = new PlatformFabric();
     }
 
+    private PlatformFabric() {
+    }
+
     @Override
     public boolean isNeoForge() {
         return false;

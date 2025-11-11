@@ -13,7 +13,12 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
+import org.jetbrains.annotations.ApiStatus;
 
+/**
+ * The main config interface for Translator++.
+ * To get config values, use {@link TPPConfig#getInstance()}.
+ */
 public interface TPPConfig {
     TranslationMode getTranslationMode();
 
@@ -58,9 +63,10 @@ public interface TPPConfig {
     class Dummy implements TPPConfig {
 
         /**
-         * The instance of the TPPConfig.
-         * Not only works for the dummy one.
+         * The instance of the TPPConfig, not only works for the dummy one.
+         * To get this instance, use {@link TPPConfig#getInstance()}.
          */
+        @ApiStatus.Internal
         public static TPPConfig INSTANCE;
 
         @Override

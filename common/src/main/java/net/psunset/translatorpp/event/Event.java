@@ -29,6 +29,9 @@ public final class Event<T extends Event.Callback> {
         return invoker;
     }
 
+    /**
+     * A base interface for event callbacks.
+     */
     interface Callback {
     }
 }

@@ -27,6 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The ClothConfig-compatible implementation of {@link TPPConfig}.
+ * To get config values, use {@link TPPConfig#getInstance()}.
+ */
+@ApiStatus.Internal
 public class TPPConfigImplCloth implements TPPConfig {
     private static ConfigHolder<General> generalHolder;
     private static ConfigHolder<OpenAI> openaiHolder;
@@ -82,7 +87,6 @@ public class TPPConfigImplCloth implements TPPConfig {
         return openaiHolder.getConfig();
     }
 
-    @ApiStatus.Internal
     public static TPPClothConfigData[] configs() {
         return new TPPClothConfigData[]{general(), openai()};
     }

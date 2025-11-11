@@ -6,7 +6,7 @@ import net.minecraft.client.KeyMapping;
 import net.psunset.translatorpp.tool.RLUtl;
 import org.lwjgl.glfw.GLFW;
 
-public class TPPKeyMappings {
+public final class TPPKeyMappings {
 
     private static final ImmutableSet.Builder<KeyMapping> ENTRIES = ImmutableSet.builder();
 

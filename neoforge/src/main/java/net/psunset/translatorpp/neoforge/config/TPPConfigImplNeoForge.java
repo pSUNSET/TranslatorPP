@@ -33,17 +33,18 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The NeoForge-sided implementation of {@link TPPConfig}.
+ * To get config values, use {@link TPPConfig#getInstance()}.
+ */
+@ApiStatus.Internal
 @EventBusSubscriber(modid = TranslatorPP.ID)
 public class TPPConfigImplNeoForge implements TPPConfig {
 
-    @ApiStatus.Internal
     public static final General GENERAL;
-    @ApiStatus.Internal
     public static final ModConfigSpec generalSpec;
 
-    @ApiStatus.Internal
     public static final OpenAI OPENAI;
-    @ApiStatus.Internal
     public static final ModConfigSpec openaiSpec;
 
     static {
@@ -53,6 +54,9 @@ public class TPPConfigImplNeoForge implements TPPConfig {
         final Pair<OpenAI, ModConfigSpec> openaiPair = new ModConfigSpec.Builder().configure(OpenAI::new);
         OPENAI = openaiPair.getLeft();
         openaiSpec = openaiPair.getRight();
+    }
+
+    public TPPConfigImplNeoForge() {
     }
 
     @Override
