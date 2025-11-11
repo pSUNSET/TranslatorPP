@@ -76,6 +76,7 @@ public class TPPConfigClothScreenNeoForge {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, config.translationMode.get())
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
+                    .setEnumNameProvider(e -> ((TranslationMode) e).toComponent())
                     .setDefaultValue(TPPConfig.Default.translationMode)
                     .setSaveConsumer(config.translationMode::set)
                     .build());
@@ -96,6 +97,7 @@ public class TPPConfigClothScreenNeoForge {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, config.translationTool.get())
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
+                    .setEnumNameProvider(e -> ((TranslationTool.Type) e).toComponent())
                     .setDefaultValue(TPPConfig.Default.translationTool)
                     .setSaveConsumer(config.translationTool::set)
                     .build());
@@ -142,6 +144,7 @@ public class TPPConfigClothScreenNeoForge {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, config.openaiBaseUrl.get())
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
+                    .setEnumNameProvider(e -> ((OpenAIClientTool.Api) e).toComponent())
                     .setDefaultValue(TPPConfig.Default.openaiBaseUrl)
                     .setSaveConsumer(config.openaiBaseUrl::set)
                     .build());

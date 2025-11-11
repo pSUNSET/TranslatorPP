@@ -142,6 +142,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, this.translationMode)
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
+                    .setEnumNameProvider(e -> ((TranslationMode) e).toComponent())
                     .setDefaultValue(Default.translationMode)
                     .setSaveConsumer(it -> this.translationMode = it)
                     .build());
@@ -162,6 +163,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, this.translationTool)
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
+                    .setEnumNameProvider(e -> ((TranslationTool.Type) e).toComponent())
                     .setDefaultValue(Default.translationTool)
                     .setSaveConsumer(it -> this.translationTool = it)
                     .build());
@@ -207,6 +209,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, this.openaiBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
+                    .setEnumNameProvider(e -> ((OpenAIClientTool.Api) e).toComponent())
                     .setDefaultValue(Default.openaiBaseUrl)
                     .setSaveConsumer(it -> this.openaiBaseUrl = it)
                     .build());
