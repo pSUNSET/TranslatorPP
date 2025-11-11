@@ -60,13 +60,14 @@ public interface TPPConfig {
      * The dummy implementation of TPPConfig, which uses default values.
      * Only used when no config API is available.
      */
+    @ApiStatus.Internal
     class Dummy implements TPPConfig {
 
         /**
          * The instance of the TPPConfig, not only works for the dummy one.
+         * Modify this field is not allowed.
          * To get this instance, use {@link TPPConfig#getInstance()}.
          */
-        @ApiStatus.Internal
         public static TPPConfig INSTANCE;
 
         @Override

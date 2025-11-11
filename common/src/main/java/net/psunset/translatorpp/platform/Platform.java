@@ -5,6 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 public final class Platform {
 
     /**
+     * Modify this field is not allowed.
      * Directly using this field is discouraged. Use the static helper methods in this class instead.
      */
     @ApiStatus.Internal
