@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.compat.clothconfig.gui;
 
-import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

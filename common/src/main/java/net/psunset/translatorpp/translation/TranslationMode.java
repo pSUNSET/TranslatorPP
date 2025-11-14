@@ -3,10 +3,12 @@ package net.psunset.translatorpp.translation;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.psunset.translatorpp.gui.ComponentizableEnum;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public enum TranslationMode {
+public enum TranslationMode implements ComponentizableEnum {
     /**
      * Only translates display name of item.
      */
@@ -41,7 +43,8 @@ public enum TranslationMode {
         this.displayName = displayName;
     }
 
-    public Component toComponent() {
+    @Override
+    public @NotNull Component toComponent() {
         return Component.literal(this.displayName);
     }
 }

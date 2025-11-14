@@ -3,6 +3,8 @@ package net.psunset.translatorpp.translation;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.psunset.translatorpp.gui.ComponentizableEnum;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -12,7 +14,7 @@ public interface TranslationTool {
 
     String translate(String q, String sl, String tl) throws Exception;
 
-    enum Type {
+    enum Type implements ComponentizableEnum {
         GoogleTranslation("Google Translation", GoogleTranslationTool::getInstance),
         OpenAIClient("OpenAI Client", OpenAIClientTool::getInstance);
 
@@ -32,7 +34,8 @@ public interface TranslationTool {
             return toolSup.get();
         }
 
-        public Component toComponent() {
+        @Override
+        public @NotNull Component toComponent() {
             return Component.literal(this.displayName);
         }
     }

@@ -5,8 +5,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
-import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.gui.ComponentizableEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -295,7 +295,7 @@ public class OpenAIClientTool implements TranslationTool {
         cacheModels.addAll(INSTANCE.getModels());
     }
 
-    public enum Api {
+    public enum Api implements ComponentizableEnum {
         OpenAI("https://api.openai.com/v1/", "gpt-4o-mini"),
         Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
         Grok("https://api.x.ai/v1/", "grok-3"),
@@ -313,10 +313,6 @@ public class OpenAIClientTool implements TranslationTool {
         Api(@Nullable String baseUrl, String defaultModel) {
             this.baseUrl = baseUrl;
             this.defaultModel = defaultModel;
-        }
-
-        public Component toComponent() {
-            return Component.literal(this.name());
         }
     }
 

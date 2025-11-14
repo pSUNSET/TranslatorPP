@@ -15,6 +15,7 @@ import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
+import net.psunset.translatorpp.gui.ComponentizableEnum;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
@@ -142,7 +143,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, this.translationMode)
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
-                    .setEnumNameProvider(e -> ((TranslationMode) e).toComponent())
+                    .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.translationMode)
                     .setSaveConsumer(it -> this.translationMode = it)
                     .build());
@@ -163,7 +164,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, this.translationTool)
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
-                    .setEnumNameProvider(e -> ((TranslationTool.Type) e).toComponent())
+                    .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.translationTool)
                     .setSaveConsumer(it -> this.translationTool = it)
                     .build());
@@ -209,7 +210,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, this.openaiBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
-                    .setEnumNameProvider(e -> ((OpenAIClientTool.Api) e).toComponent())
+                    .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.openaiBaseUrl)
                     .setSaveConsumer(it -> this.openaiBaseUrl = it)
                     .build());

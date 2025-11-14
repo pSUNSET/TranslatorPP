@@ -3,7 +3,7 @@ package net.psunset.translatorpp.tool;
 import net.psunset.translatorpp.platform.Platform;
 
 /**
- * Utility class for checking the presence of various mods for compatibility purposes.
+ * Involves utility classes for checking the presence of various mods for compatibility purposes.
  */
 public interface CompatUtl {
 
