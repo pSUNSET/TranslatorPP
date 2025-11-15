@@ -6,8 +6,8 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.api.ComponentizableEnum;
 import net.psunset.translatorpp.config.TPPConfig;
-import net.psunset.translatorpp.gui.ComponentizableEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

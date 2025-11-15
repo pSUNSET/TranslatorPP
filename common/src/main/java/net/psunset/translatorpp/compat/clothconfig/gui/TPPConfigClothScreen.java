@@ -9,8 +9,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.psunset.translatorpp.api.ScreenProvider;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
-import net.psunset.translatorpp.gui.ScreenProvider;
 import org.jetbrains.annotations.ApiStatus;
 
 @Environment(EnvType.CLIENT)
@@ -31,12 +31,12 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
 
     /**
      * Used by NeoForge-sided edition.
-     * @see net.psunset.translatorpp.neoforge.compat.clothconfig.gui.TPPConfigClothScreenNeoForge
+     * @see net.psunset.translatorpp.compat.clothconfig.neoforge.TPPConfigClothScreenNeoForge
      */
     @ApiStatus.Internal
     public TPPConfigClothScreen(final Screen parent, ScreenProvider[] configs) {
         super(parent, Minecraft.getInstance().options, Component.translatable(TITLE));
-        this.configs = configs.clone();
+        this.configs = configs;
     }
 
     @Override

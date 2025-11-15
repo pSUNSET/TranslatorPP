@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.annotations.ExpectMixin;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
@@ -37,10 +38,10 @@ public interface TPPConfig {
     String getOpenaiCustomBaseUrl();
 
     @Environment(EnvType.CLIENT)
+    @ExpectMixin(value = ExpectMixin.Expected.NEOFORGE, method = ExpectMixin.Method.OVERWRITE)
     static void init() {
         if (Platform.isNeoForge()) {
-            TranslatorPP.LOGGER.debug("NeoForge is loaded, using neoforge for Translator++ Config.");
-            // Injected
+            throw new AssertionError();
         } else if (CompatUtl.ClothConfig.isLoaded()) {
             TranslatorPP.LOGGER.debug("Cloth Config is loaded, using cloth config for Translator++ Config.");
             Dummy.INSTANCE = new TPPConfigImplCloth();

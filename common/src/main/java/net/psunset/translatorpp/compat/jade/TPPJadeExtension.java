@@ -15,7 +15,7 @@ import snownee.jade.impl.Tooltip;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TPPJadeExtension {
+public final class TPPJadeExtension {
 
     static final IBlockComponentProvider BLOCK = new Block();
     private static final ResourceLocation BLOCK_LOC = RLUtl.of("block_translation");

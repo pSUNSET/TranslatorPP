@@ -1,0 +1,16 @@
+package net.psunset.translatorpp.keybind.fabric;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
+
+public final class TPPKeyMappingsImpl {
+
+    @Environment(EnvType.CLIENT)
+    public static void init() {
+        for (var key : TPPKeyMappings.getEntries()) {
+            KeyBindingHelper.registerKeyBinding(key);
+        }
+    }
+}
