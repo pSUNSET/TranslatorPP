@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public class Event<T extends Event.Callback> {
+public final class Event<T extends Event.Callback> {
     private T[] callbacks;
     private final Function<T[], T> merger;
     private volatile T invoker;
@@ -29,6 +29,9 @@ public class Event<T extends Event.Callback> {
         return invoker;
     }
 
+    /**
+     * A base interface for event callbacks.
+     */
     interface Callback {
     }
 }

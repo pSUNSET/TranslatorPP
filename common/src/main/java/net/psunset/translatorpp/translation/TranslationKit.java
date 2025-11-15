@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 
 public class TranslationKit {
 
-    static TranslationKit INSTANCE;
+    static final TranslationKit INSTANCE = new TranslationKit();
 
     public static final String SEPARATOR = "<@>";
     public static final String SUCCESS = "<O>";
@@ -91,7 +91,7 @@ public class TranslationKit {
 
     private CompletableFuture<Void> translationFuture = null;
 
-    public TranslationKit() {
+    private TranslationKit() {
     }
 
     public @Nullable String getHoveredText() {
@@ -168,7 +168,7 @@ public class TranslationKit {
         translationFuture = CompletableFuture
                 .supplyAsync(() -> {
                     try {
-                        return TPPConfig.getInstance().getTranslationTool().getTool().translate(
+                        return TPPConfig.getInstance().getTranslationTool().tool.translate(
                                 translatedText,
                                 TPPConfig.getInstance().getSourceLanguage(),
                                 TPPConfig.getInstance().getTargetLanguage()
@@ -225,13 +225,18 @@ public class TranslationKit {
         }
     }
 
+    /**
+     * Clear the translation cache.
+     */
     public void clearCache() {
         this.translationCache.clear();
     }
 
     /**
      * Refresh the OpenAI client tool with the latest configuration.
+     * @deprecated Simply use {@link OpenAIClientTool#refresh()} instead.
      */
+    @Deprecated
     public void refreshOpenAIClientTool() {
         TPPConfig config = TPPConfig.getInstance();
         refreshOpenAIClientTool(config.getOpenaiApiKey(), config.getOpenaiBaseUrl(), config.getOpenaiCustomBaseUrl(), config.getOpenaiModel());
@@ -239,12 +244,14 @@ public class TranslationKit {
 
     /**
      * Refresh the OpenAI client tool.
+     * @deprecated Simply use {@link OpenAIClientTool#safeRefresh(String, OpenAIClientTool.Api, String, String)} instead.
      */
+    @Deprecated
     private void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
         try {
             TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
-            OpenAIClientTool.getInstance().setApi(apiKey, api, customApi, model);
+                    apiKey.isBlank() ? "NOT_SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
+            OpenAIClientTool.getInstance().unsafeRefresh(apiKey, api, customApi, model);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
         }
@@ -321,8 +328,6 @@ public class TranslationKit {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        TranslatorPP.LOGGER.debug("Initializing TranslationKit");
-        INSTANCE = new TranslationKit();
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
         ItemTooltipCallbacks.EVENT.register((stack, context, flag, lines) -> {

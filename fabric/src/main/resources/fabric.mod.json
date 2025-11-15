@@ -17,10 +17,10 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "net.psunset.translatorpp.fabric.TranslatorPPFabric"
+      "net.psunset.translatorpp.fabric.TranslatorPPImpl"
     ],
     "modmenu": [
-      "net.psunset.translatorpp.fabric.compat.modmenu.TPPModMenuIntegration"
+      "net.psunset.translatorpp.compat.fabric.modmenu.TPPModMenuIntegration"
     ],
     "jade": [
       "net.psunset.translatorpp.compat.jade.TPPCompatJade"

@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.psunset.translatorpp.mixinaccess.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

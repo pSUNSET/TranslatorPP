@@ -1,0 +1,161 @@
+package net.psunset.translatorpp.compat.clothconfig.gui.neoforge;
+
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.psunset.translatorpp.api.ScreenProvider;
+import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
+import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.config.neoforge.TPPConfigImplNeoForge;
+import net.psunset.translatorpp.keybind.TPPKeyMappings;
+import net.psunset.translatorpp.translation.OpenAIClientTool;
+import net.psunset.translatorpp.translation.TranslationMode;
+import net.psunset.translatorpp.translation.TranslationTool;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+public class TPPConfigClothScreenNeoForge {
+
+    @OnlyIn(Dist.CLIENT)
+    public static void init() {
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, TPPConfigClothScreenNeoForge::afterClientTickIfHasClothConfig);
+    }
+
+    public static void afterClientTickIfHasClothConfig(ClientTickEvent.Post event) {
+        if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
+            Minecraft.getInstance().setScreen(create(Minecraft.getInstance().screen));
+        }
+    }
+
+    private static TPPConfigClothScreen create(Screen parent) {
+        return new TPPConfigClothScreen(parent, new ScreenProvider[]{General.INSTANCE, OpenAI.INSTANCE});
+    }
+
+    /**
+     * An edition of {@link net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth.General}
+     */
+    private static class General implements ScreenProvider {
+
+        private static final General INSTANCE = new General();
+
+        @Override
+        public Screen createScreen(Screen parent) {
+
+            var config = TPPConfigImplNeoForge.GENERAL;
+
+            ConfigBuilder builder = ConfigBuilder.create()
+                    .setParentScreen(parent)
+                    .setSavingRunnable(() -> {
+                        TPPConfigImplNeoForge.generalSpec.save();
+                    })
+                    .setTitle(Component.translatable("config.title.translatorpp"));
+
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            // The translation of the component doesn't exist because it's completely unaccessible.
+            ConfigCategory category = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.default"));
+
+            List<String> tlList = Arrays.stream(Locale.getAvailableLocales())
+                    .map(Locale::toLanguageTag)
+                    .distinct()
+                    .sorted(String::compareTo)
+                    .toList();
+
+            List<String> slList = new ArrayList<>(tlList.size() + 1);
+            slList.add("auto");
+            slList.addAll(tlList);
+
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, config.translationMode.get())
+                    .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
+                    .setEnumNameProvider(e -> ((TranslationMode) e).toComponent())
+                    .setDefaultValue(TPPConfig.Default.translationMode)
+                    .setSaveConsumer(config.translationMode::set)
+                    .build());
+
+            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), config.sourceLanguage.get())
+                    .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
+                    .setSelections(slList)
+                    .setDefaultValue(TPPConfig.Default.sourceLanguage)
+                    .setSaveConsumer(config.sourceLanguage::set)
+                    .build());
+
+            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), config.targetLanguage.get())
+                    .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
+                    .setSelections(tlList)
+                    .setDefaultValue(TPPConfig.Default.targetLanguage)
+                    .setSaveConsumer(config.targetLanguage::set)
+                    .build());
+
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, config.translationTool.get())
+                    .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
+                    .setEnumNameProvider(e -> ((TranslationTool.Type) e).toComponent())
+                    .setDefaultValue(TPPConfig.Default.translationTool)
+                    .setSaveConsumer(config.translationTool::set)
+                    .build());
+
+            category.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), config.openaiModel.get())
+                    .setSelections(OpenAIClientTool.getCacheModels())
+                    .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
+                    .setDefaultValue(TPPConfig.Default.openaiModel)
+                    .setSaveConsumer(config.openaiModel::set)
+                    .build());
+
+            return builder.build();
+        }
+    }
+
+    /**
+     * An edition of {@link net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth.OpenAI}
+     */
+    private static class OpenAI implements ScreenProvider {
+
+        private static final OpenAI INSTANCE = new OpenAI();
+
+        @Override
+        public Screen createScreen(Screen parent) {
+
+            var config = TPPConfigImplNeoForge.OPENAI;
+
+            ConfigBuilder builder = ConfigBuilder.create()
+                    .setParentScreen(parent)
+                    .setSavingRunnable(() -> {
+                        TPPConfigImplNeoForge.openaiSpec.save();
+                    })
+                    .setTitle(Component.translatable("config.title.translatorpp"));
+
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            // The translation of the component doesn't exist because it's completely unaccessible.
+            ConfigCategory category = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.default"));
+
+            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), config.openaiApiKey.get())
+                    .setTooltip(Component.translatable("config.translatorpp.openai_apikey.tooltip"))
+                    .setDefaultValue(TPPConfig.Default.openaiApiKey)
+                    .setSaveConsumer(config.openaiApiKey::set)
+                    .build());
+
+            category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, config.openaiBaseUrl.get())
+                    .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
+                    .setEnumNameProvider(e -> ((OpenAIClientTool.Api) e).toComponent())
+                    .setDefaultValue(TPPConfig.Default.openaiBaseUrl)
+                    .setSaveConsumer(config.openaiBaseUrl::set)
+                    .build());
+
+            category.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), config.openaiCustomBaseUrl.get())
+                    .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
+                    .setDefaultValue(TPPConfig.Default.openaiCustomBaseUrl)
+                    .setSaveConsumer(config.openaiCustomBaseUrl::set)
+                    .build());
+
+            return builder.build();
+        }
+    }
+}

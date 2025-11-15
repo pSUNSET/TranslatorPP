@@ -1,0 +1,164 @@
+package net.psunset.translatorpp.config.neoforge.gui;
+
+import com.mojang.datafixers.util.Function4;
+import com.mojang.realmsclient.RealmsMainScreen;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfigs;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
+/**
+ * An edition of {@link ConfigurationScreen}
+ */
+@OnlyIn(Dist.CLIENT)
+public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
+
+    private static final String NEOFORGE_LANG_PREFIX = "neoforge.configuration.uitext.";
+    private static final String TITLE = "config.title.translatorpp";
+    private static final String SUBTITLE_PREFIX = TITLE + ".";
+    private static final String CATEGORY_PREFIX = "config.category.translatorpp.";
+    private static final String SECTION = NEOFORGE_LANG_PREFIX + "section";
+    private static final String FILENAME_TOOLTIP = NEOFORGE_LANG_PREFIX + "filenametooltip";
+    private static final ChatFormatting FILENAME_TOOLTIP_STYLE = ChatFormatting.GRAY;
+
+    private static final MutableComponent EMPTY_LINE = Component.literal("\n\n");
+
+    protected final ModContainer mod;
+    private final Function4<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
+
+    public ModConfigSpec.RestartType needsRestart = ModConfigSpec.RestartType.NONE;
+    // If there is only one config type (and it can be edited, we show that instantly on the way "down" and want to close on the way "up".
+    // But when returning from the restart/reload confirmation screens, we need to stay open.
+    private boolean autoClose = false;
+
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent) {
+        this(mod, parent, ConfigurationScreen.ConfigurationSectionScreen::new);
+    }
+
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, ConfigurationScreen.ConfigurationSectionScreen.Filter filter) {
+        this(mod, parent, (a, b, c, d) -> new ConfigurationScreen.ConfigurationSectionScreen(a, b, c, d, filter));
+    }
+
+    @SuppressWarnings("resource")
+    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, Function4<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen) {
+        super(parent, Minecraft.getInstance().options, Component.translatable(TITLE));
+        this.mod = mod;
+        this.sectionScreen = sectionScreen;
+    }
+
+    @Override
+    protected void addOptions() {
+        Button btn;
+        for (final ModConfig.Type type : ModConfig.Type.values()) {
+            for (final ModConfig modConfig : ModConfigs.getConfigSet(type)) {
+                if (modConfig.getModId().equals(mod.getModId())) {
+                    String configName = modConfig.getFileName().substring(13, modConfig.getFileName().length() - 5);
+                    btn = Button.builder(Component.translatable(SECTION, Component.translatable(CATEGORY_PREFIX + configName)),
+                            button -> minecraft.setScreen(sectionScreen.apply(this, type, modConfig, Component.translatable(SUBTITLE_PREFIX + configName)))).width(ConfigurationScreen.BIG_BUTTON_WIDTH).build();
+                    MutableComponent tooltip = Component.empty();
+                    if (!((ModConfigSpec) modConfig.getSpec()).isLoaded()) {
+                        tooltip.append(ConfigurationScreen.TOOLTIP_CANNOT_EDIT_NOT_LOADED).append(EMPTY_LINE);
+                        btn.active = false;
+                    }
+                    tooltip.append(Component.translatable(FILENAME_TOOLTIP, modConfig.getFileName()).withStyle(FILENAME_TOOLTIP_STYLE));
+                    btn.setTooltip(Tooltip.create(tooltip));
+                    list.addSmall(btn, null);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void added() {
+        super.added();
+        if (autoClose) {
+            autoClose = false;
+            onClose();
+        }
+    }
+
+    @SuppressWarnings("incomplete-switch")
+    @Override
+    public void onClose() {
+        switch (needsRestart) {
+            case GAME -> {
+                minecraft.setScreen(new TooltipConfirmScreen(b -> {
+                    if (b) {
+                        minecraft.stop();
+                    } else {
+                        super.onClose();
+                    }
+                }, ConfigurationScreen.GAME_RESTART_TITLE, ConfigurationScreen.GAME_RESTART_MESSAGE, ConfigurationScreen.GAME_RESTART_YES, ConfigurationScreen.RESTART_NO));
+                return;
+            }
+            case WORLD -> {
+                if (minecraft.level != null) {
+                    minecraft.setScreen(new TooltipConfirmScreen(b -> {
+                        if (b) {
+                            // when changing server configs from the client is added, this is where we tell the server to restart and activate the new config.
+                            // also needs a different text in MP ("server will restart/exit, yada yada") than in SP
+                            onDisconnect();
+                        } else {
+                            super.onClose();
+                        }
+                    }, ConfigurationScreen.SERVER_RESTART_TITLE, ConfigurationScreen.SERVER_RESTART_MESSAGE, minecraft.isLocalServer() ? ConfigurationScreen.RETURN_TO_MENU : CommonComponents.GUI_DISCONNECT, ConfigurationScreen.RESTART_NO));
+                    return;
+                }
+            }
+        }
+        super.onClose();
+    }
+
+    // direct copy from PauseScreen (which has the best implementation), sadly it's not really accessible
+    private void onDisconnect() {
+        boolean flag = this.minecraft.isLocalServer();
+        ServerData serverdata = this.minecraft.getCurrentServer();
+        this.minecraft.level.disconnect(ClientLevel.DEFAULT_QUIT_MESSAGE);
+        if (flag) {
+            this.minecraft.disconnectWithSavingScreen();
+        } else {
+            this.minecraft.disconnectWithProgressScreen();
+        }
+
+        TitleScreen titlescreen = new TitleScreen();
+        if (flag) {
+            this.minecraft.setScreen(titlescreen);
+        } else if (serverdata != null && serverdata.isRealm()) {
+            this.minecraft.setScreen(new RealmsMainScreen(titlescreen));
+        } else {
+            this.minecraft.setScreen(new JoinMultiplayerScreen(titlescreen));
+        }
+    }
+
+
+    private static final class TooltipConfirmScreen extends ConfirmScreen {
+        private TooltipConfirmScreen(BooleanConsumer callback, Component title, Component message, Component yesButton, Component noButton) {
+            super(callback, title, message, yesButton, noButton);
+        }
+
+        @Override
+        protected void addButtons(LinearLayout layout) {
+            super.addButtons(layout);
+            this.noButton.setTooltip(Tooltip.create(ConfigurationScreen.RESTART_NO_TOOLTIP));
+        }
+    }
+}

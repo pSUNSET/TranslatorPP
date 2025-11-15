@@ -33,7 +33,7 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
 
 //    modRuntimeOnly "mezz.jei:jei-1.21.7-neoforge:$jei_version"
-//    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
 
     // FTB Quests
 
