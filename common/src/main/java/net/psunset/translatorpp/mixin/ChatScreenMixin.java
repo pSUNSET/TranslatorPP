@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.psunset.translatorpp.mixinaccess.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
 import net.psunset.translatorpp.translation.TranslationKit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +31,7 @@ public abstract class ChatScreenMixin extends Screen {
                 TranslationKit.getInstance().isTranslated() &&
                 TranslationKit.getInstance().getTranslatedResult() != null &&
                 text.equals(TranslationKit.getInstance().getTranslatedText())) {
-            var style = Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(TranslationKit.getInstance().createResultForChat()));
+            var style = Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TranslationKit.getInstance().createResultForChat()));
             guiGraphics.renderComponentHoverEffect(this.font, style, i, j);
             ci.cancel();
         }

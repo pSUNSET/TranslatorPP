@@ -1,11 +1,13 @@
 package net.psunset.translatorpp.compat.jade;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.psunset.translatorpp.tool.RLUtl;
+import net.psunset.translatorpp.tool.TooltipUtl;
 import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
@@ -60,20 +62,27 @@ public class TPPJadeExtension {
                     }
                 }
             }
-            setHoveredText(TranslationKit.getInstance(), hoveredTexts);
+            TranslationKit.getInstance().setHoveredText(hoveredTexts);
 
             if (TranslationKit.getInstance().isTranslated() &&
                     TranslationKit.getInstance().getTranslatedResult() != null &&
-                    getCombinedTooltipTexts(hoveredTexts).equals(TranslationKit.getInstance().getTranslatedText())) {
+                    TooltipUtl.getCombinedTooltipText(hoveredTexts).equals(TranslationKit.getInstance().getTranslatedText())) {
                 addResultToTooltip(TranslationKit.getInstance(), tooltip);
             }
         }
     }
 
     public static void addResultToTooltip(TranslationKit kit, Tooltip tooltip) {
-        var styledResult = kit.getStyledResultLines();
-        Style appliedStyle = styledResult.getLeft();
-        String[] texts = styledResult.getRight();
+        Style appliedStyle = Style.EMPTY;
+
+        switch (kit.getTranslatedResult().substring(kit.getTranslatedResult().length() - 3)) {
+            case TranslationKit.PROCESSING -> appliedStyle = appliedStyle.withColor(ChatFormatting.DARK_GRAY);
+            case TranslationKit.ERROR -> appliedStyle = appliedStyle.withColor(ChatFormatting.RED);
+            default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
+        }
+
+        String combinedText = kit.getTranslatedResult().substring(0, kit.getTranslatedResult().length() - 3);
+        String[] texts = combinedText.split(TranslationKit.SEPARATOR);
 
         // TODO: Make Jade HUD can adapt to TranslationMode
         tooltip.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
@@ -104,21 +113,5 @@ public class TPPJadeExtension {
 //                }
 //            }
 //        }
-    }
-
-    public static void setHoveredText(TranslationKit kit, List<FormattedText> tooltip) {
-        if (tooltip.isEmpty()) {
-            kit.setHoveredText((String) null);
-            return;
-        }
-        kit.setHoveredText(getCombinedTooltipTexts(tooltip));
-    }
-
-    public static List<String> getTooltipTexts(List<FormattedText> tooltip) {
-        return tooltip.stream().map(FormattedText::getString).toList();
-    }
-
-    public static String getCombinedTooltipTexts(List<FormattedText> tooltip) {
-        return String.join(TranslationKit.SEPARATOR, getTooltipTexts(tooltip));
     }
 }

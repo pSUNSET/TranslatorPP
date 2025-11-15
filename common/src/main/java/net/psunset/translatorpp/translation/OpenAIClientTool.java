@@ -6,6 +6,9 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.api.ComponentizableEnum;
+import net.psunset.translatorpp.config.TPPConfig;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -22,7 +25,7 @@ import java.util.Set;
 
 public class OpenAIClientTool implements TranslationTool {
 
-    private static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
+    static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
     public static final String PROMPT = """
             You are a precise translation assistant.
             Translate from '%s' to '%s', keeping '%s' (split pattern) as-is.
@@ -35,6 +38,10 @@ public class OpenAIClientTool implements TranslationTool {
             Only provide the translated text as output, without any additional explanations or formatting.
             """;
 
+    /**
+     * Grabbing the model list from online costs too much time.
+     * So create a cache here to get it more swiftly.
+     */
     private static final Set<String> cacheModels = Sets.newHashSet();
 
     private static final int CONNECT_TIMEOUT = 10000; // 10 seconds
@@ -44,35 +51,68 @@ public class OpenAIClientTool implements TranslationTool {
         return INSTANCE;
     }
 
-    private String apiKey;
-    private String baseUrl;
-    private String model;
+    // Three properties below cannot be null, but can be empty strings.
+    @NotNull
+    private String apiKey = "";
+    @NotNull
+    private String baseUrl = "";
+    @NotNull
+    private String model = "";
+
     private final Gson gson = new GsonBuilder().create();
 
-    public OpenAIClientTool() {
+    private OpenAIClientTool() {
     }
 
-    private void setApiKey(String apiKey) {
+    private void setApiKey(@NotNull String apiKey) {
         this.apiKey = apiKey;
     }
 
-    private void setBaseUrl(String baseUrl) {
+    private void setBaseUrl(@NotNull String baseUrl) {
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     }
 
-    public String getBaseUrl() {
+    public @NotNull String getBaseUrl() {
         return this.baseUrl;
     }
 
-    private void setModel(String model) {
+    private void setModel(@NotNull String model) {
         this.model = model;
     }
 
-    public String getModel() {
+    public @NotNull String getModel() {
         return this.model;
     }
 
-    protected void setApi(String apiKey, Api api, @Nullable String customApiUrl, String model) {
+    /**
+     * Refresh self properties with the latest configuration.
+     */
+    public void refresh() {
+        TPPConfig config = TPPConfig.getInstance();
+        safeRefresh(config.getOpenaiApiKey(), config.getOpenaiBaseUrl(), config.getOpenaiCustomBaseUrl(), config.getOpenaiModel());
+    }
+
+    /**
+     * Refresh self properties.
+     * Auto catch exceptions and log errors.
+     */
+    private void safeRefresh(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
+        try {
+            this.unsafeRefresh(apiKey, api, customApi, model);
+            String shownApiKey = this.apiKey.isEmpty() ? "NOT_SET" : "****" + this.apiKey.substring(apiKey.length() - 4); // Avoid logging full API key
+            TranslatorPP.LOGGER.debug("OpenAI Client Tool is currently set to {apiKey={}, baseUrl={}, model={}}",
+                    shownApiKey, this.baseUrl, this.model);
+        } catch (Exception e) {
+            TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
+        }
+    }
+
+    /**
+     * Refresh self properties.
+     *
+     * @throws IllegalArgumentException if {@code api} is {@code Custom} and {@code customApiUrl} is {@code null}.
+     */
+    void unsafeRefresh(String apiKey, Api api, @Nullable String customApiUrl, String model) {
         this.setApiKey(apiKey.isBlank() ? "" : apiKey.strip());
         if (api.baseUrl != null) {
             this.setBaseUrl(api.baseUrl);
@@ -90,7 +130,7 @@ public class OpenAIClientTool implements TranslationTool {
     @Override
     public String translate(String q, String sl, String tl) throws Exception {
         if (!this.isPresent()) {
-            throw new IllegalStateException("OpenAIClientTool is not configured. API key, API provider, and model must be set.");
+            throw new IllegalStateException("OpenAIClientTool is not completely configured. API key, API provider, and model must be set.");
         }
 
         String formattedPrompt = PROMPT.formatted(sl, tl, TranslationKit.SEPARATOR, q);
@@ -174,14 +214,20 @@ public class OpenAIClientTool implements TranslationTool {
         }
     }
 
+    /**
+     * Returns true if all necessary properties are set.
+     */
     public boolean isPresent() {
         return !this.apiKey.isEmpty() && !this.baseUrl.isEmpty() && !this.model.isEmpty();
     }
 
     /**
-     * Returns the model list from online.
+     * This is a private method.
+     * Please use {@link #refreshCacheModels()} and {@link #getCacheModels()} instead.
+     * <br>
+     * Returns the model list from online if possible; otherwise, returns the offline one.
      */
-    public Set<String> getModels() {
+    private Set<String> getModels() {
         if (this.apiKey.isEmpty() || this.baseUrl.isEmpty()) {
             TranslatorPP.LOGGER.warn("Error while getting online model list: API key or API provider not set, using offline one instead.");
             return getModelListOffline();
@@ -262,16 +308,28 @@ public class OpenAIClientTool implements TranslationTool {
         return Sets.newHashSet(TEMP_AVAILABLE_MODEL_LIST);
     }
 
+    /**
+     * Get the cached model list.
+     * To refresh the list, call {@link #refreshCacheModels()}.
+     *
+     * @see #refreshCacheModels()
+     */
     public static Set<String> getCacheModels() {
         return cacheModels;
     }
 
+    /**
+     * Refresh the cached model list.
+     * To get the list, call {@link #getCacheModels()}.
+     *
+     * @see #getCacheModels()
+     */
     public static void refreshCacheModels() {
         cacheModels.clear();
         cacheModels.addAll(INSTANCE.getModels());
     }
 
-    public enum Api {
+    public enum Api implements ComponentizableEnum {
         OpenAI("https://api.openai.com/v1/", "gpt-4o-mini"),
         Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
         Grok("https://api.x.ai/v1/", "grok-3"),
@@ -292,6 +350,10 @@ public class OpenAIClientTool implements TranslationTool {
         }
     }
 
+    /**
+     * An exception indicating a service error from the OpenAI API.
+     * Includes a message with the HTTP status code.
+     */
     public static class ServiceException extends RuntimeException {
         public final int statusCode;
 

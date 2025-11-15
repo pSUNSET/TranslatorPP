@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.annotations.ExpectMixin;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
@@ -13,7 +14,12 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
+import org.jetbrains.annotations.ApiStatus;
 
+/**
+ * The main config interface for Translator++.
+ * To get config values, use {@link TPPConfig#getInstance()}.
+ */
 public interface TPPConfig {
     TranslationMode getTranslationMode();
 
@@ -32,17 +38,17 @@ public interface TPPConfig {
     String getOpenaiCustomBaseUrl();
 
     @Environment(EnvType.CLIENT)
+    @ExpectMixin(value = ExpectMixin.Expected.NEOFORGE, method = ExpectMixin.Method.OVERWRITE)
     static void init() {
         if (Platform.isNeoForge()) {
-            TranslatorPP.LOGGER.debug("NeoForge is loaded, using neoforge for Translator++ Config.");
-            // Injected
+            throw new AssertionError();
         } else if (CompatUtl.ClothConfig.isLoaded()) {
             TranslatorPP.LOGGER.debug("Cloth Config is loaded, using cloth config for Translator++ Config.");
             Dummy.INSTANCE = new TPPConfigImplCloth();
             TPPConfigImplCloth.init();
         } else {
             TranslatorPP.LOGGER.debug("No config API is loaded, using default values for Translator++ Config.");
-            Dummy.INSTANCE = new TPPConfig.Dummy();
+            Dummy.INSTANCE = new Dummy();
             Dummy.init();
         }
     }
@@ -51,11 +57,17 @@ public interface TPPConfig {
         return Dummy.INSTANCE;
     }
 
+    /**
+     * The dummy implementation of TPPConfig, which uses default values.
+     * Only used when no config API is available.
+     */
+    @ApiStatus.Internal
     class Dummy implements TPPConfig {
 
         /**
-         * The instance of the TPPConfig.
-         * Not only works for the dummy one.
+         * The instance of the TPPConfig, not only works for the dummy one.
+         * Modify this field is not allowed.
+         * To get this instance, use {@link TPPConfig#getInstance()}.
          */
         public static TPPConfig INSTANCE;
 
@@ -102,12 +114,15 @@ public interface TPPConfig {
         public static void init() {
             ClientTickCallbacks.POST.register(client -> {
                 while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
-                     ClientUtl.message(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
+                    ClientUtl.message(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
                 }
             });
         }
     }
 
+    /**
+     * To store default values.
+     */
     interface Default {
         TranslationMode translationMode = TranslationMode.NAME_ONLY;
         String sourceLanguage = "auto";

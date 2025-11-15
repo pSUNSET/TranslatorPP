@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
@@ -27,7 +28,7 @@ import java.util.stream.IntStream;
 
 public class TranslationKit {
 
-    protected static TranslationKit INSTANCE;
+    static final TranslationKit INSTANCE = new TranslationKit();
 
     public static final String SEPARATOR = "<@>";
     public static final String SUCCESS = "<O>";
@@ -47,6 +48,10 @@ public class TranslationKit {
 
     // TODO: Make cache size configurable
     private static final int MAX_CACHE_SIZE = 100;
+
+    /**
+     * A cache with LRU eviction policy to store recent translations.
+     */
     private final Map<String, String> translationCache = Collections.synchronizedMap(
             new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
                 @Override
@@ -56,17 +61,38 @@ public class TranslationKit {
             }
     );
 
+    /**
+     * The text currently being hovered over, null if none.
+     */
     @Nullable
     private String hoveredText = null;
+
+    /**
+     * The text that is being translated, null if not translating yet.
+     */
     @Nullable
     private String translatedText = null;
+
+    /**
+     * The result of the translation, null if not translated yet.
+     */
     @Nullable
     private volatile String translatedResult = null;
+
+    /**
+     * Whether a translation is in progress or completed.
+     */
     private volatile boolean translated = false;
+
+    /**
+     * Used when a screen open, key.isDown() won't work.
+     * When there is no screen open, set to null.
+     */
     private boolean translateKeyDown = false;
+
     private CompletableFuture<Void> translationFuture = null;
 
-    public TranslationKit() {
+    private TranslationKit() {
     }
 
     public @Nullable String getHoveredText() {
@@ -81,7 +107,7 @@ public class TranslationKit {
         this.hoveredText = TooltipUtl.getCombinedTooltipText(stack, client);
     }
 
-    public void setHoveredText(List<Component> tooltip) {
+    public void setHoveredText(List<? extends FormattedText> tooltip) {
         if (tooltip.isEmpty()) {
             this.hoveredText = null;
             return;
@@ -113,6 +139,9 @@ public class TranslationKit {
         translateKeyDown = isKeyDown;
     }
 
+    /**
+     * Start translating the currently hovered text.
+     */
     public void start(Minecraft client) {
         if (hoveredText == null || hoveredText.equals(translatedText)) {
             // Already translating or translated this exact stack instance
@@ -140,7 +169,7 @@ public class TranslationKit {
         translationFuture = CompletableFuture
                 .supplyAsync(() -> {
                     try {
-                        return TPPConfig.getInstance().getTranslationTool().getTool().translate(
+                        return TPPConfig.getInstance().getTranslationTool().tool.translate(
                                 translatedText,
                                 TPPConfig.getInstance().getSourceLanguage(),
                                 TPPConfig.getInstance().getTargetLanguage()
@@ -182,6 +211,9 @@ public class TranslationKit {
         ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
     }
 
+    /**
+     * Stop any ongoing translation and clear the translated state.
+     */
     public void stop() {
         if (this.translated) {
             if (translationFuture != null && !translationFuture.isDone()) {
@@ -194,25 +226,41 @@ public class TranslationKit {
         }
     }
 
+    /**
+     * Clear the translation cache.
+     */
     public void clearCache() {
         this.translationCache.clear();
     }
 
+    /**
+     * Refresh the OpenAI client tool with the latest configuration.
+     * @deprecated Simply use {@link OpenAIClientTool#refresh()} instead.
+     */
+    @Deprecated
     public void refreshOpenAIClientTool() {
-        refreshOpenAIClientTool(TPPConfig.getInstance().getOpenaiApiKey(), TPPConfig.getInstance().getOpenaiBaseUrl(),
-                TPPConfig.getInstance().getOpenaiCustomBaseUrl(), TPPConfig.getInstance().getOpenaiModel());
+        TPPConfig config = TPPConfig.getInstance();
+        refreshOpenAIClientTool(config.getOpenaiApiKey(), config.getOpenaiBaseUrl(), config.getOpenaiCustomBaseUrl(), config.getOpenaiModel());
     }
 
+    /**
+     * Refresh the OpenAI client tool.
+     * @deprecated Simply use {@link OpenAIClientTool#safeRefresh(String, OpenAIClientTool.Api, String, String)} instead.
+     */
+    @Deprecated
     private void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
         try {
             TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apiKey.isBlank() ? "NOT SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
-            OpenAIClientTool.getInstance().setApi(apiKey, api, customApi, model);
+                    apiKey.isBlank() ? "NOT_SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
+            OpenAIClientTool.getInstance().unsafeRefresh(apiKey, api, customApi, model);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
         }
     }
 
+    /**
+     * Get the default style and split result lines.
+     */
     public Pair<Style, String[]> getStyledResultLines() {
         Style appliedStyle = Style.EMPTY;
         String resultText = this.translatedResult;
@@ -227,7 +275,10 @@ public class TranslationKit {
         return Pair.of(appliedStyle, texts);
     }
 
-    public void addResultToTooltip(List<Component> lines) {
+    /**
+     * Add the translation result to the component list.
+     */
+    private void addResultToTooltip(List<Component> lines) {
         var styledResult = getStyledResultLines();
         Style appliedStyle = styledResult.getLeft();
         String[] texts = styledResult.getRight();
@@ -261,6 +312,9 @@ public class TranslationKit {
         }
     }
 
+    /**
+     * Create a component with translation result for chat.
+     */
     public Component createResultForChat() {
         var styledResult = getStyledResultLines();
         Style appliedStyle = styledResult.getLeft();
@@ -275,11 +329,9 @@ public class TranslationKit {
 
     @Environment(EnvType.CLIENT)
     public static void init() {
-        TranslatorPP.LOGGER.debug("Initializing TranslationKit");
-        INSTANCE = new TranslationKit();
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
-        ItemTooltipCallbacks.EVENT.register((stack, tooltipContext, flag, lines) -> {
+        ItemTooltipCallbacks.EVENT.register((stack, context, flag, lines) -> {
             TranslationKit.getInstance().setHoveredText(lines);
 
             if (TranslationKit.getInstance().isTranslated() &&

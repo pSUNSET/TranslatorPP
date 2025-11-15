@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 public class GoogleTranslationTool implements TranslationTool {
 
-    private static final GoogleTranslationTool INSTANCE = new GoogleTranslationTool();
+    static final GoogleTranslationTool INSTANCE = new GoogleTranslationTool();
 
     public static GoogleTranslationTool getInstance() {
         return INSTANCE;
@@ -24,7 +24,7 @@ public class GoogleTranslationTool implements TranslationTool {
 
     private final Gson gson = new GsonBuilder().create();;
 
-    public GoogleTranslationTool() {
+    private GoogleTranslationTool() {
     }
 
     @Override

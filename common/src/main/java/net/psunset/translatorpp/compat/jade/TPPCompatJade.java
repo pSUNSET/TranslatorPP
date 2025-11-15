@@ -31,6 +31,7 @@ public class TPPCompatJade implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         IWailaPlugin.super.registerClient(registration);
+
         registration.registerBlockComponent(TPPJadeExtension.BLOCK, Block.class);
         registration.registerEntityComponent(TPPJadeExtension.ENTITY, Entity.class);
     }

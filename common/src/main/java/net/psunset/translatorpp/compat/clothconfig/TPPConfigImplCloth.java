@@ -12,6 +12,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.api.ComponentizableEnum;
+import net.psunset.translatorpp.api.TPPClothConfigData;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
@@ -20,12 +22,18 @@ import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationKit;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The ClothConfig-compatible implementation of {@link TPPConfig}.
+ * To get config values, use {@link TPPConfig#getInstance()}.
+ */
+@ApiStatus.Internal
 public class TPPConfigImplCloth implements TPPConfig {
     private static ConfigHolder<General> generalHolder;
     private static ConfigHolder<OpenAI> openaiHolder;
@@ -73,16 +81,16 @@ public class TPPConfigImplCloth implements TPPConfig {
         return openai().openaiCustomBaseUrl;
     }
 
-    public static General general() {
+    static General general() {
         return generalHolder.getConfig();
     }
 
-    public static OpenAI openai() {
+    static OpenAI openai() {
         return openaiHolder.getConfig();
     }
 
-    public static List<TPPClothConfigData> configs() {
-        return List.of(general(), openai());
+    public static TPPClothConfigData[] configs() {
+        return new TPPClothConfigData[]{general(), openai()};
     }
 
     @Environment(EnvType.CLIENT)
@@ -96,7 +104,7 @@ public class TPPConfigImplCloth implements TPPConfig {
             }
         });
 
-        TranslationKit.getInstance().refreshOpenAIClientTool();
+        OpenAIClientTool.getInstance().refresh();
         OpenAIClientTool.refreshCacheModels();
     }
 
@@ -111,14 +119,14 @@ public class TPPConfigImplCloth implements TPPConfig {
         @Override
         public Screen createScreen(Screen parent) {
             ConfigBuilder builder = ConfigBuilder.create()
-                .setParentScreen(parent)
-                .setSavingRunnable(() -> {
-                    generalHolder.save();
-                    openaiHolder.save();
-                    TranslationKit.getInstance().refreshOpenAIClientTool();
-                    TranslationKit.getInstance().clearCache();
-                })
-                .setTitle(Component.translatable("config.title.translatorpp"));
+                    .setParentScreen(parent)
+                    .setSavingRunnable(() -> {
+                        generalHolder.save();
+                        openaiHolder.save();
+                        OpenAIClientTool.getInstance().refresh();
+                        TranslationKit.getInstance().clearCache();
+                    })
+                    .setTitle(Component.translatable("config.title.translatorpp"));
 
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
             // The translation of the component doesn't exist because it's completely unaccessible.
@@ -136,6 +144,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_mode"), TranslationMode.class, this.translationMode)
                     .setTooltip(Component.translatable("config.translatorpp.translation_mode.tooltip"))
+                    .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.translationMode)
                     .setSaveConsumer(it -> this.translationMode = it)
                     .build());
@@ -156,6 +165,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.translation_tool"), TranslationTool.Type.class, this.translationTool)
                     .setTooltip(Component.translatable("config.translatorpp.translation_tool.tooltip"))
+                    .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.translationTool)
                     .setSaveConsumer(it -> this.translationTool = it)
                     .build());
@@ -184,7 +194,7 @@ public class TPPConfigImplCloth implements TPPConfig {
                     .setSavingRunnable(() -> {
                         generalHolder.save();
                         openaiHolder.save();
-                        TranslationKit.getInstance().refreshOpenAIClientTool();
+                        OpenAIClientTool.getInstance().refresh();
                         OpenAIClientTool.refreshCacheModels();
                     })
                     .setTitle(Component.translatable("config.title.translatorpp"));
@@ -201,6 +211,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             category.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientTool.Api.class, this.openaiBaseUrl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
+                    .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.openaiBaseUrl)
                     .setSaveConsumer(it -> this.openaiBaseUrl = it)
                     .build());

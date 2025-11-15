@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.psunset.translatorpp.mixinaccess.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-@Mixin(ChatComponent.class)
+@Mixin(value = ChatComponent.class)
 public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     @Unique
     private final int[] translatorpp$messageIndexTrimmedToAll = Util.make(new int[100], arr -> Arrays.fill(arr, -1));
@@ -75,7 +75,7 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
         // --- `list` should be available here via @Local, but it failed for some reason I can't figure out.
         int s = list.size();
         for (int x = 99; x - s >= 0; x--) {
-            this.translatorpp$messageIndexTrimmedToAll[x] = this.translatorpp$messageIndexTrimmedToAll[x - s] + 1;
+                this.translatorpp$messageIndexTrimmedToAll[x] = this.translatorpp$messageIndexTrimmedToAll[x - s] + 1;
         }
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, 0, s, 0);
     }

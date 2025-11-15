@@ -29,11 +29,11 @@ dependencies {
     modImplementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
     // JEI, REI, EMI?
-//    modCompileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
-//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+    modCompileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
 
-    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
-//    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+//    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
 
     // FTB Quests
 
@@ -49,8 +49,8 @@ processResources {
 
     filesMatching('META-INF/neoforge.mods.toml') {
         expand([
-                version                         : "$mod_version",
-                neoforge_version_range          : "$neoforge_version_range",
+                version: "$mod_version",
+                neoforge_version_range: "$neoforge_version_range",
                 minecraft_version_neoforge_range: "$minecraft_version_neoforge_range",
         ])
     }

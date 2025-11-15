@@ -14,6 +14,10 @@ public final class TranslatorPP {
     public static final String NAME = "Translator++";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
+    private TranslatorPP() {
+        throw new AssertionError("TranslatorPP should not be instantiated");
+    }
+
     @Environment(EnvType.CLIENT)
     public static void init() {
         TranslationKit.init();

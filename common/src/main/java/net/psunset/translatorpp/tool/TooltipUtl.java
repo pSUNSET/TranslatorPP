@@ -2,6 +2,7 @@ package net.psunset.translatorpp.tool;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -9,8 +10,7 @@ import net.psunset.translatorpp.translation.TranslationKit;
 
 import java.util.List;
 
-public class TooltipUtl {
-
+public final class TooltipUtl {
     public static List<Component> getTooltipComponents(ItemStack stack, Minecraft client) {
         return stack.getTooltipLines(Item.TooltipContext.of(client.level), client.player, TooltipFlag.NORMAL);
     }
@@ -23,11 +23,11 @@ public class TooltipUtl {
         return String.join(TranslationKit.SEPARATOR, getTooltipTexts(stack, client));
     }
 
-    public static List<String> getTooltipTexts(List<Component> tooltip) {
-        return tooltip.stream().map(Component::getString).toList();
+    public static List<String> getTooltipTexts(List<? extends FormattedText> tooltip) {
+        return tooltip.stream().map(FormattedText::getString).toList();
     }
 
-    public static String getCombinedTooltipText(List<Component> tooltip) {
+    public static String getCombinedTooltipText(List<? extends FormattedText> tooltip) {
         return String.join(TranslationKit.SEPARATOR, getTooltipTexts(tooltip));
     }
 }

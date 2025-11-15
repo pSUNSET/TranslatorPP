@@ -1,12 +1,14 @@
 {
   "required": true,
-  "package": "net.psunset.translatorpp.neoforge.mixin",
+  "package": "net.psunset.translatorpp.mixin.neoforge",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
     "ConfigurationSectionScreenMixin"
   ],
   "mixins": [
+    "ComponentizableEnumMixin",
+    "PlatformMixin",
     "TPPConfigMixin"
   ],
   "injectors": {
