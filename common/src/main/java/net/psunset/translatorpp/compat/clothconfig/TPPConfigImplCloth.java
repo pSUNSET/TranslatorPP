@@ -103,7 +103,7 @@ public class TPPConfigImplCloth implements TPPConfig {
             }
         });
 
-        TranslationKit.getInstance().refreshOpenAIClientTool();
+        OpenAIClientTool.getInstance().refresh();
         OpenAIClientTool.refreshCacheModels();
     }
 
@@ -122,7 +122,7 @@ public class TPPConfigImplCloth implements TPPConfig {
                     .setSavingRunnable(() -> {
                         generalHolder.save();
                         openaiHolder.save();
-                        TranslationKit.getInstance().refreshOpenAIClientTool();
+                        OpenAIClientTool.getInstance().refresh();
                         TranslationKit.getInstance().clearCache();
                     })
                     .setTitle(Component.translatable("config.title.translatorpp"));
@@ -193,7 +193,7 @@ public class TPPConfigImplCloth implements TPPConfig {
                     .setSavingRunnable(() -> {
                         generalHolder.save();
                         openaiHolder.save();
-                        TranslationKit.getInstance().refreshOpenAIClientTool();
+                        OpenAIClientTool.getInstance().refresh();
                         OpenAIClientTool.refreshCacheModels();
                     })
                     .setTitle(Component.translatable("config.title.translatorpp"));

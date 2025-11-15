@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.gui.ComponentizableEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +25,7 @@ import java.util.Set;
 
 public class OpenAIClientTool implements TranslationTool {
 
-    private static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
+    static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
     public static final String PROMPT = """
             You are a precise translation assistant.
             Translate from '%s' to '%s', keeping '%s' (split pattern) as-is.
@@ -83,7 +84,35 @@ public class OpenAIClientTool implements TranslationTool {
         return this.model;
     }
 
-    void setApi(String apiKey, Api api, @Nullable String customApiUrl, String model) {
+    /**
+     * Refresh self properties with the latest configuration.
+     */
+    public void refresh() {
+        TPPConfig config = TPPConfig.getInstance();
+        safeRefresh(config.getOpenaiApiKey(), config.getOpenaiBaseUrl(), config.getOpenaiCustomBaseUrl(), config.getOpenaiModel());
+    }
+
+    /**
+     * Refresh self properties.
+     * Auto catch exceptions and log errors.
+     */
+    private void safeRefresh(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
+        try {
+            this.unsafeRefresh(apiKey, api, customApi, model);
+            String shownApiKey = this.apiKey.isEmpty() ? "NOT_SET" : "****" + this.apiKey.substring(apiKey.length() - 4); // Avoid logging full API key
+            TranslatorPP.LOGGER.debug("OpenAI Client Tool is currently set to {apiKey={}, baseUrl={}, model={}}",
+                    shownApiKey, this.baseUrl, this.model);
+        } catch (Exception e) {
+            TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
+        }
+    }
+
+    /**
+     * Refresh self properties.
+     *
+     * @throws IllegalArgumentException if {@code api} is {@code Custom} and {@code customApiUrl} is {@code null}.
+     */
+    void unsafeRefresh(String apiKey, Api api, @Nullable String customApiUrl, String model) {
         this.setApiKey(apiKey.isBlank() ? "" : apiKey.strip());
         if (api.baseUrl != null) {
             this.setBaseUrl(api.baseUrl);
@@ -101,7 +130,7 @@ public class OpenAIClientTool implements TranslationTool {
     @Override
     public String translate(String q, String sl, String tl) throws Exception {
         if (!this.isPresent()) {
-            throw new IllegalStateException("OpenAIClientTool is not configured. API key, API provider, and model must be set.");
+            throw new IllegalStateException("OpenAIClientTool is not completely configured. API key, API provider, and model must be set.");
         }
 
         String formattedPrompt = PROMPT.formatted(sl, tl, TranslationKit.SEPARATOR, q);
@@ -185,6 +214,9 @@ public class OpenAIClientTool implements TranslationTool {
         }
     }
 
+    /**
+     * Returns true if all necessary properties are set.
+     */
     public boolean isPresent() {
         return !this.apiKey.isEmpty() && !this.baseUrl.isEmpty() && !this.model.isEmpty();
     }
@@ -279,6 +311,7 @@ public class OpenAIClientTool implements TranslationTool {
     /**
      * Get the cached model list.
      * To refresh the list, call {@link #refreshCacheModels()}.
+     *
      * @see #refreshCacheModels()
      */
     public static Set<String> getCacheModels() {
@@ -288,6 +321,7 @@ public class OpenAIClientTool implements TranslationTool {
     /**
      * Refresh the cached model list.
      * To get the list, call {@link #getCacheModels()}.
+     *
      * @see #getCacheModels()
      */
     public static void refreshCacheModels() {
@@ -316,6 +350,10 @@ public class OpenAIClientTool implements TranslationTool {
         }
     }
 
+    /**
+     * An exception indicating a service error from the OpenAI API.
+     * Includes a message with the HTTP status code.
+     */
     public static class ServiceException extends RuntimeException {
         public final int statusCode;
 

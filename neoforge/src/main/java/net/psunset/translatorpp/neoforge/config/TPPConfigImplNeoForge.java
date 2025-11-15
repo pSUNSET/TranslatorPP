@@ -181,21 +181,23 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     @SubscribeEvent
     public static void onConfigLoading(ModConfigEvent.Loading event) {
-//        if (event.getConfig().getSpec().equals(generalSpec)) {
+        var spec = event.getConfig().getSpec();
+//        if (spec.equals(generalSpec)) {
 //        } else
-        if (event.getConfig().getSpec().equals(openaiSpec)) { // The final config registered in this mod
-            TranslationKit.getInstance().refreshOpenAIClientTool();
+        if (spec.equals(openaiSpec)) { // The final config registered in this mod
+            OpenAIClientTool.getInstance().refresh();
             OpenAIClientTool.refreshCacheModels();
         }
     }
 
     @SubscribeEvent
     public static void onConfigReloading(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec().equals(generalSpec)) {
-            TranslationKit.getInstance().refreshOpenAIClientTool();
+        var spec = event.getConfig().getSpec();
+        if (spec.equals(generalSpec)) {
+            OpenAIClientTool.getInstance().refresh();
             TranslationKit.getInstance().clearCache();
-        } else if (event.getConfig().getSpec().equals(openaiSpec)) {
-            TranslationKit.getInstance().refreshOpenAIClientTool();
+        } else if (spec.equals(openaiSpec)) {
+            OpenAIClientTool.getInstance().refresh();
             OpenAIClientTool.refreshCacheModels();
         }
     }

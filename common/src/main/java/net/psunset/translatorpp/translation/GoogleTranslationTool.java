@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 public class GoogleTranslationTool implements TranslationTool {
 
-    private static final GoogleTranslationTool INSTANCE = new GoogleTranslationTool();
+    static final GoogleTranslationTool INSTANCE = new GoogleTranslationTool();
 
     public static GoogleTranslationTool getInstance() {
         return INSTANCE;

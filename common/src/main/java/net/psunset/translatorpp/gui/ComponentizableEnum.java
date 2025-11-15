@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * An enum that can be converted to a {@link Component}.
  * Should only be implemented by enum classes.
- * In NeoForge side, will extend {@link net.neoforged.neoforge.common.TranslatableEnum} by mixin injection.
+ * In NeoForge side, auto extends {@link net.neoforged.neoforge.common.TranslatableEnum} by mixin injection.
  */
 public interface ComponentizableEnum {
     /**
