@@ -4,7 +4,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    neoForge()
+    forge()
 }
 
 configurations {
@@ -14,7 +14,7 @@ configurations {
     }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentNeoForge.extendsFrom common
+    developmentForge.extendsFrom common
 
     shadowBundle {
         canBeResolved = true
@@ -23,35 +23,35 @@ configurations {
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:$neoforge_version"
+    forge "net.minecraftforge:forge:$minecraft_version-$forge_version"
 
     // Cloth Config
-    modImplementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
+    modImplementation "me.shedaniel.cloth:cloth-config-forge:$cloth_config_version"
 
     // JEI, REI, EMI?
-    modCompileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+    modCompileOnly "mezz.jei:jei-$minecraft_version-forge-api:$jei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
 
-//    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+//    modRuntimeOnly "mezz.jei:jei-$minecraft_version-forge:$jei_version"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
 
     // FTB Quests
 
     // Jade
-    modImplementation "maven.modrinth:jade:$jade_neoforge_version"
+    modImplementation "maven.modrinth:jade:$jade_forge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
-    shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+    shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 }
 
 processResources {
     inputs.property 'version', "$mod_version"
 
-    filesMatching('META-INF/neoforge.mods.toml') {
+    filesMatching('META-INF/mods.toml') {
         expand([
                 version: "$mod_version",
-                neoforge_version_range: "$neoforge_version_range",
-                minecraft_version_neoforge_range: "$minecraft_version_neoforge_range",
+                forge_version_range: "$forge_version_range",
+                minecraft_version_forge_range: "$minecraft_version_forge_range",
         ])
     }
 }

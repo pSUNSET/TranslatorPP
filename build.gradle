@@ -18,10 +18,6 @@ allprojects {
 
     repositories {
         maven {
-            name = "NeoForged"
-            url = "https://maven.neoforged.net/releases"
-        }
-        maven {
             name = "TerraformersMC"
             url = "https://maven.terraformersmc.com/releases/"
         }
