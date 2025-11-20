@@ -6,9 +6,7 @@ A Minecraft mod for swift, light, and convenient auto translation.
 
 * This mod is **client-sided** only.
 * The process of translation requires the **internet**.
-* Only **Fabric** and **NeoForge** loaders are supported.
-* Since `v2.0.0` (inclusive), this mod no longer requires the **Architectury API**.
-* Since `v2.2.0` (inclusive), this mod no longer support `MC1.21.5`.
+* Since `v2.2.0`, this mod no longer support `MC1.21.5`.
 
 ## Dependencies
 
@@ -18,7 +16,6 @@ A Minecraft mod for swift, light, and convenient auto translation.
 * **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei)** (Compatible)
 * **[EMI](https://modrinth.com/mod/emi)** (Compatible)
 * **[Jade 🔍](https://modrinth.com/mod/jade)** (Compatible)
-* ~~**[Architectury API](https://modrinth.com/mod/architectury-api)**~~ (Required by `v1.x.x` only)
 
 ## Usages
 
@@ -43,11 +40,11 @@ A Minecraft mod for swift, light, and convenient auto translation.
 ### Configuration
 
 * Press the settings keybind (default: **O**).
-* Through the Mod Menu mod in Fabric or standard mod list in NeoForge.
+* Through the Mod Menu mod in Fabric or standard mod list in (Neo)Forge.
 
 ## Versioning (since `v2.2.0`)
 Display Name: `[${Platform} ${mc_ver_range}] v${mod_version}`  
-File Name: `translator-${platform}-${mod_version}+${mc_ver_range}`
+File Name: `translatorpp-${platform}-${mod_version}+${mc_ver_range}`
 
 ## Development
 
