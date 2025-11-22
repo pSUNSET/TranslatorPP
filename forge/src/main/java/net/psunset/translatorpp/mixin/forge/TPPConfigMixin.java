@@ -11,7 +11,7 @@ public interface TPPConfigMixin {
 
     @Overwrite
     static void init() {
-        TranslatorPP.LOGGER.info("Forge is loaded, using forge for Translator++ Config.");
+        TranslatorPP.LOGGER.debug("Forge is loaded, using forge for Translator++ Config.");
         TPPConfig.Dummy.INSTANCE = new TPPConfigImplForge();
         // init is completed in mod constructor, no need to call here
 //        TPPConfigImplNeoForge.init(container);
