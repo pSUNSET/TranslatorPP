@@ -1,22 +1,22 @@
-package net.psunset.translatorpp.config.neoforge;
+package net.psunset.translatorpp.config.forge;
 
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.psunset.translatorpp.TranslatorPP;
-import net.psunset.translatorpp.compat.clothconfig.gui.neoforge.TPPConfigClothScreenNeoForge;
+import net.psunset.translatorpp.compat.clothconfig.gui.forge.TPPConfigClothScreenForge;
 import net.psunset.translatorpp.config.TPPConfig;
-import net.psunset.translatorpp.config.neoforge.gui.TPPConfigNeoForgeScreen;
+import net.psunset.translatorpp.gui.ClothConfigMissingScreen;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.CompatUtl;
@@ -38,25 +38,25 @@ import java.util.stream.Collectors;
  * To get config values, use {@link TPPConfig#getInstance()}.
  */
 @ApiStatus.Internal
-@EventBusSubscriber(modid = TranslatorPP.ID, bus = EventBusSubscriber.Bus.MOD)
-public class TPPConfigImplNeoForge implements TPPConfig {
+@Mod.EventBusSubscriber(modid = TranslatorPP.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public class TPPConfigImplForge implements TPPConfig {
 
     public static final General GENERAL;
-    public static final ModConfigSpec generalSpec;
+    public static final ForgeConfigSpec generalSpec;
 
     public static final OpenAI OPENAI;
-    public static final ModConfigSpec openaiSpec;
+    public static final ForgeConfigSpec openaiSpec;
 
     static {
-        final Pair<General, ModConfigSpec> generalPair = new ModConfigSpec.Builder().configure(General::new);
+        final Pair<General, ForgeConfigSpec> generalPair = new ForgeConfigSpec.Builder().configure(General::new);
         GENERAL = generalPair.getLeft();
         generalSpec = generalPair.getRight();
-        final Pair<OpenAI, ModConfigSpec> openaiPair = new ModConfigSpec.Builder().configure(OpenAI::new);
+        final Pair<OpenAI, ForgeConfigSpec> openaiPair = new ForgeConfigSpec.Builder().configure(OpenAI::new);
         OPENAI = openaiPair.getLeft();
         openaiSpec = openaiPair.getRight();
     }
 
-    public TPPConfigImplNeoForge() {
+    public TPPConfigImplForge() {
     }
 
     @Override
@@ -101,13 +101,13 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static class General {
 
-        public final ModConfigSpec.EnumValue<TranslationMode> translationMode;
-        public final ModConfigSpec.ConfigValue<String> sourceLanguage;
-        public final ModConfigSpec.ConfigValue<String> targetLanguage;
-        public final ModConfigSpec.EnumValue<TranslationTool.Type> translationTool;
-        public final ModConfigSpec.ConfigValue<String> openaiModel;
+        public final ForgeConfigSpec.EnumValue<TranslationMode> translationMode;
+        public final ForgeConfigSpec.ConfigValue<String> sourceLanguage;
+        public final ForgeConfigSpec.ConfigValue<String> targetLanguage;
+        public final ForgeConfigSpec.EnumValue<TranslationTool.Type> translationTool;
+        public final ForgeConfigSpec.ConfigValue<String> openaiModel;
 
-        private General(ModConfigSpec.Builder builder) {
+        private General(ForgeConfigSpec.Builder builder) {
             Set<String> tlList = Arrays.stream(Locale.getAvailableLocales())
                     .map(Locale::toLanguageTag)
                     .collect(Collectors.toSet());
@@ -141,11 +141,11 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static class OpenAI {
 
-        public final ModConfigSpec.ConfigValue<String> openaiApiKey;
-        public final ModConfigSpec.ConfigValue<OpenAIClientTool.Api> openaiBaseUrl;
-        public final ModConfigSpec.ConfigValue<String> openaiCustomBaseUrl;
+        public final ForgeConfigSpec.ConfigValue<String> openaiApiKey;
+        public final ForgeConfigSpec.ConfigValue<OpenAIClientTool.Api> openaiBaseUrl;
+        public final ForgeConfigSpec.ConfigValue<String> openaiCustomBaseUrl;
 
-        private OpenAI(ModConfigSpec.Builder builder) {
+        private OpenAI(ForgeConfigSpec.Builder builder) {
             this.openaiApiKey = builder
                     .translation("config.translatorpp.openai_apikey")
                     .define("openai_apikey", Default.openaiApiKey);
@@ -161,21 +161,26 @@ public class TPPConfigImplNeoForge implements TPPConfig {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void init(ModContainer container) {
-        container.registerConfig(ModConfig.Type.CLIENT, generalSpec, TranslatorPP.ID + "-general.toml");
-        container.registerConfig(ModConfig.Type.CLIENT, openaiSpec, TranslatorPP.ID + "-openai.toml");
+    public static void init() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, generalSpec, TranslatorPP.ID + "-general.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, openaiSpec, TranslatorPP.ID + "-openai.toml");
 
-        container.registerExtensionPoint(IConfigScreenFactory.class, TPPConfigNeoForgeScreen::new);
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) ->
+                        CompatUtl.ClothConfig.isLoaded() ? TPPConfigClothScreenForge.create(parent) : new ClothConfigMissingScreen(parent)));
+
         if (CompatUtl.ClothConfig.isLoaded()) {
-            TPPConfigClothScreenNeoForge.init(); // register the afterClientTickIfHasClothConfig event callback
+            TPPConfigClothScreenForge.init(); // register the afterClientTickIfHasClothConfig event callback
         } else {
-            NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, TPPConfigImplNeoForge::afterClientTickIfNoClothConfig);
+            MinecraftForge.EVENT_BUS.addListener(TPPConfigImplForge::afterClientTickIfNoClothConfig);
         }
     }
 
-    public static void afterClientTickIfNoClothConfig(ClientTickEvent.Post event) {
-        while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
-            ClientUtl.message(Component.translatable("misc.translatorpp.missing.clothconfig"));
+    public static void afterClientTickIfNoClothConfig(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
+                ClientUtl.message(Component.translatable("misc.translatorpp.missing.clothconfig"));
+            }
         }
     }
 

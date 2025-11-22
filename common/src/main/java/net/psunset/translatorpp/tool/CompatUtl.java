@@ -9,7 +9,7 @@ public interface CompatUtl {
 
     final class ClothConfig {
         public static boolean isLoaded() {
-            return Platform.isModLoaded(Platform.isNeoForge() ? "cloth_config" : "cloth-config");
+            return Platform.isModLoaded(Platform.isForge() ? "cloth_config" : "cloth-config");
         }
     }
 

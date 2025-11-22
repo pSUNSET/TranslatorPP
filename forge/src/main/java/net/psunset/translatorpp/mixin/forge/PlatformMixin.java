@@ -1,15 +1,15 @@
-package net.psunset.translatorpp.mixin.neoforge;
+package net.psunset.translatorpp.mixin.forge;
 
-import net.neoforged.fml.ModList;
+import net.minecraftforge.fml.ModList;
 import net.psunset.translatorpp.platform.Platform;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(Platform.class)
+@Mixin(value = Platform.class, remap = false)
 public class PlatformMixin {
 
     @Overwrite
-    public static boolean isNeoForge() {
+    public static boolean isForge() {
         return true;
     }
 

@@ -8,13 +8,13 @@ public final class RLUtl {
      * Create a ResourceLocation with TranslatorPP's namespace.
      */
     public static ResourceLocation of(String name) {
-        return ResourceLocation.fromNamespaceAndPath(TranslatorPP.ID, name);
+        return new ResourceLocation(TranslatorPP.ID, name);
     }
 
     /**
      * Create a ResourceLocation with the vanilla, {@code Minecraft}, namespace.
      */
     public static ResourceLocation ofVanilla(String name) {
-        return ResourceLocation.withDefaultNamespace(name);
+        return new ResourceLocation(name);
     }
 }

@@ -331,7 +331,7 @@ public class TranslationKit {
     public static void init() {
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
-        ItemTooltipCallbacks.EVENT.register((stack, context, flag, lines) -> {
+        ItemTooltipCallbacks.EVENT.register((stack, flag, lines) -> {
             TranslationKit.getInstance().setHoveredText(lines);
 
             if (TranslationKit.getInstance().isTranslated() &&

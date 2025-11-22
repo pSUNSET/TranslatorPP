@@ -8,6 +8,8 @@ import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
@@ -57,25 +59,24 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 
-    @Inject(method = "refreshTrimmedMessages()V", at = @At("HEAD"))
+    @Inject(method = "refreshTrimmedMessage()V", at = @At("HEAD"))
     private void beforeRefreshTrimmedMessages(CallbackInfo ci) {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 
-    @Inject(method = "addMessageToDisplayQueue(Lnet/minecraft/client/GuiMessage;)V", at = @At("TAIL"))
-    private void afterAddMessageToDisplayQueue(GuiMessage guiMessage, CallbackInfo ci /*, @Local List list*/) {
+    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V", at = @At("TAIL"))
+    private void afterAddMessageToDisplayQueue(Component component, MessageSignature messageSignature, int i, GuiMessageTag guiMessageTag, boolean bl, CallbackInfo ci  /*, @Local List list*/) {
         // ---
-        int i = Mth.floor(this.getWidth() / this.getScale());
-        GuiMessageTag.Icon icon = guiMessage.icon();
-        if (icon != null) {
-            i -= icon.width + 4 + 2;
+        int j = Mth.floor((double)this.getWidth() / this.getScale());
+        if (guiMessageTag != null && guiMessageTag.icon() != null) {
+            j -= guiMessageTag.icon().width + 4 + 2;
         }
 
-        List<FormattedCharSequence> list = ComponentRenderUtils.wrapComponents(guiMessage.content(), i, this.minecraft.font);
+        List<FormattedCharSequence> list = ComponentRenderUtils.wrapComponents(component, j, this.minecraft.font);
         // --- `list` should be available here via @Local, but it failed for some reason I can't figure out.
         int s = list.size();
         for (int x = 99; x - s >= 0; x--) {
-                this.translatorpp$messageIndexTrimmedToAll[x] = this.translatorpp$messageIndexTrimmedToAll[x - s] + 1;
+            this.translatorpp$messageIndexTrimmedToAll[x] = this.translatorpp$messageIndexTrimmedToAll[x - s] + 1;
         }
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, 0, s, 0);
     }

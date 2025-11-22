@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class TooltipUtl {
     public static List<Component> getTooltipComponents(ItemStack stack, Minecraft client) {
-        return stack.getTooltipLines(Item.TooltipContext.of(client.level), client.player, TooltipFlag.NORMAL);
+        return stack.getTooltipLines(client.player, TooltipFlag.NORMAL);
     }
 
     public static List<String> getTooltipTexts(ItemStack stack, Minecraft client) {

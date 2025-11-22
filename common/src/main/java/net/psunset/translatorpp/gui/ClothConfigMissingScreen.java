@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.compat.fabric.modmenu;
+package net.psunset.translatorpp.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -42,6 +42,7 @@ public class ClothConfigMissingScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        this.renderBackground(guiGraphics);
         super.render(guiGraphics, i, j, f);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, -1);
         int line = 0;

@@ -30,11 +30,5 @@ versionRange = "${minecraft_version_forge_range}"
 ordering = "NONE"
 side = "CLIENT"
 
-[[mixins]]
-config = "translatorpp.mixins.json"
-
-[[mixins]]
-config = "translatorpp.forge.mixins.json"
-
 [[accessTransformers]]
-file="META-INF/accesstransformer.cfg"
+file = "META-INF/accesstransformer.cfg"

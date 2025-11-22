@@ -38,9 +38,9 @@ public interface TPPConfig {
     String getOpenaiCustomBaseUrl();
 
     @Environment(EnvType.CLIENT)
-    @ExpectMixin(value = ExpectMixin.Expected.NEOFORGE, method = ExpectMixin.Method.OVERWRITE)
+    @ExpectMixin(value = ExpectMixin.Expected.FORGE, method = ExpectMixin.Method.OVERWRITE)
     static void init() {
-        if (Platform.isNeoForge()) {
+        if (Platform.isForge()) {
             throw new AssertionError();
         } else if (CompatUtl.ClothConfig.isLoaded()) {
             TranslatorPP.LOGGER.debug("Cloth Config is loaded, using cloth config for Translator++ Config.");

@@ -33,7 +33,7 @@ public @interface ExpectMixin {
      */
     enum Expected {
         FABRIC,
-        NEOFORGE
+        FORGE
     }
 
     /**

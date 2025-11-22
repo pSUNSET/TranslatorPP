@@ -5,13 +5,13 @@ import net.psunset.translatorpp.annotations.ExpectMixin;
 public final class Platform {
 
     /**
-     * Returns true if the current platform is NeoForge.
+     * Returns true if the current platform is Forge.
      */
     @ExpectMixin(
-            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.NEOFORGE},
+            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.FORGE},
             method = ExpectMixin.Method.OVERWRITE
     )
-    public static boolean isNeoForge() {
+    public static boolean isForge() {
         throw new AssertionError();
     }
 
@@ -19,7 +19,7 @@ public final class Platform {
      * Returns true if the current platform is Fabric.
      */
     @ExpectMixin(
-            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.NEOFORGE},
+            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.FORGE},
             method = ExpectMixin.Method.OVERWRITE
     )
     public static boolean isFabric() {
@@ -30,7 +30,7 @@ public final class Platform {
      * Returns true if the mod with the given ID is loaded.
      */
     @ExpectMixin(
-            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.NEOFORGE},
+            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.FORGE},
             method = ExpectMixin.Method.OVERWRITE
     )
     public static boolean isModLoaded(String modId) {

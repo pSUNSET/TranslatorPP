@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.compat.clothconfig.gui.neoforge;
+package net.psunset.translatorpp.compat.clothconfig.gui.forge;
 
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -6,38 +6,42 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.psunset.translatorpp.api.ScreenProvider;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
 import net.psunset.translatorpp.config.TPPConfig;
-import net.psunset.translatorpp.config.neoforge.TPPConfigImplNeoForge;
+import net.psunset.translatorpp.config.forge.TPPConfigImplForge;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.translation.OpenAIClientTool;
 import net.psunset.translatorpp.translation.TranslationMode;
 import net.psunset.translatorpp.translation.TranslationTool;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class TPPConfigClothScreenNeoForge {
+public class TPPConfigClothScreenForge {
 
     @OnlyIn(Dist.CLIENT)
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, TPPConfigClothScreenNeoForge::afterClientTickIfHasClothConfig);
+        MinecraftForge.EVENT_BUS.addListener(TPPConfigClothScreenForge::afterClientTickIfHasClothConfig);
     }
 
-    public static void afterClientTickIfHasClothConfig(ClientTickEvent.Post event) {
-        if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
-            Minecraft.getInstance().setScreen(create(Minecraft.getInstance().screen));
+    public static void afterClientTickIfHasClothConfig(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            if (TPPKeyMappings.CLOTH_CONFIG_KEY.isDown()) {
+                Minecraft.getInstance().setScreen(create(Minecraft.getInstance().screen));
+            }
         }
     }
 
-    private static TPPConfigClothScreen create(Screen parent) {
+    @ApiStatus.Internal
+    public static TPPConfigClothScreen create(Screen parent) {
         return new TPPConfigClothScreen(parent, new ScreenProvider[]{General.INSTANCE, OpenAI.INSTANCE});
     }
 
@@ -48,15 +52,18 @@ public class TPPConfigClothScreenNeoForge {
 
         private static final General INSTANCE = new General();
 
+        private General() {
+        }
+
         @Override
         public Screen createScreen(Screen parent) {
 
-            var config = TPPConfigImplNeoForge.GENERAL;
+            var config = TPPConfigImplForge.GENERAL;
 
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)
                     .setSavingRunnable(() -> {
-                        TPPConfigImplNeoForge.generalSpec.save();
+                        TPPConfigImplForge.generalSpec.save();
                     })
                     .setTitle(Component.translatable("config.title.translatorpp"));
 
@@ -120,15 +127,18 @@ public class TPPConfigClothScreenNeoForge {
 
         private static final OpenAI INSTANCE = new OpenAI();
 
+        private OpenAI() {
+        }
+
         @Override
         public Screen createScreen(Screen parent) {
 
-            var config = TPPConfigImplNeoForge.OPENAI;
+            var config = TPPConfigImplForge.OPENAI;
 
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)
                     .setSavingRunnable(() -> {
-                        TPPConfigImplNeoForge.openaiSpec.save();
+                        TPPConfigImplForge.openaiSpec.save();
                     })
                     .setTitle(Component.translatable("config.title.translatorpp"));
 
