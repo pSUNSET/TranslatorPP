@@ -156,5 +156,3 @@ publishMods {
         modLoaders.add "neoforge"
     }
 }
-
-tasks.publishMods.dependsOn clean, build
