@@ -85,6 +85,11 @@ public class GoogleTranslationTool implements TranslationTool {
     private String parseResult(String response) {
         JsonArray json = gson.fromJson(response, JsonArray.class);
         // Idk what the contents in the json mean. Just get what I need here.
-        return json.get(0).getAsJsonArray().get(0).getAsJsonArray().get(0).getAsString();
+        JsonArray results = json.get(0).getAsJsonArray();
+        StringBuilder sb = new StringBuilder();
+        for(var result : results) {
+            sb.append(result.getAsJsonArray().get(0).getAsString());
+        }
+        return sb.toString();
     }
 }
