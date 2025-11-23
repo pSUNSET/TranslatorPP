@@ -32,7 +32,7 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     private final int[] translatorpp$messageIndexTrimmedToAll = Util.make(new int[100], arr -> Arrays.fill(arr, -1));
 
     @Shadow
-    protected abstract int getMessageLineIndexAt(double d, double e);
+    protected abstract int getMessageIndexAt(double d);
 
     @Shadow
     protected abstract double screenToChatX(double d);
@@ -83,13 +83,17 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
 
     @Unique
     @Nullable
-    public String translatorpp$getMessageContentAt(double x, double y) {
-        double cX = this.screenToChatX(x);
-        double cY = this.screenToChatY(y);
-        int i = this.getMessageLineIndexAt(cX, cY);
-        if (i >= 0 && i < 100) {
-            int idx = this.translatorpp$messageIndexTrimmedToAll[i];
-            return this.allMessages.get(idx).content().getString();
+    public String translatorpp$getMessageContentAt(double d, double e) {
+        double f = this.screenToChatX(d);
+        if (!(f < 0.0) && !(f > Mth.floor(this.getWidth() / this.getScale()))) {
+            double g = this.screenToChatY(e);
+            int i = this.getMessageIndexAt(g);
+            if (i >= 0 && i < 100) {
+                int idx = this.translatorpp$messageIndexTrimmedToAll[i];
+                return this.allMessages.get(idx).content().getString();
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

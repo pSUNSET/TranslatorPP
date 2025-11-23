@@ -1,7 +1,8 @@
 package net.psunset.translatorpp.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -21,9 +22,7 @@ public class ClothConfigMissingScreen extends Screen {
 
     @Override
     protected void init() {
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, this::onBack)
-                        .bounds(this.width / 2 - 100, this.height / 4 + 120 + 12, 200, 20)
-                        .build());
+        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 120 + 12, 200, 20, CommonComponents.GUI_BACK, this::onBack));
     }
 
     public void onBack(Button button) {
@@ -41,14 +40,14 @@ public class ClothConfigMissingScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderBackground(guiGraphics);
-        super.render(guiGraphics, i, j, f);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, -1);
+    public void render(PoseStack poseStack, int i, int j, float f) {
+        this.renderBackground(poseStack);
+        super.render(poseStack, i, j, f);
+        GuiComponent.drawCenteredString(poseStack, this.font, this.title, this.width / 2, 20, -1);
         int line = 0;
         String key;
         while (I18n.exists(key = MISSING_DESC_PREFIX + line)) {
-            guiGraphics.drawCenteredString(this.font, Component.translatable(key), this.width / 2, this.height / 4 + 60 + line * 12, -1);
+            GuiComponent.drawCenteredString(poseStack, this.font, Component.translatable(key), this.width / 2, this.height / 4 + 60 + line * 12, -1);
             ++line;
         }
     }

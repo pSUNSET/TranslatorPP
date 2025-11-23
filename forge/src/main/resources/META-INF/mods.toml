@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[46,)"
+loaderVersion = "[41,)"
 clientSideOnly = true
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/translatorpp"
 issueTrackerURL = "https://github.com/pSUNSET/TranslatorPP/issues"

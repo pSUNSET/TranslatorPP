@@ -1,7 +1,6 @@
 package net.psunset.translatorpp.compat.jade;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -14,6 +13,7 @@ import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.impl.Tooltip;
+import snownee.jade.impl.ui.TextElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +58,8 @@ public class TPPJadeExtension {
             outer:
             for (Tooltip.Line line : tooltip.lines) {
                 for (var element : getAllElements(line)) {
-                    if (element instanceof snownee.jade.impl.ui.TextElement textElement) {
-                        hoveredTexts.add(textElement.text);
+                    if (element instanceof TextElement textElement) {
+                        hoveredTexts.add(textElement.getMessage());
                         break outer; // TODO: Make it continuously collects texts
                     }
                 }
