@@ -2,6 +2,15 @@ plugins {
     id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
+}
+
+def secrets = new Properties()
+def secretsFile = file('secrets.properties')
+if (secretsFile.exists()) {
+    secretsFile.withInputStream {
+        stream -> secrets.load(stream)
+    }
 }
 
 architectury {
@@ -86,3 +95,66 @@ subprojects {
         }
     }
 }
+
+publishMods {
+    changelog = file("CHANGELOG.md").text
+    type = STABLE
+
+    def curseforgeSettings = curseforgeOptions {
+        accessToken = secrets.getProperty("CURSEFORGE_TOKEN")
+        projectId = "1254626"
+        minecraftVersionRange {
+            start = "1.21.9"
+            end = "1.21.10"
+        }
+        javaVersions.add JavaVersion.VERSION_21
+
+        clientRequired = true
+        serverRequired = false
+
+        changelogType = "markdown"
+    }
+
+    def modrinthSettings = modrinthOptions {
+        accessToken = secrets.getProperty("MODRINTH_TOKEN")
+        projectId = "Bl9j6Jsi"
+        minecraftVersionRange {
+            start = "1.21.9"
+            end = "1.21.10"
+        }
+    }
+
+    curseforge("curseforgeFabric") {
+        from curseforgeSettings
+        file project(":fabric")
+        displayName = "[Fabric $minecraft_version_file_range] v$mod_version"
+        version.set "fabric-$mod_version+$minecraft_version_file_range"
+        modLoaders.addAll "fabric", "quilt"
+    }
+
+    curseforge("curseforgeNeoForge") {
+        from curseforgeSettings
+        file project(":neoforge")
+        displayName = "[NeoForge $minecraft_version_file_range] v$mod_version"
+        version.set "neoforge-$mod_version+$minecraft_version_file_range"
+        modLoaders.add "neoforge"
+    }
+
+    modrinth("modrinthFabric") {
+        from modrinthSettings
+        file project(":fabric")
+        displayName = "[Fabric $minecraft_version_file_range] v$mod_version"
+        version.set "fabric-$mod_version+$minecraft_version_file_range"
+        modLoaders.addAll "fabric", "quilt"
+    }
+
+    modrinth("modrinthNeoForge") {
+        from modrinthSettings
+        file project(":neoforge")
+        displayName = "[NeoForge $minecraft_version_file_range] v$mod_version"
+        version.set "neoforge-$mod_version+$minecraft_version_file_range"
+        modLoaders.add "neoforge"
+    }
+}
+
+tasks.publishMods.dependsOn clean, build
