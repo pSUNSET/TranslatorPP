@@ -1,0 +1,1 @@
+Hotfix: google translation results sometimes patchy
