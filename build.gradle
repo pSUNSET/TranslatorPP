@@ -27,6 +27,10 @@ allprojects {
 
     repositories {
         maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
+        maven {
             name = "NeoForged"
             url = "https://maven.neoforged.net/releases/"
         }
@@ -68,7 +72,10 @@ subprojects {
 
     dependencies {
         minecraft "net.minecraft:minecraft:$minecraft_version"
-        mappings loom.officialMojangMappings()
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
+        }
     }
 
     java {
@@ -104,8 +111,8 @@ publishMods {
         accessToken = secrets.getProperty("CURSEFORGE_TOKEN")
         projectId = "1254626"
         minecraftVersionRange {
-            start = "1.21.9"
-            end = "1.21.10"
+            start = "1.21.11"
+            end = "1.21.11"
         }
         javaVersions.add JavaVersion.VERSION_21
 
@@ -119,8 +126,8 @@ publishMods {
         accessToken = secrets.getProperty("MODRINTH_TOKEN")
         projectId = "Bl9j6Jsi"
         minecraftVersionRange {
-            start = "1.21.9"
-            end = "1.21.10"
+            start = "1.21.11"
+            end = "1.21.11"
         }
     }
 

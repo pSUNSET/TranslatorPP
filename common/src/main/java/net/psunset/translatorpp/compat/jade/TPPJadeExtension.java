@@ -3,8 +3,8 @@ package net.psunset.translatorpp.compat.jade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-import net.psunset.translatorpp.tool.RLUtl;
+import net.minecraft.resources.Identifier;
+import net.psunset.translatorpp.tool.IdUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
 import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.*;
@@ -18,9 +18,9 @@ import java.util.List;
 public final class TPPJadeExtension {
 
     static final IBlockComponentProvider BLOCK = new Block();
-    private static final ResourceLocation BLOCK_LOC = RLUtl.of("block_translation");
+    private static final Identifier BLOCK_LOC = IdUtl.of("block_translation");
     static final IEntityComponentProvider ENTITY = new Entity();
-    private static final ResourceLocation ENTITY_LOC = RLUtl.of("entity_translation");
+    private static final Identifier ENTITY_LOC = IdUtl.of("entity_translation");
 
     public static final class Block implements IBlockComponentProvider {
 
@@ -30,7 +30,7 @@ public final class TPPJadeExtension {
         }
 
         @Override
-        public ResourceLocation getUid() {
+        public Identifier getUid() {
             return BLOCK_LOC;
         }
     }
@@ -43,7 +43,7 @@ public final class TPPJadeExtension {
         }
 
         @Override
-        public ResourceLocation getUid() {
+        public Identifier getUid() {
             return ENTITY_LOC;
         }
     }

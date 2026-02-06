@@ -28,11 +28,11 @@ dependencies {
     // Cloth Config
     modImplementation "me.shedaniel.cloth:cloth-config-neoforge:$cloth_config_version"
 
-    // JEI, REI, EMI?
-    modCompileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+    // JEI, REI, EMI?  (Unused)
+//    modCompileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
+//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
 
-//    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
+    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
 
     // FTB Quests

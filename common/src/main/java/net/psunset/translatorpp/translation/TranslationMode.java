@@ -1,8 +1,8 @@
 package net.psunset.translatorpp.translation;
 
 import com.google.common.collect.Maps;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.psunset.translatorpp.api.ComponentizableEnum;
 import org.jetbrains.annotations.NotNull;
 

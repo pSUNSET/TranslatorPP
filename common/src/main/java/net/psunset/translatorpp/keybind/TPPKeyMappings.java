@@ -3,7 +3,7 @@ package net.psunset.translatorpp.keybind;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.psunset.translatorpp.tool.RLUtl;
+import net.psunset.translatorpp.tool.IdUtl;
 import org.lwjgl.glfw.GLFW;
 
 public final class TPPKeyMappings {
@@ -41,6 +41,6 @@ public final class TPPKeyMappings {
     }
 
     interface Categories {
-        KeyMapping.Category GENERAL = KeyMapping.Category.register(RLUtl.of("general"));
+        KeyMapping.Category GENERAL = KeyMapping.Category.register(IdUtl.of("general"));
     }
 }

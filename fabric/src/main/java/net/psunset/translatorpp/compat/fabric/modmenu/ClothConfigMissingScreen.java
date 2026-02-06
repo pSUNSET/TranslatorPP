@@ -31,8 +31,8 @@ public class ClothConfigMissingScreen extends Screen {
     }
 
     @Override
-    public void resize(Minecraft minecraft, int i, int j) {
-        this.init(minecraft, i, j);
+    public void resize(int i, int j) {
+        this.init(i, j);
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.api.ComponentizableEnum;
 import net.psunset.translatorpp.config.TPPConfig;
