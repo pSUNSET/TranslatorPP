@@ -1,15 +1,16 @@
 {
-  "required": true,
-  "package": "net.psunset.translatorpp.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "minVersion": "0.8",
-  "client": [
-    "ChatComponentMixin",
-    "ChatScreenMixin"
-  ],
-  "mixins": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "net.psunset.translatorpp.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "minVersion": "0.8",
+    "client": [
+        "ChatComponentMixin",
+        "ChatScreenMixin",
+        "wynntils.WrappingChatComponentMixin"
+    ],
+    "mixins": [
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }

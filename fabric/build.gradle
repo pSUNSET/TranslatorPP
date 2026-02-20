@@ -7,6 +7,10 @@ architectury {
     fabric()
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/translatorpp.accesswidener")
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -43,6 +47,9 @@ dependencies {
 
     // Jade
 //    modImplementation "maven.modrinth:jade:$jade_fabric_version"  // (Loom version is too high)
+
+    // Wynntils
+    modRuntimeOnly "maven.modrinth:wynntils:$wynntils_fabric_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

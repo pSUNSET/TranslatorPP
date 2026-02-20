@@ -2,6 +2,10 @@ architectury {
     common('fabric', 'neoforge')
 }
 
+loom {
+    accessWidenerPath = project(":fabric").file("src/main/resources/translatorpp.accesswidener")
+}
+
 dependencies {
     // For using @Environment and EnvType
     modCompileOnly "net.fabricmc:fabric-loader:$fabric_loader_version"
@@ -14,4 +18,7 @@ dependencies {
 
     // Jade (using neoforge)
     modCompileOnly "maven.modrinth:jade:$jade_neoforge_version"
+
+    // Wynntils (using fabric
+    modCompileOnly "maven.modrinth:wynntils:$wynntils_fabric_version"
 }
