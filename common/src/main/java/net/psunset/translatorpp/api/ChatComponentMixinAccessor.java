@@ -11,4 +11,9 @@ public interface ChatComponentMixinAccessor {
      * @see ChatComponentMixin#translatorpp$getMessageContentAt(double, double)
      */
     @Nullable String translatorpp$getMessageContentAt(double x, double y);
+
+    /**
+     * @see ChatComponentMixin#translatorpp$messageIndexTrimmedToAll
+     */
+    int[] translatorpp$getMessageIndexTrimmedToAll();
 }

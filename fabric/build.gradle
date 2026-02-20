@@ -7,6 +7,10 @@ architectury {
     fabric()
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/translatorpp.accesswidener")
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -39,10 +43,11 @@ dependencies {
 //    modRuntimeOnly "mezz.jei:jei-$minecraft_version-fabric:$jei_version"
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
 
-    // FTB Quests
-
     // Jade
-    modImplementation "maven.modrinth:jade:$jade_fabric_version"
+    modRuntimeOnly "maven.modrinth:jade:$jade_fabric_version"
+
+    // Wynntils
+    modRuntimeOnly "maven.modrinth:wynntils:$wynntils_fabric_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

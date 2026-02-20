@@ -35,10 +35,11 @@ dependencies {
 //    modRuntimeOnly "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
 
-    // FTB Quests
-
     // Jade
-    modImplementation "maven.modrinth:jade:$jade_neoforge_version"
+    modRuntimeOnly "maven.modrinth:jade:$jade_neoforge_version"
+
+    // Wynntils
+//    modRuntimeOnly "maven.modrinth:wynntils:$wynntils_neoforge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

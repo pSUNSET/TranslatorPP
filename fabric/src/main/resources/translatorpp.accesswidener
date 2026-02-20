@@ -1,0 +1,6 @@
+accessWidener v2 named
+
+accessible field net/minecraft/client/gui/components/ChatComponent allMessages Ljava/util/List;
+accessible method net/minecraft/client/gui/components/ChatComponent screenToChatX (D)D
+accessible method net/minecraft/client/gui/components/ChatComponent screenToChatY (D)D
+accessible method net/minecraft/client/gui/components/ChatComponent getMessageLineIndexAt (DD)I
