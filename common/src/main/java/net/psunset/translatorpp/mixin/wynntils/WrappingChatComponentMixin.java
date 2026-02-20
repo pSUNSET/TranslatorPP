@@ -34,9 +34,9 @@ public abstract class WrappingChatComponentMixin extends ChatComponent implement
         ChatComponent chat = optional.get();
         ChatComponentMixinAccessor ext = (ChatComponentMixinAccessor) chat;
 
-        double mouseX = ext.translatorpp$screenToChatX(globalMouseX);
-        double mouseY = ext.translatorpp$screenToChatY(globalMouseY);
-        int i = ext.translatorpp$getMessageLineIndexAt(mouseX, mouseY);
+        double mouseX = this.translatorpp$screenToChatX(globalMouseX);
+        double mouseY = this.translatorpp$screenToChatY(globalMouseY);
+        int i = this.translatorpp$getMessageLineIndexAt(mouseX, mouseY);
 
         if (i >= 0 && i < ext.translatorpp$getMessageIndexTrimmedToAll().length) {
             int idx = ext.translatorpp$getMessageIndexTrimmedToAll()[i];
