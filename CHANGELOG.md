@@ -1,1 +1,1 @@
-Port to `MC1.21.11`
+Fix incompatibility with `Wynntils` mod
