@@ -1,1 +1,1 @@
-Hotfix: google translation results sometimes patchy
+Fix incompatibility with `Wynntils` mod
