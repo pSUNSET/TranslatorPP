@@ -1,1 +1,1 @@
-Fix incompatibility with `Wynntils` mod
+Fix getting incorrect content when scroll chat with `Wynntils` mod installed.
