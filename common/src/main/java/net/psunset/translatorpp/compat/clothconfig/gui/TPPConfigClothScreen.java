@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.SimpleOptionsSubScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.psunset.translatorpp.api.ScreenProvider;
+import net.psunset.translatorpp.api.IScreenProvider;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -51,7 +51,7 @@ public class TPPConfigClothScreen extends Screen {
         gridLayout.defaultCellSetting().paddingBottom(6).alignHorizontallyCenter();
         GridLayout.RowHelper rowHelper = gridLayout.createRowHelper(1);
         Button btn;
-        for (final ScreenProvider config : this.configs) {
+        for (final IScreenProvider config : this.configs) {
             String configName = config.getClass().getSimpleName().toLowerCase();
             String displayName = I18n.get(CATEGORY_PREFIX + configName);
             btn = Button.builder(Component.literal("%s...".formatted(displayName)),

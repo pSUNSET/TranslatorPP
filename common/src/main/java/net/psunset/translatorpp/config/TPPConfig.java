@@ -6,14 +6,14 @@ import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.annotations.ExpectMixin;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
+import net.psunset.translatorpp.core.OpenAIClientProvider;
+import net.psunset.translatorpp.core.TranslationMode;
+import net.psunset.translatorpp.core.TranslationService;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.platform.Platform;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.CompatUtl;
-import net.psunset.translatorpp.translation.OpenAIClientTool;
-import net.psunset.translatorpp.translation.TranslationMode;
-import net.psunset.translatorpp.translation.TranslationTool;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -21,27 +21,37 @@ import org.jetbrains.annotations.ApiStatus;
  * To get config values, use {@link TPPConfig#getInstance()}.
  */
 public interface TPPConfig {
-    TranslationMode getTranslationMode();
+
+    TranslationMode getMode();
 
     String getSourceLanguage();
 
     String getTargetLanguage();
 
-    TranslationTool.Type getTranslationTool();
-
-    String getOpenaiModel();
+    TranslationService getService();
 
     String getOpenaiApiKey();
 
-    OpenAIClientTool.Api getOpenaiBaseUrl();
+    OpenAIClientProvider.Api getOpenaiBaseUrl();
 
     String getOpenaiCustomBaseUrl();
 
-    @Environment(EnvType.CLIENT)
-    @ExpectMixin(value = ExpectMixin.Expected.FORGE, method = ExpectMixin.Method.OVERWRITE)
+    String getOpenaiModel();
+
+    String getDeepLApiKey();
+
+    String getLibreApiKey();
+
+    String getLibreBaseUrl();
+
+    String getOllamaBaseUrl();
+
+    String getOllamaModel();
+
+    @ExpectMixin(value = ExpectMixin.Expected.NEOFORGE, method = ExpectMixin.Method.OVERWRITE)
     static void init() {
-        if (Platform.isForge()) {
-            throw new AssertionError();
+        if (Platform.isNeoForge()) {
+            throw new AssertionError("Mixin missing!");
         } else if (CompatUtl.ClothConfig.isLoaded()) {
             TranslatorPP.LOGGER.debug("Cloth Config is loaded, using cloth config for Translator++ Config.");
             Dummy.INSTANCE = new TPPConfigImplCloth();
@@ -72,8 +82,8 @@ public interface TPPConfig {
         public static TPPConfig INSTANCE;
 
         @Override
-        public TranslationMode getTranslationMode() {
-            return Default.translationMode;
+        public TranslationMode getMode() {
+            return Default.mode;
         }
 
         @Override
@@ -87,13 +97,8 @@ public interface TPPConfig {
         }
 
         @Override
-        public TranslationTool.Type getTranslationTool() {
-            return Default.translationTool;
-        }
-
-        @Override
-        public String getOpenaiModel() {
-            return Default.openaiModel;
+        public TranslationService getService() {
+            return Default.service;
         }
 
         @Override
@@ -102,7 +107,7 @@ public interface TPPConfig {
         }
 
         @Override
-        public OpenAIClientTool.Api getOpenaiBaseUrl() {
+        public OpenAIClientProvider.Api getOpenaiBaseUrl() {
             return Default.openaiBaseUrl;
         }
 
@@ -111,9 +116,39 @@ public interface TPPConfig {
             return Default.openaiCustomBaseUrl;
         }
 
+        @Override
+        public String getOpenaiModel() {
+            return Default.openaiModel;
+        }
+
+        @Override
+        public String getDeepLApiKey() {
+            return Default.deeplApiKey;
+        }
+
+        @Override
+        public String getLibreApiKey() {
+            return Default.libreApiKey;
+        }
+
+        @Override
+        public String getLibreBaseUrl() {
+            return Default.libreBaseUrl;
+        }
+
+        @Override
+        public String getOllamaBaseUrl() {
+            return Default.ollamaBaseUrl;
+        }
+
+        @Override
+        public String getOllamaModel() {
+            return Default.ollamaModel;
+        }
+
         public static void init() {
             ClientTickCallbacks.POST.register(client -> {
-                while (TPPKeyMappings.CLOTH_CONFIG_KEY.consumeClick()) {
+                while (TPPKeyMappings.CONFIG_KEY.consumeClick()) {
                     ClientUtl.message(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
                 }
             });
@@ -124,13 +159,18 @@ public interface TPPConfig {
      * To store default values.
      */
     interface Default {
-        TranslationMode translationMode = TranslationMode.NAME_ONLY;
+        TranslationMode mode = TranslationMode.NAME_ONLY;
         String sourceLanguage = "auto";
         String targetLanguage = "zh-CN";
-        TranslationTool.Type translationTool = TranslationTool.Type.GoogleTranslation;
-        String openaiModel = "";
+        TranslationService service = TranslationService.GoogleTranslation;
         String openaiApiKey = "";
-        OpenAIClientTool.Api openaiBaseUrl = OpenAIClientTool.Api.OpenAI;
+        OpenAIClientProvider.Api openaiBaseUrl = OpenAIClientProvider.Api.OpenAI;
         String openaiCustomBaseUrl = "https://custom.api.url/";
+        String openaiModel = "";
+        String deeplApiKey = "";
+        String libreApiKey = "";
+        String libreBaseUrl = "https://libretranslate.com/";
+        String ollamaBaseUrl = "http://127.0.0.1:11434/";
+        String ollamaModel = "";
     }
 }

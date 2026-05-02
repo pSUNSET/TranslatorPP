@@ -6,7 +6,8 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.psunset.translatorpp.translation.TranslationKit;
+import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.core.TranslationKit;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public final class TooltipUtl {
     }
 
     public static String getCombinedTooltipText(ItemStack stack, Minecraft client) {
-        return String.join(TranslationKit.SEPARATOR, getTooltipTexts(stack, client));
+        return String.join(TranslationKit.separator(), getTooltipTexts(stack, client));
     }
 
     public static List<String> getTooltipTexts(List<? extends FormattedText> tooltip) {

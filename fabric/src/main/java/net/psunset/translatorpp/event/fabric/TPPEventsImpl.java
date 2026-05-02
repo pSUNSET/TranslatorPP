@@ -12,7 +12,6 @@ import net.psunset.translatorpp.event.ScreenCallbacks;
 
 public final class TPPEventsImpl {
 
-    @Environment(EnvType.CLIENT)
     public static void init() {
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickCallbacks.POST.merge()::afterTick);
 
