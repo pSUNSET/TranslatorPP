@@ -31,8 +31,8 @@ public abstract class ConfigurationSectionScreenMixin extends OptionsSubScreen {
 
     @Inject(method = "createStringValue", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;setMaxLength(I)V", shift = At.Shift.AFTER))
     private void onCreateStringValue(final String key, final Predicate<String> tester, final Supplier<String> source, final Consumer<String> target, CallbackInfoReturnable<ConfigurationScreen.ConfigurationSectionScreen.Element> cir, @Local EditBox box) {
-        if (key.equals("openai_apikey")) {
-            box.setMaxLength(192); // Directly increase the max length of the edit box here.
+        if (key.endsWith("apikey")) {
+            box.setMaxLength(256); // Directly increase the max length of the edit box here.
         }
     }
 }

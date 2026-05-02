@@ -1,7 +1,7 @@
-package net.psunset.translatorpp.translation;
+package net.psunset.translatorpp.core;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
@@ -13,6 +13,7 @@ import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.event.ItemTooltipCallbacks;
 import net.psunset.translatorpp.event.ScreenCallbacks;
+import net.psunset.translatorpp.exception.ServiceException;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
@@ -24,13 +25,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public class TranslationKit {
+/**
+ * The main class to manage all translation process.
+ */
+public final class TranslationKit {
 
     static final TranslationKit INSTANCE = new TranslationKit();
+    static final Gson GSON = new GsonBuilder().create();
 
-    public static final String SEPARATOR = "<@>";
     public static final String SUCCESS = "<O>";
     public static final String PROCESSING = "<?>";
     public static final String ERROR = "<X>";
@@ -86,7 +91,7 @@ public class TranslationKit {
 
     /**
      * Used when a screen open, key.isDown() won't work.
-     * When there is no screen open, set to null.
+     * When there is no screen open, set to false.
      */
     private boolean translateKeyDown = false;
 
@@ -156,7 +161,6 @@ public class TranslationKit {
         // Check cache first
         String cachedResult = translationCache.get(translatedText);
         if (cachedResult != null) {
-            TranslatorPP.LOGGER.debug("Cache hit for: {}", translatedText);
             translatedResult = I18n.get("misc.translatorpp.translation", cachedResult) + SUCCESS;
             translated = true;
             translationFuture = CompletableFuture.completedFuture(null); // Create a completed future
@@ -169,46 +173,39 @@ public class TranslationKit {
         translationFuture = CompletableFuture
                 .supplyAsync(() -> {
                     try {
-                        return TPPConfig.getInstance().getTranslationTool().tool.translate(
+                        return TPPConfig.getInstance().getService().provider.translate(
                                 translatedText,
                                 TPPConfig.getInstance().getSourceLanguage(),
                                 TPPConfig.getInstance().getTargetLanguage()
                         );
                     } catch (Exception e) {
-                        if (e instanceof RuntimeException re) {
-                            throw re;
-                        } else {
-                            throw new RuntimeException(e);
-                        }
+                        throw (e instanceof RuntimeException re) ? re : new RuntimeException(e);
                     }
                 }, translationExecutor)
                 .thenAcceptAsync(it -> {
                     // Update the result and cache it
-                    translatedResult = I18n.get("misc.translatorpp.translation", it) + SUCCESS;
+                    translatedResult = it + SUCCESS;
                     translationCache.put(translatedText, it); // Add to cache
                 }, translationExecutor)
                 .exceptionally(err -> {
                     TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", translatedText, err.getCause());
                     translatedResult = I18n.get("misc.translatorpp.translation.failed") + ERROR;
-                    this.sendErrorToClient(client, err.getCause());
+                    this.clientExecuteSendingError(client, err.getCause());
                     return null; // Indicate exception was handled
                 });
     }
 
+    private void clientExecuteSendingError(Minecraft client, Throwable throwable) {
+        client.execute(() -> sendErrorToClient(client, throwable));
+    }
+
     private void sendErrorToClient(Minecraft client, Throwable err) {
-        if (err instanceof OpenAIClientTool.ServiceException openaiErr) {
-            String transKey = "misc.translatorpp.translation.failed.chat.openai." + openaiErr.statusCode;
-            if (openaiErr.statusCode == 401 && openaiErr.getMessage().contains("organization")) {
-                transKey += "_org";
-            } else if (openaiErr.statusCode == 429 && openaiErr.getMessage().contains("limit reached")) {
-                transKey += "_limit";
-            } else if (openaiErr.statusCode == 503 && openaiErr.getMessage().contains("overloaded")) {
-                transKey += "_over";
-            }
-            ClientUtl.message(client, Component.translatable(transKey).withStyle(ChatFormatting.RED));
-            return;
+        if (err instanceof ServiceException se) {
+            ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat.status_code",
+                    se.statusCode, se.getMessage()).withStyle(ChatFormatting.RED));
+        } else {
+            ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
         }
-        ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
     }
 
     /**
@@ -234,31 +231,6 @@ public class TranslationKit {
     }
 
     /**
-     * Refresh the OpenAI client tool with the latest configuration.
-     * @deprecated Simply use {@link OpenAIClientTool#refresh()} instead.
-     */
-    @Deprecated
-    public void refreshOpenAIClientTool() {
-        TPPConfig config = TPPConfig.getInstance();
-        refreshOpenAIClientTool(config.getOpenaiApiKey(), config.getOpenaiBaseUrl(), config.getOpenaiCustomBaseUrl(), config.getOpenaiModel());
-    }
-
-    /**
-     * Refresh the OpenAI client tool.
-     * @deprecated Simply use {@link OpenAIClientTool#safeRefresh(String, OpenAIClientTool.Api, String, String)} instead.
-     */
-    @Deprecated
-    private void refreshOpenAIClientTool(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
-        try {
-            TranslatorPP.LOGGER.debug("Refreshing OpenAI Client Tool with {apikey={}, baseurl={}, model={}}",
-                    apiKey.isBlank() ? "NOT_SET" : "****" + apiKey.substring(apiKey.length() - 4), api.baseUrl, model); // Avoid logging full API key
-            OpenAIClientTool.getInstance().unsafeRefresh(apiKey, api, customApi, model);
-        } catch (Exception e) {
-            TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
-        }
-    }
-
-    /**
      * Get the default style and split result lines.
      */
     public Pair<Style, String[]> getStyledResultLines() {
@@ -271,7 +243,7 @@ public class TranslationKit {
             default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
         }
 
-        String[] texts = resultText.substring(0, resultText.length() - 3).split(SEPARATOR);
+        String[] texts = resultText.substring(0, resultText.length() - 3).split(literalSeparator());
         return Pair.of(appliedStyle, texts);
     }
 
@@ -283,7 +255,7 @@ public class TranslationKit {
         Style appliedStyle = styledResult.getLeft();
         String[] texts = styledResult.getRight();
 
-        switch (TPPConfig.getInstance().getTranslationMode()) {
+        switch (TPPConfig.getInstance().getMode()) {
             case NAME_ONLY -> {
                 lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
             }
@@ -291,7 +263,7 @@ public class TranslationKit {
                 lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
                 if (texts.length > 1) {
                     // 15 < ${max_length_of_lines} < 30
-                    lines.add(Component.literal("-".repeat(Math.min(30, Math.max(15, Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt())))).withStyle(ChatFormatting.DARK_GRAY));
+                    lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
                     for (int i = 1; i < texts.length; i++) {
                         lines.add(Component.literal(texts[i]).withStyle(appliedStyle));
                     }
@@ -299,7 +271,7 @@ public class TranslationKit {
             }
             case ALL_IN_END -> {
                 // 15 < ${max_length_of_lines} < 30
-                lines.add(Component.literal("-".repeat(Math.min(30, Math.max(15, Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt())))).withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
                 for (String text : texts) {
                     lines.add(Component.literal(text).withStyle(appliedStyle));
                 }
@@ -327,7 +299,6 @@ public class TranslationKit {
         return component;
     }
 
-    @Environment(EnvType.CLIENT)
     public static void init() {
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
 
@@ -359,5 +330,13 @@ public class TranslationKit {
             TranslationKit.getInstance().stop();
             TranslationKit.getInstance().setKeyDown(false);
         });
+    }
+
+    public static String separator() {
+        return TPPConfig.getInstance().getService().provider.separator();
+    }
+
+    public static String literalSeparator() {
+        return Pattern.quote(separator());
     }
 }

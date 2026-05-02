@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.translation;
+package net.psunset.translatorpp.core;
 
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
@@ -32,10 +32,6 @@ public enum TranslationMode implements ComponentizableEnum {
      * All translated results will be shown at the end of raw texts.
      */
     ALL_IN_END("All In End");
-
-    public static final Map<String, TranslationMode> entries = Util.make(Maps.newHashMap(), map -> {
-        for (TranslationMode type : values()) map.put(type.displayName, type);
-    });
 
     public final String displayName;
 

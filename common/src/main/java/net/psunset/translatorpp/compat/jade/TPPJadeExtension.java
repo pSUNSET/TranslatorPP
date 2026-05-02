@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.psunset.translatorpp.tool.RLUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
-import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.impl.Tooltip;

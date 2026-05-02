@@ -1,177 +1,152 @@
 package net.psunset.translatorpp.config.neoforge.gui;
 
-import com.mojang.datafixers.util.Function4;
-import com.mojang.realmsclient.RealmsMainScreen;
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.ModContainer;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.config.ModConfigs;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.psunset.translatorpp.TranslatorPP;
+import net.psunset.translatorpp.config.neoforge.TPPConfigImplNeoForge;
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
- * An edition of {@link ConfigurationScreen}
+ * This mod has only one section,
+ * so it extends section screen directly.
  */
-@OnlyIn(Dist.CLIENT)
-public class TPPConfigNeoForgeScreen extends OptionsSubScreen {
+public class TPPConfigNeoForgeScreen extends ConfigurationScreen.ConfigurationSectionScreen {
 
-    private static final String NEOFORGE_LANG_PREFIX = "neoforge.configuration.uitext.";
-    private static final String TITLE = "config.title.translatorpp";
-    private static final String SUBTITLE_PREFIX = TITLE + ".";
-    private static final String CATEGORY_PREFIX = "config.category.translatorpp.";
-    private static final String SECTION = NEOFORGE_LANG_PREFIX + "section";
-    private static final String FILENAME_TOOLTIP = NEOFORGE_LANG_PREFIX + "filenametooltip";
-    private static final ChatFormatting FILENAME_TOOLTIP_STYLE = ChatFormatting.GRAY;
+    private static final Component TITLE = Component.translatable("config.title.translatorpp");
 
-    private static final MutableComponent EMPTY_LINE = Component.literal("\n\n");
+    private static ModConfig modConfig;
+    private static final ModConfig.Type modConfigType = ModConfig.Type.CLIENT;  // This mod is client-sided only.
 
-    protected final ModContainer mod;
-    private final Function4<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen;
-
-    public ModConfigSpec.RestartType needsRestart = ModConfigSpec.RestartType.NONE;
-    // If there is only one config type (and it can be edited, we show that instantly on the way "down" and want to close on the way "up".
-    // But when returning from the restart/reload confirmation screens, we need to stay open.
-    private boolean autoClose = false;
-
-    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent) {
-        this(mod, parent, ConfigurationScreen.ConfigurationSectionScreen::new);
+    protected TPPConfigNeoForgeScreen(Screen parent, ModConfig.Type type, ModConfig modConfig) {
+        super(parent, type, modConfig, TITLE);
     }
 
-    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, ConfigurationScreen.ConfigurationSectionScreen.Filter filter) {
-        this(mod, parent, (a, b, c, d) -> new ConfigurationScreen.ConfigurationSectionScreen(a, b, c, d, filter));
+    protected TPPConfigNeoForgeScreen(Screen parent, ModConfig.Type type, ModConfig modConfig, Filter filter) {
+        super(parent, type, modConfig, TITLE, filter);
     }
 
-    @SuppressWarnings("resource")
-    public TPPConfigNeoForgeScreen(final ModContainer mod, final Screen parent, Function4<TPPConfigNeoForgeScreen, ModConfig.Type, ModConfig, Component, Screen> sectionScreen) {
-        super(parent, Minecraft.getInstance().options, Component.translatable(TITLE));
-        this.mod = mod;
-        this.sectionScreen = sectionScreen;
+    protected TPPConfigNeoForgeScreen(Context parentContext, Screen parent, Map<String, Object> valueSpecs, String key, Set<? extends UnmodifiableConfig.Entry> entrySet) {
+        super(parentContext, parent, valueSpecs, key, entrySet, TITLE);
+    }
+
+    protected TPPConfigNeoForgeScreen(Context context, Component title) {
+        super(context, title);
     }
 
     @Override
-    protected void addOptions() {
-        Button btn;
-        for (final ModConfig.Type type : ModConfig.Type.values()) {
-            for (final ModConfig modConfig : ModConfigs.getConfigSet(type)) {
-                if (modConfig.getModId().equals(mod.getModId())) {
-                    String configName = modConfig.getFileName().substring(13, modConfig.getFileName().length() - 5);
-                    btn = Button.builder(Component.translatable(SECTION, Component.translatable(CATEGORY_PREFIX + configName)),
-                            button -> minecraft.setScreen(sectionScreen.apply(this, type, modConfig, Component.translatable(SUBTITLE_PREFIX + configName)))).width(ConfigurationScreen.BIG_BUTTON_WIDTH).build();
-                    MutableComponent tooltip = Component.empty();
-                    if (!((ModConfigSpec) modConfig.getSpec()).isLoaded()) {
-                        tooltip.append(ConfigurationScreen.TOOLTIP_CANNOT_EDIT_NOT_LOADED).append(EMPTY_LINE);
-                        btn.active = false;
+    protected ConfigurationScreen.ConfigurationSectionScreen rebuild() {
+        if (list != null) { // this may be called early, skip and wait for init() then
+            list.clearEntries();
+            boolean hasUndoableElements = false;
+
+            final List<@Nullable Element> elements = new ArrayList<>();
+            for (final UnmodifiableConfig.Entry entry : context.entries()) {
+                final String key = entry.getKey();
+                final Object rawValue = entry.getRawValue();
+                switch (entry.getRawValue()) {
+                    case ModConfigSpec.ConfigValue cv -> {
+                        var valueSpec = getValueSpec(key);
+                        var element = switch (valueSpec) {
+                            case ModConfigSpec.ListValueSpec listValueSpec -> createList(key, listValueSpec, cv);
+                            case ModConfigSpec.ValueSpec spec when cv.getClass() == ModConfigSpec.ConfigValue.class && spec.getDefault() instanceof String ->
+                                    createStringValue(key, valueSpec::test, () -> (String) cv.getRaw(), cv::set);
+                            case ModConfigSpec.ValueSpec spec when cv.getClass() == ModConfigSpec.ConfigValue.class && spec.getDefault() instanceof Integer ->
+                                    createIntegerValue(key, valueSpec, () -> (Integer) cv.getRaw(), cv::set);
+                            case ModConfigSpec.ValueSpec spec when cv.getClass() == ModConfigSpec.ConfigValue.class && spec.getDefault() instanceof Long ->
+                                    createLongValue(key, valueSpec, () -> (Long) cv.getRaw(), cv::set);
+                            case ModConfigSpec.ValueSpec spec when cv.getClass() == ModConfigSpec.ConfigValue.class && spec.getDefault() instanceof Double ->
+                                    createDoubleValue(key, valueSpec, () -> (Double) cv.getRaw(), cv::set);
+                            case ModConfigSpec.ValueSpec spec when cv.getClass() == ModConfigSpec.ConfigValue.class && spec.getDefault() instanceof Enum<?> ->
+                                    createEnumValue(key, valueSpec, (Supplier) cv::getRaw, (Consumer) cv::set);
+                            case null -> null;
+
+                            default -> switch (cv) {
+                                case ModConfigSpec.BooleanValue value ->
+                                        createBooleanValue(key, valueSpec, value::getRaw, value::set);
+                                case ModConfigSpec.IntValue value ->
+                                        createIntegerValue(key, valueSpec, value::getRaw, value::set);
+                                case ModConfigSpec.LongValue value ->
+                                        createLongValue(key, valueSpec, value::getRaw, value::set);
+                                case ModConfigSpec.DoubleValue value ->
+                                        createDoubleValue(key, valueSpec, value::getRaw, value::set);
+                                case ModConfigSpec.EnumValue value ->
+                                        createEnumValue(key, valueSpec, (Supplier) value::getRaw, (Consumer) value::set);
+                                default -> createOtherValue(key, cv);
+                            };
+                        };
+                        elements.add(context.filter().filterEntry(context, key, element));
                     }
-                    tooltip.append(Component.translatable(FILENAME_TOOLTIP, modConfig.getFileName()).withStyle(FILENAME_TOOLTIP_STYLE));
-                    btn.setTooltip(Tooltip.create(tooltip));
-                    list.addSmall(btn, null);
+                    case UnmodifiableConfig subsection when context.valueSpecs().get(key) instanceof UnmodifiableConfig subconfig ->
+                            elements.add(createSection(key, subconfig, subsection));
+                    default ->
+                            elements.add(context.filter().filterEntry(context, key, createOtherSection(key, rawValue)));
                 }
             }
-        }
-    }
+            elements.addAll(createSyntheticValues());
 
-    @Override
-    public void added() {
-        super.added();
-        if (autoClose) {
-            autoClose = false;
-            onClose();
-        }
-    }
-
-    @SuppressWarnings("incomplete-switch")
-    @Override
-    public void onClose() {
-        switch (needsRestart) {
-            case GAME -> {
-                minecraft.setScreen(new TooltipConfirmScreen(b -> {
-                    if (b) {
-                        minecraft.stop();
+            for (final Element element : elements) {
+                if (element != null) {
+                    if (element.name() == null) {
+                        list.addSmall(new StringWidget(Button.DEFAULT_WIDTH, Button.DEFAULT_HEIGHT, Component.empty(), font), element.getWidget(options));
                     } else {
-                        super.onClose();
-                    }
-                }, ConfigurationScreen.GAME_RESTART_TITLE, ConfigurationScreen.GAME_RESTART_MESSAGE, ConfigurationScreen.GAME_RESTART_YES, ConfigurationScreen.RESTART_NO));
-                return;
-            }
-            case WORLD -> {
-                if (minecraft.level != null) {
-                    minecraft.setScreen(new TooltipConfirmScreen(b -> {
-                        if (b) {
-                            // when changing server configs from the client is added, this is where we tell the server to restart and activate the new config.
-                            // also needs a different text in MP ("server will restart/exit, yada yada") than in SP
-                            onDisconnect();
-                        } else {
-                            super.onClose();
+                        // "config.translatorpp.".length() = 20
+                        var keySuffix = ((TranslatableContents) element.name().getContents()).getKey().substring(20);
+
+                        // Add category header
+                        if (TPPConfigImplNeoForge.FIRST_CHILD_TO_CATEGORY.containsKey(keySuffix)) {
+                            list.addSmall(new StringWidget(ConfigurationScreen.BIG_BUTTON_WIDTH, Button.DEFAULT_HEIGHT,
+                                    Component.translatable("config.category.translatorpp." + TPPConfigImplNeoForge.FIRST_CHILD_TO_CATEGORY.get(keySuffix))
+                                            .withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD), font), null);
                         }
-                    }, ConfigurationScreen.SERVER_RESTART_TITLE, ConfigurationScreen.SERVER_RESTART_MESSAGE, minecraft.isLocalServer() ? ConfigurationScreen.RETURN_TO_MENU : CommonComponents.GUI_DISCONNECT, ConfigurationScreen.RESTART_NO));
-                    return;
+
+                        final StringWidget label = new StringWidget(Button.DEFAULT_WIDTH, Button.DEFAULT_HEIGHT, element.name(), font);
+                        label.setTooltip(Tooltip.create(element.tooltip()));
+                        list.addSmall(label, element.getWidget(options));
+                    }
+                    hasUndoableElements |= element.undoable();
+                }
+            }
+
+            if (hasUndoableElements && undoButton == null) {
+                createUndoButton();
+                createResetButton();
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Returns a new instance of the config screen.
+     */
+    public static Screen create(Screen parent) {
+        if (modConfig == null) {
+            for (final ModConfig config : ModConfigs.getConfigSet(ModConfig.Type.CLIENT)) {
+                if (config.getModId().equals(TranslatorPP.ID)) {
+                    modConfig = config;
+                    break;
                 }
             }
         }
-        super.onClose();
-    }
-
-    // direct copy from PauseScreen (which has the best implementation), sadly it's not really accessible
-    private void onDisconnect() {
-        boolean flag = this.minecraft.isLocalServer();
-        ServerData serverdata = this.minecraft.getCurrentServer();
-        this.minecraft.level.disconnect();
-        if (flag) {
-            this.minecraft.disconnect(new GenericMessageScreen(ConfigurationScreen.SAVING_LEVEL));
-        } else {
-            this.minecraft.disconnect();
-        }
-
-        TitleScreen titlescreen = new TitleScreen();
-        if (flag) {
-            this.minecraft.setScreen(titlescreen);
-        } else if (serverdata != null && serverdata.isRealm()) {
-            this.minecraft.setScreen(new RealmsMainScreen(titlescreen));
-        } else {
-            this.minecraft.setScreen(new JoinMultiplayerScreen(titlescreen));
-        }
-    }
-
-
-    private static final class TooltipConfirmScreen extends ConfirmScreen {
-        boolean seenYes = false;
-
-        private TooltipConfirmScreen(BooleanConsumer callback, Component title, Component message, Component yesButton, Component noButton) {
-            super(callback, title, message, yesButton, noButton);
-        }
-
-        @Override
-        protected void init() {
-            seenYes = false;
-            super.init();
-        }
-
-        @Override
-        protected void addExitButton(Button button) {
-            if (seenYes) {
-                button.setTooltip(Tooltip.create(ConfigurationScreen.RESTART_NO_TOOLTIP));
-            } else {
-                seenYes = true;
-            }
-            super.addExitButton(button);
-        }
+        return new TPPConfigNeoForgeScreen(parent, modConfigType, modConfig);
     }
 }

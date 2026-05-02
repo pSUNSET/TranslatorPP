@@ -7,5 +7,5 @@ import net.minecraft.client.gui.screens.Screen;
  * A {@link ConfigData} with a {@link Screen} creator method.
  * Do NOT use this if Cloth Config is not installed.
  */
-public interface TPPClothConfigData extends ConfigData, ScreenProvider {
+public interface ITPPClothConfigData extends ConfigData, IScreenProvider {
 }
