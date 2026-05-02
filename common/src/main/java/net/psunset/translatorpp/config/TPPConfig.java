@@ -159,7 +159,7 @@ public interface TPPConfig {
      * To store default values.
      */
     interface Default {
-        TranslationMode mode = TranslationMode.NAME_ONLY;
+        TranslationMode mode = TranslationMode.NAME_TOP;
         String sourceLanguage = "auto";
         String targetLanguage = "zh-CN";
         TranslationService service = TranslationService.GoogleTranslation;
