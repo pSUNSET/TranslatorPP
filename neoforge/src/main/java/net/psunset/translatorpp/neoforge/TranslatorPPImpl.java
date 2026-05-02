@@ -8,11 +8,15 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.neoforge.TPPConfigImplNeoForge;
 import net.psunset.translatorpp.event.neoforge.TPPEventsImpl;
+import net.psunset.translatorpp.platform.neoforge.PlatformImpl;
 
 @Mod(value = TranslatorPP.ID, dist = Dist.CLIENT)
 public final class TranslatorPPImpl {
+
     public TranslatorPPImpl(ModContainer container, IEventBus modBus, Dist dist) {
-        var gameBus = NeoForge.EVENT_BUS;
+        IEventBus gameBus = NeoForge.EVENT_BUS;
+
+        PlatformImpl.init();
 
         /* Earlier */
 
@@ -20,6 +24,7 @@ public final class TranslatorPPImpl {
         TPPConfigImplNeoForge.init(container);
 
         /* Later */
+
         TPPEventsImpl.init(gameBus, modBus);
     }
 }

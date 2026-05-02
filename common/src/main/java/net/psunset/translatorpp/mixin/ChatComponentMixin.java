@@ -64,17 +64,17 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     protected abstract int getLineHeight();
 
     @Inject(method = "clearMessages(Z)V", at = @At("TAIL"))
-    private void afterClearMessages(boolean bl, CallbackInfo ci) {
+    private void translatorpp$afterClearMessages(boolean bl, CallbackInfo ci) {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 
     @Inject(method = "refreshTrimmedMessages()V", at = @At("HEAD"))
-    private void beforeRefreshTrimmedMessages(CallbackInfo ci) {
+    private void translatorpp$beforeRefreshTrimmedMessages(CallbackInfo ci) {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 
     @WrapOperation(method = "addMessageToDisplayQueue(Lnet/minecraft/client/GuiMessage;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GuiMessage;splitLines(Lnet/minecraft/client/gui/Font;I)Ljava/util/List;"))
-    private List<FormattedCharSequence> wrapSplitLines(GuiMessage instance, Font font, int i, Operation<List<FormattedCharSequence>> original) {
+    private List<FormattedCharSequence> translatorpp$wrapSplitLines(GuiMessage instance, Font font, int i, Operation<List<FormattedCharSequence>> original) {
         List<FormattedCharSequence> toReturn = original.call(instance, font, i);
         int s = toReturn.size();
         for (int x = 99; x >= s; x--) {

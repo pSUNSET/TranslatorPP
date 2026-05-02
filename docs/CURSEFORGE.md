@@ -5,11 +5,11 @@ A Minecraft mod for swift, light, and convenient auto translation.
 ## Important Notes
 
 * **Client-sided** only.
-* **Internet** required.
+* **Internet** required usually.
 
 ## Dependencies
 
-* **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Required in Fabric and Forge; Compatible in NeoForge)
+* **[Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)** (Required in Fabric & Forge; Compatible in NeoForge)
 * **[Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu)** (Compatible in Fabric)
 * **[Just Enough Items (JEI)](https://www.curseforge.com/minecraft/mc-mods/jei)** (Compatible)
 * **[Roughly Enough Items (REI)](https://www.curseforge.com/minecraft/mc-mods/roughly-enough-items)** (Compatible)
@@ -44,8 +44,3 @@ A Minecraft mod for swift, light, and convenient auto translation.
 ## Versioning (since `v2.2.0`)
 Display Name: `[${Platform} ${mc_ver_range}] v${mod_version}`  
 File Name: `translatorpp-${platform}-${mod_version}+${mc_ver_range}`
-
-## Development
-
-You can find the source code and contribute to the project
-on [Translator++ GitHub Repository](https://github.com/pSUNSET/TranslatorPP).

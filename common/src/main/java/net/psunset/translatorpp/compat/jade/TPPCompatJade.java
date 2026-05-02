@@ -5,9 +5,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
+import net.psunset.translatorpp.core.TranslationKit;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.translation.TranslationKit;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
@@ -15,7 +15,6 @@ import snownee.jade.api.WailaPlugin;
 @WailaPlugin
 public class TPPCompatJade implements IWailaPlugin {
 
-    @Environment(EnvType.CLIENT)
     public static void init() {
         ClientTickCallbacks.POST.register(client -> {
             if (Minecraft.getInstance().screen == null) {

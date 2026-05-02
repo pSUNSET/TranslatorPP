@@ -17,7 +17,7 @@ public final class TPPKeyMappings {
             Categories.GENERAL
     );
 
-    public static KeyMapping CLOTH_CONFIG_KEY = register(
+    public static KeyMapping CONFIG_KEY = register(
             "key.translatorpp.config",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,

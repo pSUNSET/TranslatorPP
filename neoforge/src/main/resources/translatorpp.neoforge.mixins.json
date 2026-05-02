@@ -8,7 +8,6 @@
   ],
   "mixins": [
     "ComponentizableEnumMixin",
-    "PlatformMixin",
     "TPPConfigMixin"
   ],
   "injectors": {
