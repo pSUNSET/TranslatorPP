@@ -1,13 +1,14 @@
-package net.psunset.translatorpp.translation;
+package net.psunset.translatorpp.core;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.Util;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.api.ComponentizableEnum;
+import net.psunset.translatorpp.api.IServiceProvider;
 import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.exception.ServiceException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,23 +20,22 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public class OpenAIClientTool implements TranslationTool {
+public class OpenAIClientProvider implements IServiceProvider {
 
-    static final OpenAIClientTool INSTANCE = new OpenAIClientTool();
+    static final OpenAIClientProvider INSTANCE = new OpenAIClientProvider();
     public static final String PROMPT = """
-            You are a precise translation assistant.
-            Translate from '%s' to '%s', keeping '%s' (split pattern) as-is.
+            You are a translation engine. Translate the following text from '%s' into '%s'. Preserve placeholders like {§a}, [§1], <§2>, and %s exactly.
             
             Text:
             \"""
             %s
             \"""
             
-            Only provide the translated text as output, without any additional explanations or formatting.
+            Return only the translated text.
             """;
 
     /**
@@ -47,7 +47,7 @@ public class OpenAIClientTool implements TranslationTool {
     private static final int CONNECT_TIMEOUT = 10000; // 10 seconds
     private static final int READ_TIMEOUT = 30000;    // 30 seconds
 
-    public static OpenAIClientTool getInstance() {
+    public static OpenAIClientProvider getInstance() {
         return INSTANCE;
     }
 
@@ -59,9 +59,7 @@ public class OpenAIClientTool implements TranslationTool {
     @NotNull
     private String model = "";
 
-    private final Gson gson = new GsonBuilder().create();
-
-    private OpenAIClientTool() {
+    private OpenAIClientProvider() {
     }
 
     private void setApiKey(@NotNull String apiKey) {
@@ -96,14 +94,14 @@ public class OpenAIClientTool implements TranslationTool {
      * Refresh self properties.
      * Auto catch exceptions and log errors.
      */
-    private void safeRefresh(String apiKey, OpenAIClientTool.Api api, String customApi, String model) {
+    private void safeRefresh(String apiKey, OpenAIClientProvider.Api api, String customApi, String model) {
         try {
             this.unsafeRefresh(apiKey, api, customApi, model);
             String shownApiKey = this.apiKey.isEmpty() ? "NOT_SET" : "****" + this.apiKey.substring(apiKey.length() - 4); // Avoid logging full API key
-            TranslatorPP.LOGGER.debug("OpenAI Client Tool is currently set to {apiKey={}, baseUrl={}, model={}}",
+            TranslatorPP.LOGGER.debug("OpenAIClientProvider is currently set to {apiKey={}, baseUrl={}, model={}}",
                     shownApiKey, this.baseUrl, this.model);
         } catch (Exception e) {
-            TranslatorPP.LOGGER.error("Error while refreshing OpenAI Client Tool: {}", e.toString());
+            TranslatorPP.LOGGER.error("Error while refreshing OpenAIClientProvider: {}", e.toString());
         }
     }
 
@@ -130,24 +128,23 @@ public class OpenAIClientTool implements TranslationTool {
     @Override
     public String translate(String q, String sl, String tl) throws Exception {
         if (!this.isPresent()) {
-            throw new IllegalStateException("OpenAIClientTool is not completely configured. API key, API provider, and model must be set.");
+            throw new IllegalStateException("OpenAIClientProvider is not completely configured. API key, API provider, and model must be set.");
         }
 
-        String formattedPrompt = PROMPT.formatted(sl, tl, TranslationKit.SEPARATOR, q);
+        String formattedPrompt = PROMPT.formatted(sl, tl, this.separator(), q);
 
-        // Use a Map to build the request, then serialize with Gson
-        Map<String, Object> requestPayload = Maps.newLinkedHashMap(); // Use LinkedHashMap to preserve insertion order if it matters
-        requestPayload.put("model", this.model);
-        List<Map<String, String>> messages = Lists.newArrayList();
-        Map<String, String> userMessage = Maps.newLinkedHashMap();
-        userMessage.put("role", "user");
-        userMessage.put("content", formattedPrompt);
+        JsonObject requestPayload = new JsonObject();
+        requestPayload.addProperty("model", this.model);
+        JsonArray messages = new JsonArray();
+        JsonObject userMessage = new JsonObject();
+        userMessage.addProperty("role", "user");
+        userMessage.addProperty("content", formattedPrompt);
         messages.add(userMessage);
-        requestPayload.put("messages", messages);
-        requestPayload.put("temperature", 0.7);
+        requestPayload.add("messages", messages);
+        requestPayload.addProperty("temperature", 0.7);
         // Add other parameters if needed, e.g., max_tokens
 
-        String jsonRequestBody = gson.toJson(requestPayload);
+        String jsonRequestBody = TranslationKit.GSON.toJson(requestPayload);
 
         HttpURLConnection con = null;
         try {
@@ -182,19 +179,19 @@ public class OpenAIClientTool implements TranslationTool {
             if (isError) {
                 // Try to parse JSON error response from API if possible
                 try {
-                    JsonObject errorJson = gson.fromJson(rawResponse, JsonObject.class);
+                    JsonObject errorJson = TranslationKit.GSON.fromJson(rawResponse, JsonObject.class);
                     if (errorJson != null && errorJson.has("error") && errorJson.get("error").isJsonObject()) {
                         JsonObject errorDetails = errorJson.getAsJsonObject("error");
                         String errorMessage = errorDetails.has("message") ? errorDetails.get("message").getAsString() : rawResponse;
-                        throw new ServiceException("API call failed: " + errorMessage, statusCode);
+                        throw new ServiceException.OpenAI(errorMessage, statusCode);
                     }
                 } catch (JsonSyntaxException e) {
                     // Not a JSON error response, or malformed. Fallback to raw response.
                 }
-                throw new ServiceException("API call failed: " + rawResponse, statusCode);
+                throw new ServiceException.OpenAI(rawResponse, statusCode);
             }
 
-            JsonObject responseJson = gson.fromJson(rawResponse, JsonObject.class);
+            JsonObject responseJson = TranslationKit.GSON.fromJson(rawResponse, JsonObject.class);
             JsonArray choices = responseJson.getAsJsonArray("choices");
             if (choices == null || choices.isEmpty()) {
                 throw new IOException("Invalid response: 'choices' array not found or empty. Response: " + rawResponse);
@@ -267,7 +264,7 @@ public class OpenAIClientTool implements TranslationTool {
             }
 
             Set<String> modelIds = Sets.newHashSet();
-            JsonObject responseJson = gson.fromJson(rawResponse, JsonObject.class);
+            JsonObject responseJson = TranslationKit.GSON.fromJson(rawResponse, JsonObject.class);
             JsonArray dataArray = responseJson.getAsJsonArray("data");
 
             if (dataArray != null) {
@@ -275,7 +272,7 @@ public class OpenAIClientTool implements TranslationTool {
                     if (modelElement.isJsonObject()) {
                         JsonObject modelObject = modelElement.getAsJsonObject();
                         if (modelObject.has("id") && modelObject.get("id").isJsonPrimitive()) {
-                            String id = modelObject.get("id").getAsString();
+                            String id = modelObject.getAsJsonPrimitive("id").getAsString();
                             modelIds.add(id.replace("models/", ""));
                         }
                     }
@@ -300,7 +297,7 @@ public class OpenAIClientTool implements TranslationTool {
     }
 
     /**
-     * Returns a copy of {@link OpenAIClientTool#TEMP_AVAILABLE_MODEL_LIST}
+     * Returns a copy of {@link OpenAIClientProvider#TEMP_AVAILABLE_MODEL_LIST}
      * A suck method that shouldn't be used.
      * We use this method ONLY when something went wrong.
      */
@@ -331,14 +328,11 @@ public class OpenAIClientTool implements TranslationTool {
 
     public enum Api implements ComponentizableEnum {
         OpenAI("https://api.openai.com/v1/", "gpt-4o-mini"),
-        Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-2.0-flash"),
-        Grok("https://api.x.ai/v1/", "grok-3"),
-        DeepSeek("https://api.deepseek.com/v1/", "deepseek-chat"),
+        Gemini("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-flash-lite-latest"),
+        Claude("https://api.anthropic.com/v1/", "claude-haiku-4-5"),
+        Grok("https://api.x.ai/v1/", "grok-4-1-fast-non-reasoning"),
+        DeepSeek("https://api.deepseek.com/", "deepseek-v4-flash"),
         Custom(null, "");
-
-        public static final Map<String, Api> entries = Util.make(Maps.newHashMap(), map -> {
-            for (var api : values()) map.put(api.name(), api);
-        });
 
         @Nullable
         public final String baseUrl;
@@ -347,19 +341,6 @@ public class OpenAIClientTool implements TranslationTool {
         Api(@Nullable String baseUrl, String defaultModel) {
             this.baseUrl = baseUrl;
             this.defaultModel = defaultModel;
-        }
-    }
-
-    /**
-     * An exception indicating a service error from the OpenAI API.
-     * Includes a message with the HTTP status code.
-     */
-    public static class ServiceException extends RuntimeException {
-        public final int statusCode;
-
-        public ServiceException(String message, int statusCode) {
-            super(message);
-            this.statusCode = statusCode;
         }
     }
 

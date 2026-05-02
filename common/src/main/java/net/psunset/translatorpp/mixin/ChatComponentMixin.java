@@ -55,7 +55,7 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     private Minecraft minecraft;
 
     @Inject(method = "clearMessages(Z)V", at = @At("TAIL"))
-    private void afterClearMessages(boolean bl, CallbackInfo ci) {
+    private void translatorpp$afterClearMessages(boolean bl, CallbackInfo ci) {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 

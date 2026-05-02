@@ -4,8 +4,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.psunset.translatorpp.compat.jade.TPPCompatJade;
 import net.psunset.translatorpp.config.TPPConfig;
+import net.psunset.translatorpp.core.TranslationKit;
 import net.psunset.translatorpp.tool.CompatUtl;
-import net.psunset.translatorpp.translation.TranslationKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,6 @@ public final class TranslatorPP {
         throw new AssertionError("TranslatorPP should not be instantiated");
     }
 
-    @Environment(EnvType.CLIENT)
     public static void init() {
         TranslationKit.init();
         TPPConfig.init();

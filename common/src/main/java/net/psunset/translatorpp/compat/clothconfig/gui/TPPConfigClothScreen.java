@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.SimpleOptionsSubScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.psunset.translatorpp.api.ScreenProvider;
+import net.psunset.translatorpp.api.IScreenProvider;
 import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import org.jetbrains.annotations.ApiStatus;
 

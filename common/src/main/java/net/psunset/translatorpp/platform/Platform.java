@@ -1,39 +1,30 @@
 package net.psunset.translatorpp.platform;
 
-import net.psunset.translatorpp.annotations.ExpectMixin;
+import org.jetbrains.annotations.ApiStatus;
 
 public final class Platform {
+
+    @ApiStatus.Internal
+    public static IPlatform _innerImpl;
 
     /**
      * Returns true if the current platform is Forge.
      */
-    @ExpectMixin(
-            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.FORGE},
-            method = ExpectMixin.Method.OVERWRITE
-    )
-    public static boolean isForge() {
-        throw new AssertionError();
+    public static boolean isNeoForge() {
+        return _innerImpl.isNeoForge();
     }
 
     /**
      * Returns true if the current platform is Fabric.
      */
-    @ExpectMixin(
-            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.FORGE},
-            method = ExpectMixin.Method.OVERWRITE
-    )
     public static boolean isFabric() {
-        throw new AssertionError();
+        return _innerImpl.isFabric();
     }
 
     /**
      * Returns true if the mod with the given ID is loaded.
      */
-    @ExpectMixin(
-            value = {ExpectMixin.Expected.FABRIC, ExpectMixin.Expected.FORGE},
-            method = ExpectMixin.Method.OVERWRITE
-    )
     public static boolean isModLoaded(String modId) {
-        throw new AssertionError();
+        return _innerImpl.isModLoaded(modId);
     }
 }

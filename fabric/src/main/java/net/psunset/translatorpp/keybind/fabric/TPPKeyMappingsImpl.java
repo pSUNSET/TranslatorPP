@@ -7,7 +7,6 @@ import net.psunset.translatorpp.keybind.TPPKeyMappings;
 
 public final class TPPKeyMappingsImpl {
 
-    @Environment(EnvType.CLIENT)
     public static void init() {
         for (var key : TPPKeyMappings.getEntries()) {
             KeyBindingHelper.registerKeyBinding(key);
