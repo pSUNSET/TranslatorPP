@@ -6,6 +6,7 @@ import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreenWrapp
 import net.psunset.translatorpp.tool.CompatUtl;
 
 public final class TPPModMenuIntegration implements ModMenuApi {
+
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return CompatUtl.ClothConfig.isLoaded() ? TPPConfigClothScreenWrapper::createScreen : ClothConfigMissingScreen::new;
