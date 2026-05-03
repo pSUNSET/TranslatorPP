@@ -6,7 +6,6 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.core.TranslationKit;
 
 import java.util.List;

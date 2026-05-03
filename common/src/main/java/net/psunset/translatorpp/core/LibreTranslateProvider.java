@@ -15,8 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 
 public class LibreTranslateProvider implements IServiceProvider {
     static final LibreTranslateProvider INSTANCE = new LibreTranslateProvider();

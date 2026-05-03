@@ -1,7 +1,5 @@
 package net.psunset.translatorpp;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.psunset.translatorpp.compat.jade.TPPCompatJade;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.core.TranslationKit;

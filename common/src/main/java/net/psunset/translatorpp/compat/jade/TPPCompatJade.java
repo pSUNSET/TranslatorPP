@@ -1,7 +1,5 @@
 package net.psunset.translatorpp.compat.jade;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;

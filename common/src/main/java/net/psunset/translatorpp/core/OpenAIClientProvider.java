@@ -2,8 +2,10 @@ package net.psunset.translatorpp.core;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.gson.*;
-import net.minecraft.Util;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.api.ComponentizableEnum;
 import net.psunset.translatorpp.api.IServiceProvider;
@@ -20,7 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 

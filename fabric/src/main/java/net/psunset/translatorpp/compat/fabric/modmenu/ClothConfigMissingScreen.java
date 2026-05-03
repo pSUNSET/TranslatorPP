@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.compat.fabric.modmenu;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
