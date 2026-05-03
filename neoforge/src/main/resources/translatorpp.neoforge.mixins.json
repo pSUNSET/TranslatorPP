@@ -3,6 +3,7 @@
   "package": "net.psunset.translatorpp.mixin.neoforge",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
+  "plugin": "net.psunset.translatorpp.neoforge.TPPMixinPluginImpl",
   "client": [
     "ConfigurationSectionScreenMixin"
   ],
