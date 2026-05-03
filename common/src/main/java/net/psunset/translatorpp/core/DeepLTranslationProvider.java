@@ -17,8 +17,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DeepLTranslationProvider implements IServiceProvider {
     static final DeepLTranslationProvider INSTANCE = new DeepLTranslationProvider();

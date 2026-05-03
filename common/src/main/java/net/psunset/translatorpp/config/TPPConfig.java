@@ -1,7 +1,5 @@
 package net.psunset.translatorpp.config;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.annotations.ExpectMixin;

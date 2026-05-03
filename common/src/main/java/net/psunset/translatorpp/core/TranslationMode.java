@@ -1,12 +1,8 @@
 package net.psunset.translatorpp.core;
 
-import com.google.common.collect.Maps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
 import net.psunset.translatorpp.api.ComponentizableEnum;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public enum TranslationMode implements ComponentizableEnum {
     /**

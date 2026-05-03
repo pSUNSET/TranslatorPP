@@ -36,7 +36,7 @@ public class GoogleTranslationProvider implements IServiceProvider {
     private String buildUrl(String q, String sl, String tl) {
         return "https://translate.googleapis.com/translate_a/single?dt=t&client=gtx&q=" +
                 URLEncoder.encode(q, StandardCharsets.UTF_8) +
-//                "&sl=" + sl +
+                "&sl=" + sl +
                 "&tl=" + tl;
     }
 
