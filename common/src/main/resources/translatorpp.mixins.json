@@ -1,15 +1,16 @@
 {
-  "required": true,
-  "package": "net.psunset.translatorpp.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "minVersion": "0.8",
-  "client": [
-    "ChatComponentMixin",
-    "ChatScreenMixin"
-  ],
-  "mixins": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "net.psunset.translatorpp.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "minVersion": "0.8",
+    "client": [
+        "BookViewScreenMixin",
+        "ChatComponentMixin",
+        "ChatScreenMixin"
+    ],
+    "mixins": [
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }
