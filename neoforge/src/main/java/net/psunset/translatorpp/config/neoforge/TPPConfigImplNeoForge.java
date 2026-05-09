@@ -249,6 +249,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
     public static void onConfigReloading(ModConfigEvent.Reloading event) {
         // TODO: Refresh exact items by edited config
         if (event.getConfig().getSpec().equals(SPEC)) {
+            TranslationKit.getInstance().clearCache();
             OpenAIClientProvider.getInstance().refresh();
             OpenAIClientProvider.refreshCacheModels();
             DeepLTranslationProvider.getInstance().refresh();
