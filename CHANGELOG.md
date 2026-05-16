@@ -1,5 +1,2 @@
-- Features
-  - Book content can now be translated.
-
 - Fixes
-  - Translation caches didn't got cleared when configuration was updated. (NeoForge only)
+  - The translated content in book changes from all pages to viewed page only.
