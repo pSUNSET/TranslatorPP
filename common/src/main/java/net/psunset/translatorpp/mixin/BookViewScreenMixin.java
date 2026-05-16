@@ -33,6 +33,9 @@ public abstract class BookViewScreenMixin extends Screen {
     @Shadow
     private BookViewScreen.BookAccess bookAccess;
 
+    @Shadow
+    private int currentPage;
+
     protected BookViewScreenMixin(Component component) {
         super(component);
     }
@@ -41,12 +44,12 @@ public abstract class BookViewScreenMixin extends Screen {
     private void translatorpp$onRender(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
         if (i >= this.translatorpp$backgroundLeft() && i <= this.translatorpp$backgroundLeft() + IMAGE_WIDTH &&
                 j >= this.translatorpp$backgroundTop() && j <= this.translatorpp$backgroundTop() + IMAGE_HEIGHT) {
-            var pages = this.bookAccess.pages();
-            TranslationKit.getInstance().setHoveredText(pages);
+            var translated = this.bookAccess.getPage(this.currentPage).getString();
+            TranslationKit.getInstance().setHoveredText(translated);
 
             if (TranslationKit.getInstance().isTranslated() &&
                     TranslationKit.getInstance().getTranslatedResult() != null &&
-                    TooltipUtl.getCombinedTooltipText(pages).equals(TranslationKit.getInstance().getTranslatedText())) {
+                    translated.equals(TranslationKit.getInstance().getTranslatedText())) {
                 var style = Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TranslationKit.getInstance().createResultForChat()));
                 guiGraphics.renderComponentHoverEffect(this.font, style, i, j);
                 ci.cancel();
