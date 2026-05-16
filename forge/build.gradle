@@ -4,7 +4,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "translatorpp.mixins.json"
+        mixinConfig "translatorpp.mixins.json", "translatorpp.forge.mixins.json"
     }
 }
 
