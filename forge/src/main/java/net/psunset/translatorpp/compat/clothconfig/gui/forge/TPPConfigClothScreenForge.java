@@ -6,19 +6,19 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.psunset.translatorpp.api.ScreenProvider;
-import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreen;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.psunset.translatorpp.api.ComponentizableEnum;
+import net.psunset.translatorpp.api.IScreenProvider;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.config.forge.TPPConfigImplForge;
+import net.psunset.translatorpp.core.OllamaClientProvider;
+import net.psunset.translatorpp.core.OpenAIClientProvider;
+import net.psunset.translatorpp.core.TranslationMode;
+import net.psunset.translatorpp.core.TranslationService;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.translation.OpenAIClientTool;
-import net.psunset.translatorpp.translation.TranslationMode;
-import net.psunset.translatorpp.translation.TranslationTool;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,14 +27,17 @@ import java.util.Locale;
 
 public class TPPConfigClothScreenForge {
 
-    public static void initIfHasClothConfig(ModContainer container) {
-        container.registerExtensionPoint(IConfigScreenFactory.class, (c, p) -> create(p));
-        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, TPPConfigClothScreenNeoForge::afterClientTickIfHasClothConfig);
+    public static void initIfHasClothConfig() {
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory(TPPConfigClothScreenForge::create));
+        MinecraftForge.EVENT_BUS.<TickEvent.ClientTickEvent>addListener(TPPConfigClothScreenForge::afterClientTickIfHasClothConfig);
     }
 
-    public static void afterClientTickIfHasClothConfig(ClientTickEvent.Post event) {
-        if (TPPKeyMappings.CONFIG_KEY.isDown()) {
-            Minecraft.getInstance().setScreen(create(Minecraft.getInstance().screen));
+    public static void afterClientTickIfHasClothConfig(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END){
+            if (TPPKeyMappings.CONFIG_KEY.isDown()) {
+                Minecraft.getInstance().setScreen(create(Minecraft.getInstance().screen));
+            }
         }
     }
 
@@ -46,17 +49,17 @@ public class TPPConfigClothScreenForge {
 
         private static final Provider INSTANCE = new Provider();
 
-        private General() {
+        private Provider() {
         }
 
         @Override
         public Screen createScreen(Screen parent) {
 
-            var config = TPPConfigImplNeoForge.INSTANCE;
+            var config = TPPConfigImplForge.INSTANCE;
 
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)
-                    .setSavingRunnable(TPPConfigImplNeoForge.SPEC::save)
+                    .setSavingRunnable(TPPConfigImplForge.SPEC::save)
                     .setTitle(Component.translatable("config.title.translatorpp"));
 
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();

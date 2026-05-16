@@ -8,6 +8,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
@@ -263,7 +264,7 @@ public final class TranslationKit {
                 lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
                 if (texts.length > 1) {
                     // 15 < ${max_length_of_lines} < 30
-                    lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
+                    lines.add(Component.literal("-".repeat(Mth.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
                     for (int i = 1; i < texts.length; i++) {
                         lines.add(Component.literal(texts[i]).withStyle(appliedStyle));
                     }
@@ -271,7 +272,7 @@ public final class TranslationKit {
             }
             case ALL_IN_END -> {
                 // 15 < ${max_length_of_lines} < 30
-                lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(Component.literal("-".repeat(Mth.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
                 for (String text : texts) {
                     lines.add(Component.literal(text).withStyle(appliedStyle));
                 }

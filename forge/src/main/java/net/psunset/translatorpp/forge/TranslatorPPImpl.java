@@ -7,6 +7,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.forge.TPPConfigImplForge;
 import net.psunset.translatorpp.event.forge.TPPEventsImpl;
+import net.psunset.translatorpp.platform.forge.PlatformImpl;
 
 @Mod(value = TranslatorPP.ID)
 public final class TranslatorPPImpl {
@@ -15,6 +16,8 @@ public final class TranslatorPPImpl {
 
         var gameBus = MinecraftForge.EVENT_BUS;
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        PlatformImpl.init();
 
         /* Earlier */
 

@@ -1,7 +1,7 @@
-package net.psunset.translatorpp.platform.neoforge;
+package net.psunset.translatorpp.platform.forge;
 
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLLoader;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.psunset.translatorpp.platform.IPlatform;
 import net.psunset.translatorpp.platform.Platform;
 
@@ -15,7 +15,7 @@ public final class PlatformImpl implements IPlatform {
     }
 
     @Override
-    public boolean isNeoForge() {
+    public boolean isForge() {
         return true;
     }
 
@@ -27,7 +27,7 @@ public final class PlatformImpl implements IPlatform {
     @Override
     public boolean isModLoaded(String modId) {
         return ModList.get() == null ?
-                FMLLoader.getCurrent().getLoadingModList().getMods().stream().anyMatch(modInfo -> modInfo.getModId().equals(modId)) :
+                FMLLoader.getLoadingModList().getMods().stream().anyMatch(modInfo -> modInfo.getModId().equals(modId)) :
                 ModList.get().isLoaded(modId);
     }
 

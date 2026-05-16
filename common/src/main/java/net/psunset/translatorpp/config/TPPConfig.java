@@ -1,7 +1,5 @@
 package net.psunset.translatorpp.config;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.annotations.ExpectMixin;
@@ -48,9 +46,9 @@ public interface TPPConfig {
 
     String getOllamaModel();
 
-    @ExpectMixin(value = ExpectMixin.Expected.NEOFORGE, method = ExpectMixin.Method.OVERWRITE)
+    @ExpectMixin(value = ExpectMixin.Expected.FORGE, method = ExpectMixin.Method.OVERWRITE)
     static void init() {
-        if (Platform.isNeoForge()) {
+        if (Platform.isForge()) {
             throw new AssertionError("Mixin missing!");
         } else if (CompatUtl.ClothConfig.isLoaded()) {
             TranslatorPP.LOGGER.debug("Cloth Config is loaded, using cloth config for Translator++ Config.");
