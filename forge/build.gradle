@@ -4,7 +4,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "translatorpp.mixins.json", "translatorpp.forge.mixins.json"
+        mixinConfig "translatorpp.mixins.json"
     }
 }
 
@@ -32,11 +32,11 @@ dependencies {
     forge "net.minecraftforge:forge:$minecraft_version-$forge_version"
 
     // Cloth Config
-    modImplementation "me.shedaniel.cloth:cloth-config-forge:$cloth_config_version"
+    modCompileOnly "me.shedaniel.cloth:cloth-config-forge:$cloth_config_version"
 
     // JEI, REI, EMI?
-    modCompileOnly "mezz.jei:jei-$minecraft_version-forge-api:$jei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
+//    modCompileOnly "mezz.jei:jei-$minecraft_version-forge-api:$jei_version"
+//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
 
     modRuntimeOnly "mezz.jei:jei-$minecraft_version-forge:$jei_version"
 //    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
@@ -44,7 +44,7 @@ dependencies {
     // FTB Quests
 
     // Jade
-    modImplementation "maven.modrinth:jade:$jade_forge_version"
+    modRuntimeOnly "maven.modrinth:jade:$jade_forge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
