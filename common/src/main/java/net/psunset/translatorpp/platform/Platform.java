@@ -10,8 +10,8 @@ public final class Platform {
     /**
      * Returns true if the current platform is Forge.
      */
-    public static boolean isNeoForge() {
-        return _innerImpl.isNeoForge();
+    public static boolean isForge() {
+        return _innerImpl.isForge();
     }
 
     /**

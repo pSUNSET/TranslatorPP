@@ -60,12 +60,12 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     }
 
     @Inject(method = "refreshTrimmedMessage()V", at = @At("HEAD"))
-    private void beforeRefreshTrimmedMessages(CallbackInfo ci) {
+    private void translatorpp$beforeRefreshTrimmedMessages(CallbackInfo ci) {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 
     @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V", at = @At("TAIL"))
-    private void afterAddMessageToDisplayQueue(Component component, MessageSignature messageSignature, int i, GuiMessageTag guiMessageTag, boolean bl, CallbackInfo ci  /*, @Local List list*/) {
+    private void translatorpp$afterAddMessageToDisplayQueue(Component component, MessageSignature messageSignature, int i, GuiMessageTag guiMessageTag, boolean bl, CallbackInfo ci  /*, @Local List list*/) {
         // ---
         int j = Mth.floor((double)this.getWidth() / this.getScale());
         if (guiMessageTag != null && guiMessageTag.icon() != null) {

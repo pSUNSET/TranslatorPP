@@ -14,7 +14,7 @@ public final class PlatformImpl implements IPlatform {
     }
 
     @Override
-    public boolean isNeoForge() {
+    public boolean isForge() {
         return false;
     }
 

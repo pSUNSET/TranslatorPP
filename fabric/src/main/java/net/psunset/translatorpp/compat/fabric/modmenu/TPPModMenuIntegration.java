@@ -2,8 +2,8 @@ package net.psunset.translatorpp.compat.fabric.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import net.psunset.translatorpp.compat.clothconfig.TPPConfigImplCloth;
 import net.psunset.translatorpp.compat.clothconfig.gui.TPPConfigClothScreenWrapper;
+import net.psunset.translatorpp.gui.ClothConfigMissingScreen;
 import net.psunset.translatorpp.tool.CompatUtl;
 
 public final class TPPModMenuIntegration implements ModMenuApi {
