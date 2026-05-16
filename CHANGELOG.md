@@ -1,2 +1,2 @@
 - Fixes
-  - The translated content in book changes from all pages to viewed page only.
+  - fix: Game directly crash because refmap is missing. (mc1.20.1 and lower only)
