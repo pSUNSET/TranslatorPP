@@ -27,7 +27,8 @@
     ]
   },
   "mixins": [
-    "translatorpp.mixins.json"
+    "translatorpp.mixins.json",
+    "translatorpp.fabric.mixins.json"
   ],
   "accessWidener": "translatorpp.accesswidener",
   "depends": {

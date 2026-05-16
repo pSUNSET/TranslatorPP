@@ -1,18 +1,16 @@
 {
   "required": true,
-  "package": "net.psunset.translatorpp.mixin",
+  "package": "net.psunset.translatorpp.mixin.forge",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "plugin": "net.psunset.translatorpp.forge.TPPMixinPluginImpl",
   "client": [
-    "BookViewScreenMixin",
-    "ChatComponentMixin",
-    "ChatScreenMixin"
   ],
   "mixins": [
-    "forge.TPPConfigMixin"
+    "TPPConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "refmap": "translatorpp-forge-forge-refmap.json"
 }
