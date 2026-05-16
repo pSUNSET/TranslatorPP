@@ -23,7 +23,7 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;getComponentStyleAt(DD)Lnet/minecraft/network/chat/Style;", shift = At.Shift.BEFORE), cancellable = true)
-    private void onRender(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    private void translatorpp$onRender(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
         String text = ((ChatComponentMixinAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(i, j);
         TranslationKit.getInstance().setHoveredText(text);
 

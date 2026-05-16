@@ -28,6 +28,6 @@ public final class TooltipUtl {
     }
 
     public static String getCombinedTooltipText(List<? extends FormattedText> tooltip) {
-        return String.join(TranslationKit.SEPARATOR, getTooltipTexts(tooltip));
+        return String.join(TranslationKit.separator(), getTooltipTexts(tooltip));
     }
 }

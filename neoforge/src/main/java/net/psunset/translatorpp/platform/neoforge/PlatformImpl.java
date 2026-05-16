@@ -27,7 +27,7 @@ public final class PlatformImpl implements IPlatform {
     @Override
     public boolean isModLoaded(String modId) {
         return ModList.get() == null ?
-                FMLLoader.getCurrent().getLoadingModList().getMods().stream().anyMatch(modInfo -> modInfo.getModId().equals(modId)) :
+                FMLLoader.getLoadingModList().getMods().stream().anyMatch(modInfo -> modInfo.getModId().equals(modId)) :
                 ModList.get().isLoaded(modId);
     }
 

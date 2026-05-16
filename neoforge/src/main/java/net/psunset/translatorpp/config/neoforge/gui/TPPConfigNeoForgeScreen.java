@@ -5,9 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -17,7 +14,8 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.neoforge.TPPConfigImplNeoForge;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +52,9 @@ public class TPPConfigNeoForgeScreen extends ConfigurationScreen.ConfigurationSe
     }
 
     @Override
-    protected ConfigurationScreen.ConfigurationSectionScreen rebuild() {
+    protected @NotNull ConfigurationScreen.ConfigurationSectionScreen rebuild() {
         if (list != null) { // this may be called early, skip and wait for init() then
-            list.clearEntries();
+            list.children().clear();
             boolean hasUndoableElements = false;
 
             final List<@Nullable Element> elements = new ArrayList<>();
@@ -120,7 +118,7 @@ public class TPPConfigNeoForgeScreen extends ConfigurationScreen.ConfigurationSe
                         }
 
                         final StringWidget label = new StringWidget(Button.DEFAULT_WIDTH, Button.DEFAULT_HEIGHT, element.name(), font);
-                        label.setTooltip(Tooltip.create(element.tooltip()));
+                        label.alignLeft().setTooltip(Tooltip.create(element.tooltip()));
                         list.addSmall(label, element.getWidget(options));
                     }
                     hasUndoableElements |= element.undoable();

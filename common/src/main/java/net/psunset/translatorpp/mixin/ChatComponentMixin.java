@@ -31,13 +31,13 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     private final int[] translatorpp$messageIndexTrimmedToAll = Util.make(new int[100], arr -> Arrays.fill(arr, -1));
 
     @Shadow
-    protected abstract int getMessageLineIndexAt(double d, double e);
+    public abstract int getMessageLineIndexAt(double d, double e);
 
     @Shadow
-    protected abstract double screenToChatX(double d);
+    public abstract double screenToChatX(double d);
 
     @Shadow
-    protected abstract double screenToChatY(double d);
+    public abstract double screenToChatY(double d);
 
     @Shadow
     @Final
@@ -64,7 +64,7 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     }
 
     @WrapOperation(method = "addMessageToDisplayQueue(Lnet/minecraft/client/GuiMessage;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ComponentRenderUtils;wrapComponents(Lnet/minecraft/network/chat/FormattedText;ILnet/minecraft/client/gui/Font;)Ljava/util/List;"))
-    private List<FormattedCharSequence> wrapWrapComponents(FormattedText formattedText, int i, Font font, Operation<List<FormattedCharSequence>> original) {
+    private List<FormattedCharSequence> translatorpp$wrapWrapComponents(FormattedText formattedText, int i, Font font, Operation<List<FormattedCharSequence>> original) {
         List<FormattedCharSequence> toReturn = original.call(formattedText, i, font);
         int s = toReturn.size();
         for (int x = 99; x >= s; x--) {
