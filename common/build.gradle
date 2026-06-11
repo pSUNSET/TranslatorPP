@@ -18,7 +18,4 @@ dependencies {
 
     // Jade (using fabric)
     modCompileOnly "maven.modrinth:jade:$jade_fabric_version"
-
-    // Wynntils (using fabric-1.21.4)
-    modCompileOnly "maven.modrinth:wynntils:v3.4.5-fabric"
 }
