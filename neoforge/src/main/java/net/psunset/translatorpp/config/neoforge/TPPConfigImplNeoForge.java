@@ -7,6 +7,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -21,6 +22,9 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -216,7 +220,8 @@ public class TPPConfigImplNeoForge implements TPPConfig {
     }
 
     public static void init(ModContainer container) {
-        container.registerConfig(ModConfig.Type.CLIENT, SPEC);
+        moveOldConfigToNew();
+        container.registerConfig(ModConfig.Type.CLIENT, SPEC, TranslatorPP.ID + ".toml");
 
         if (CompatUtl.ClothConfig.isLoaded()) {
             TPPConfigClothScreenNeoForge.initIfHasClothConfig(container);
@@ -256,6 +261,22 @@ public class TPPConfigImplNeoForge implements TPPConfig {
             LibreTranslateProvider.getInstance().refresh();
             OllamaClientProvider.getInstance().refresh();
             OllamaClientProvider.refreshCacheModels();
+        }
+    }
+
+    private static void moveOldConfigToNew() {
+        var configDir = FMLPaths.CONFIGDIR.get();
+        var oConfigFile = configDir.resolve("translatorpp-client.toml");
+        var configFile = configDir.resolve("translatorpp.toml");
+        try {
+            if (Files.exists(oConfigFile)) {
+                if (Files.notExists(configFile)) {
+                    byte[] oContent = Files.readAllBytes(oConfigFile);
+                    Files.write(configFile, oContent, StandardOpenOption.CREATE);
+                }
+                Files.delete(oConfigFile);
+            }
+        } catch (IOException ignored) {
         }
     }
 }

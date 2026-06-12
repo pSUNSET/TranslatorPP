@@ -42,12 +42,12 @@ public class TPPConfigImplCloth implements TPPConfig {
 
     @Override
     public String getSourceLanguage() {
-        return config().sourceLanguage;
+        return config().source_language;
     }
 
     @Override
     public String getTargetLanguage() {
-        return config().targetLanguage;
+        return config().target_language;
     }
 
     @Override
@@ -57,47 +57,47 @@ public class TPPConfigImplCloth implements TPPConfig {
 
     @Override
     public String getOpenaiApiKey() {
-        return config().openaiApiKey;
+        return config().openai_apikey;
     }
 
     @Override
     public OpenAIClientProvider.Api getOpenaiBaseUrl() {
-        return config().openaiBaseUrl;
+        return config().openai_baseurl;
     }
 
     @Override
     public String getOpenaiCustomBaseUrl() {
-        return config().openaiCustomBaseUrl;
+        return config().openai_custom_baseurl;
     }
 
     @Override
     public String getOpenaiModel() {
-        return config().openaiModel;
+        return config().openai_model;
     }
 
     @Override
     public String getDeepLApiKey() {
-        return config().deeplApiKey;
+        return config().deepl_apikey;
     }
 
     @Override
     public String getLibreApiKey() {
-        return config().libreApiKey;
+        return config().libre_apikey;
     }
 
     @Override
     public String getLibreBaseUrl() {
-        return config().libreBaseUrl;
+        return config().libre_baseurl;
     }
 
     @Override
     public String getOllamaBaseUrl() {
-        return config().ollamaBaseUrl;
+        return config().ollama_baseurl;
     }
 
     @Override
     public String getOllamaModel() {
-        return config().ollamaModel;
+        return config().ollama_model;
     }
 
     public static TPPConfigData config() {
@@ -131,26 +131,26 @@ public class TPPConfigImplCloth implements TPPConfig {
 
         /* General */
         private TranslationMode mode = Default.mode;
-        private String sourceLanguage = Default.sourceLanguage;
-        private String targetLanguage = Default.targetLanguage;
+        private String source_language = Default.sourceLanguage;
+        private String target_language = Default.targetLanguage;
         private TranslationService service = Default.service;
 
         /* OpenAI */
-        private String openaiApiKey = Default.openaiApiKey;
-        private OpenAIClientProvider.Api openaiBaseUrl = Default.openaiBaseUrl;
-        private String openaiCustomBaseUrl = Default.openaiCustomBaseUrl;
-        private String openaiModel = Default.openaiModel;
+        private String openai_apikey = Default.openaiApiKey;
+        private OpenAIClientProvider.Api openai_baseurl = Default.openaiBaseUrl;
+        private String openai_custom_baseurl = Default.openaiCustomBaseUrl;
+        private String openai_model = Default.openaiModel;
 
         /* DeepL */
-        private String deeplApiKey = Default.deeplApiKey;
+        private String deepl_apikey = Default.deeplApiKey;
 
         /* Libre */
-        private String libreApiKey = Default.libreApiKey;
-        private String libreBaseUrl = Default.libreBaseUrl;
+        private String libre_apikey = Default.libreApiKey;
+        private String libre_baseurl = Default.libreBaseUrl;
 
         /* Ollama */
-        private String ollamaBaseUrl = Default.ollamaBaseUrl;
-        private String ollamaModel = Default.ollamaModel;
+        private String ollama_baseurl = Default.ollamaBaseUrl;
+        private String ollama_model = Default.ollamaModel;
 
         @Override
         public Screen createScreen(Screen parent) {
@@ -188,25 +188,25 @@ public class TPPConfigImplCloth implements TPPConfig {
                     })
                     .build());
 
-            general.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), this.sourceLanguage)
+            general.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), this.source_language)
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
                     .setSelections(slList)
                     .setDefaultValue(Default.sourceLanguage)
                     .setSaveConsumer(it -> {
-                        if (!this.sourceLanguage.equals(it)) {
-                            this.sourceLanguage = it;
+                        if (!this.source_language.equals(it)) {
+                            this.source_language = it;
                             OnSaveManager.clearTranslationCachesLater();
                         }
                     })
                     .build());
 
-            general.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), this.targetLanguage)
+            general.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), this.target_language)
                     .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
                     .setSelections(tlList)
                     .setDefaultValue(Default.targetLanguage)
                     .setSaveConsumer(it -> {
-                        if (!this.targetLanguage.equals(it)) {
-                            this.targetLanguage = it;
+                        if (!this.target_language.equals(it)) {
+                            this.target_language = it;
                             OnSaveManager.clearTranslationCachesLater();
                         }
                     })
@@ -226,50 +226,50 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             /* ---------------------------------------- */
 
-            openai.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), this.openaiApiKey)
+            openai.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_apikey"), this.openai_apikey)
                     .setTooltip(Component.translatable("config.translatorpp.openai_apikey.tooltip"))
                     .setDefaultValue(Default.openaiApiKey)
                     .setSaveConsumer(it -> {
-                        if (!this.openaiApiKey.equals(it)) {
-                            this.openaiApiKey = it;
+                        if (!this.openai_apikey.equals(it)) {
+                            this.openai_apikey = it;
                             OnSaveManager.refreshOpenaiLater();
                             OnSaveManager.refreshOpenaiCacheModelsLater();
                         }
                     })
                     .build());
 
-            openai.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientProvider.Api.class, this.openaiBaseUrl)
+            openai.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.openai_baseurl"), OpenAIClientProvider.Api.class, this.openai_baseurl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_baseurl.tooltip"))
                     .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
                     .setDefaultValue(Default.openaiBaseUrl)
                     .setSaveConsumer(it -> {
-                        if (!this.openaiBaseUrl.equals(it)) {
-                            this.openaiBaseUrl = it;
+                        if (!this.openai_baseurl.equals(it)) {
+                            this.openai_baseurl = it;
                             OnSaveManager.refreshOpenaiLater();
                             OnSaveManager.refreshOpenaiCacheModelsLater();
                         }
                     })
                     .build());
 
-            openai.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), this.openaiCustomBaseUrl)
+            openai.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.openai_custom_baseurl"), this.openai_custom_baseurl)
                     .setTooltip(Component.translatable("config.translatorpp.openai_custom_baseurl.tooltip"))
                     .setDefaultValue(Default.openaiCustomBaseUrl)
                     .setSaveConsumer(it -> {
-                        if (!this.openaiCustomBaseUrl.equals(it)) {
-                            this.openaiCustomBaseUrl = it;
+                        if (!this.openai_custom_baseurl.equals(it)) {
+                            this.openai_custom_baseurl = it;
                             OnSaveManager.refreshOpenaiLater();
                             OnSaveManager.refreshOpenaiCacheModelsLater();
                         }
                     })
                     .build());
 
-            openai.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), this.openaiModel)
+            openai.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.openai_model"), this.openai_model)
                     .setTooltip(Component.translatable("config.translatorpp.openai_model.tooltip"))
                     .setSelections(OpenAIClientProvider.getCacheModels())
                     .setDefaultValue(Default.openaiModel)
                     .setSaveConsumer(it -> {
-                        if (!this.openaiModel.equals(it)) {
-                            this.openaiModel = it;
+                        if (!this.openai_model.equals(it)) {
+                            this.openai_model = it;
                             OnSaveManager.refreshOpenaiLater();
                             OnSaveManager.clearTranslationCachesLater();
                         }
@@ -278,12 +278,12 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             /* ---------------------------------------- */
 
-            deepl.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.deepl_apikey"), this.deeplApiKey)
+            deepl.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.deepl_apikey"), this.deepl_apikey)
                     .setTooltip(Component.translatable("config.translatorpp.deepl_apikey.tooltip"))
                     .setDefaultValue(Default.deeplApiKey)
                     .setSaveConsumer(it -> {
-                        if (!this.deeplApiKey.equals(it)) {
-                            this.deeplApiKey = it;
+                        if (!this.deepl_apikey.equals(it)) {
+                            this.deepl_apikey = it;
                             OnSaveManager.refreshDeeplLater();
                         }
                     })
@@ -291,23 +291,23 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             /* ---------------------------------------- */
 
-            libre.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.libre_apikey"), this.libreApiKey)
+            libre.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.libre_apikey"), this.libre_apikey)
                     .setTooltip(Component.translatable("config.translatorpp.libre_apikey.tooltip"))
                     .setDefaultValue(Default.libreApiKey)
                     .setSaveConsumer(it -> {
-                        if (!this.libreApiKey.equals(it)) {
-                            this.libreApiKey = it;
+                        if (!this.libre_apikey.equals(it)) {
+                            this.libre_apikey = it;
                             OnSaveManager.refreshLibreLater();
                         }
                     })
                     .build());
 
-            libre.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.libre_baseurl"), this.libreBaseUrl)
+            libre.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.libre_baseurl"), this.libre_baseurl)
                     .setTooltip(Component.translatable("config.translatorpp.deepl_apikey.libre_baseurl"))
                     .setDefaultValue(Default.libreBaseUrl)
                     .setSaveConsumer(it -> {
-                        if (!this.libreBaseUrl.equals(it)) {
-                            this.libreBaseUrl = it;
+                        if (!this.libre_baseurl.equals(it)) {
+                            this.libre_baseurl = it;
                             OnSaveManager.refreshLibreLater();
                         }
                     })
@@ -315,25 +315,25 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             /* ---------------------------------------- */
 
-            ollama.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.ollama_baseurl"), this.ollamaBaseUrl)
+            ollama.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.ollama_baseurl"), this.ollama_baseurl)
                     .setTooltip(Component.translatable("config.translatorpp.deepl_apikey.ollama_baseurl"))
                     .setDefaultValue(Default.ollamaBaseUrl)
                     .setSaveConsumer(it -> {
-                        if (!this.ollamaBaseUrl.equals(it)) {
-                            this.ollamaBaseUrl = it;
+                        if (!this.ollama_baseurl.equals(it)) {
+                            this.ollama_baseurl = it;
                             OnSaveManager.refreshOllamaLater();
                             OnSaveManager.refreshOllamaCacheModelsLater();
                         }
                     })
                     .build());
 
-            ollama.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.ollama_model"), this.ollamaModel)
+            ollama.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.ollama_model"), this.ollama_model)
                     .setTooltip(Component.translatable("config.translatorpp.ollama_model.tooltip"))
                     .setSelections(OllamaClientProvider.getCacheModels())
                     .setDefaultValue(Default.ollamaModel)
                     .setSaveConsumer(it -> {
-                        if (!this.ollamaModel.equals(it)) {
-                            this.ollamaModel = it;
+                        if (!this.ollama_model.equals(it)) {
+                            this.ollama_model = it;
                             OnSaveManager.refreshOllamaLater();
                             OnSaveManager.clearTranslationCachesLater();
                         }
