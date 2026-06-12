@@ -94,7 +94,7 @@ subprojects {
 
 publishMods {
     changelog = file("CHANGELOG.md").text
-    type = BETA
+    type = STABLE
 
     def curseforgeSettings = curseforgeOptions {
         accessToken = secrets.getProperty("CURSEFORGE_TOKEN")
