@@ -11,6 +11,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.compat.clothconfig.gui.forge.TPPConfigClothScreenForge;
 import net.psunset.translatorpp.config.TPPConfig;
@@ -22,6 +23,9 @@ import net.psunset.translatorpp.tool.CompatUtl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -217,7 +221,8 @@ public class TPPConfigImplForge implements TPPConfig {
     }
 
     public static void init() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SPEC);
+        moveOldConfigToNew();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SPEC, TranslatorPP.ID + ".toml");
 
         if (CompatUtl.ClothConfig.isLoaded()) {
             TPPConfigClothScreenForge.initIfHasClothConfig();
@@ -259,6 +264,22 @@ public class TPPConfigImplForge implements TPPConfig {
             LibreTranslateProvider.getInstance().refresh();
             OllamaClientProvider.getInstance().refresh();
             OllamaClientProvider.refreshCacheModels();
+        }
+    }
+
+    private static void moveOldConfigToNew() {
+        var configDir = FMLPaths.CONFIGDIR.get();
+        var oConfigFile = configDir.resolve("translatorpp-client.toml");
+        var configFile = configDir.resolve("translatorpp.toml");
+        try {
+            if (Files.exists(oConfigFile)) {
+                if (Files.notExists(configFile)) {
+                    byte[] oContent = Files.readAllBytes(oConfigFile);
+                    Files.write(configFile, oContent, StandardOpenOption.CREATE);
+                }
+                Files.delete(oConfigFile);
+            }
+        } catch (IOException ignored) {
         }
     }
 }
