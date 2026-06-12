@@ -1,2 +1,2 @@
 - Fixes
-  - fix: Game directly crash because refmap is missing. (mc1.20.1 and lower only)
+  - Fabric and Forge-like's configs are not synchronized
