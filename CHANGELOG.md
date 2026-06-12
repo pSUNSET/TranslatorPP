@@ -1,2 +1,2 @@
 - Fixes
-  - The translated content in book changes from all pages to viewed page only.
+  - Fabric and Forge-like's configs are not synchronized
