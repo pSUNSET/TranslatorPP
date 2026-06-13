@@ -7,7 +7,6 @@
         "BookViewScreenMixin",
         "ChatComponentMixin",
         "ChatScreenMixin",
-        "wynntils.WrappingChatComponentMixin"
     ],
     "mixins": [
     ],
