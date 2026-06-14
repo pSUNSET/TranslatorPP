@@ -2,12 +2,10 @@ package net.psunset.translatorpp.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
 import net.psunset.translatorpp.core.TranslationKit;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,17 +20,16 @@ public abstract class ChatScreenMixin extends Screen {
         super(component);
     }
 
-    @Inject(method = "render", at = @At("TAIL"), cancellable = true)
-    private void translatorpp$onRender(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        String text = ((ChatComponentMixinAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(i, j);
+    @Inject(method = "extractRenderState", at = @At("TAIL"), cancellable = true)
+    private void translatorpp$onExtractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+        String text = ((ChatComponentMixinAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(mouseX, mouseY);
         TranslationKit.getInstance().setHoveredText(text);
 
         if (text != null &&
                 TranslationKit.getInstance().isTranslated() &&
                 TranslationKit.getInstance().getTranslatedResult() != null &&
                 text.equals(TranslationKit.getInstance().getTranslatedText())) {
-            var style = Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(TranslationKit.getInstance().createResultForChat()));
-            guiGraphics.renderComponentHoverEffect(this.font, style, i, j);
+            graphics.setTooltipForNextFrame(this.font, TranslationKit.getInstance().createResultForChat(), mouseX, mouseY);
             ci.cancel();
         }
     }

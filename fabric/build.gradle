@@ -27,31 +27,28 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version+$minecraft_version"
+    implementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    implementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version+$minecraft_version"
 
     // Mod Menu
-    modImplementation "com.terraformersmc:modmenu:$modmenu_version"
+    implementation "com.terraformersmc:modmenu:$modmenu_version"
 
     // Cloth Config
-    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") { exclude(group: "net.fabricmc.fabric-api") }
+    runtimeOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") { exclude(group: "net.fabricmc.fabric-api") }
 
     // JEI, REI, EMI? (Unused)
-//    modCompileOnly "mezz.jei:jei-$minecraft_version-fabric-api:$jei_version"
-//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
+//    compileOnly "mezz.jei:jei-$minecraft_version-fabric-api:$jei_version"
+//    compileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
 
-//    modRuntimeOnly "mezz.jei:jei-$minecraft_version-fabric:$jei_version"  // (Loom version is too high)
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
+//    runtimeOnly "mezz.jei:jei-$minecraft_version-fabric:$jei_version"
+//    runtimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
 
     // FTB Quests
 
     // Jade
-//    modImplementation "maven.modrinth:jade:$jade_fabric_version"  // (Loom version is too high)
+//    implementation "maven.modrinth:jade:$jade_fabric_version"
 
-    // Wynntils
-    modRuntimeOnly "maven.modrinth:wynntils:$wynntils_fabric_version"
-
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    common(project(path: ':common')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
 
@@ -81,13 +78,14 @@ jar {
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+
+    archiveClassifier = 'raw'
 }
 
 shadowJar {
+    dependsOn jar
+    from zipTree(jar.archiveFile)
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
-}
-
-remapJar {
-    input.set shadowJar.archiveFile
+    archiveClassifier = null
+    zip64 = true
 }

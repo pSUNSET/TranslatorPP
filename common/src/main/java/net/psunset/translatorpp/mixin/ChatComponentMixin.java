@@ -4,10 +4,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.GuiMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
@@ -48,9 +48,6 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     public abstract boolean isChatFocused();
 
     @Shadow
-    protected abstract boolean isChatHidden();
-
-    @Shadow
     public abstract int getLinesPerPage();
 
     @Shadow
@@ -73,7 +70,7 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
         Arrays.fill(this.translatorpp$messageIndexTrimmedToAll, -1);
     }
 
-    @WrapOperation(method = "addMessageToDisplayQueue(Lnet/minecraft/client/GuiMessage;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GuiMessage;splitLines(Lnet/minecraft/client/gui/Font;I)Ljava/util/List;"))
+    @WrapOperation(method = "addMessageToDisplayQueue(Lnet/minecraft/client/multiplayer/chat/GuiMessage;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/chat/GuiMessage;splitLines(Lnet/minecraft/client/gui/Font;I)Ljava/util/List;"))
     private List<FormattedCharSequence> translatorpp$wrapSplitLines(GuiMessage instance, Font font, int i, Operation<List<FormattedCharSequence>> original) {
         List<FormattedCharSequence> toReturn = original.call(instance, font, i);
         int s = toReturn.size();
@@ -131,7 +128,7 @@ public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
     @Unique
     @Override
     public int translatorpp$getMessageLineIndexAt(double mouseX, double mouseY) {
-        if (this.isChatFocused() && !this.isChatHidden()) {
+        if (this.isChatFocused()) {
             if (!(mouseX < (double) -4.0F) && !(mouseX > (double) Mth.floor((double) this.getWidth() / this.getScale()))) {
                 int i = Math.min(this.getLinesPerPage(), this.trimmedMessages.size());
                 if (mouseY >= (double) 0.0F && mouseY < (double) i) {

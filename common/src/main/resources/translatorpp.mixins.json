@@ -6,8 +6,7 @@
     "client": [
         "BookViewScreenMixin",
         "ChatComponentMixin",
-        "ChatScreenMixin",
-        "wynntils.WrappingChatComponentMixin"
+        "ChatScreenMixin"
     ],
     "mixins": [
     ],
