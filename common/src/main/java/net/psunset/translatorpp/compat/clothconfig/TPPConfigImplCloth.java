@@ -303,7 +303,7 @@ public class TPPConfigImplCloth implements TPPConfig {
                     .build());
 
             libre.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.libre_baseurl"), this.libre_baseurl)
-                    .setTooltip(Component.translatable("config.translatorpp.deepl_apikey.libre_baseurl"))
+                    .setTooltip(Component.translatable("config.translatorpp.libre_baseurl.tooltip"))
                     .setDefaultValue(Default.libreBaseUrl)
                     .setSaveConsumer(it -> {
                         if (!this.libre_baseurl.equals(it)) {
@@ -316,7 +316,7 @@ public class TPPConfigImplCloth implements TPPConfig {
             /* ---------------------------------------- */
 
             ollama.addEntry(entryBuilder.startStrField(Component.translatable("config.translatorpp.ollama_baseurl"), this.ollama_baseurl)
-                    .setTooltip(Component.translatable("config.translatorpp.deepl_apikey.ollama_baseurl"))
+                    .setTooltip(Component.translatable("config.translatorpp.ollama_baseurl.tooltip"))
                     .setDefaultValue(Default.ollamaBaseUrl)
                     .setSaveConsumer(it -> {
                         if (!this.ollama_baseurl.equals(it)) {
@@ -406,7 +406,7 @@ public class TPPConfigImplCloth implements TPPConfig {
             }
 
             if (shouldRefreshLibre) {
-                DeepLTranslationProvider.getInstance().refresh();
+                LibreTranslateProvider.getInstance().refresh();
                 shouldRefreshLibre = false;
             }
 

@@ -11,7 +11,7 @@ import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
-import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ChatComponent.class)
-public abstract class ChatComponentMixin implements ChatComponentMixinAccessor {
+public abstract class ChatComponentMixin implements ChatComponentAccessor {
     @Unique
     private final int[] translatorpp$messageIndexTrimmedToAll = Util.make(new int[100], arr -> Arrays.fill(arr, -1));
 

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentAccessor;
 import net.psunset.translatorpp.core.TranslationKit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,7 +22,7 @@ public abstract class ChatScreenMixin extends Screen {
 
     @Inject(method = "extractRenderState", at = @At("TAIL"), cancellable = true)
     private void translatorpp$onExtractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        String text = ((ChatComponentMixinAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(mouseX, mouseY);
+        String text = ((ChatComponentAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(mouseX, mouseY);
         TranslationKit.getInstance().setHoveredText(text);
 
         if (text != null &&
