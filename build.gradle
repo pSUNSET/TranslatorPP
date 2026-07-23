@@ -23,7 +23,7 @@ allprojects {
     apply plugin: 'java'
 
     group = "$maven_group"
-    version = "${mod_version}+${minecraft_version_file_range}"
+    version = "${mod_version}+${it.name}-${minecraft_display_version}"
 
     repositories {
         maven {
@@ -56,7 +56,7 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
 
     base {
-        archivesName = "$mod_id-$project.name"
+        archivesName = "$mod_id"
     }
 
     loom {
@@ -130,32 +130,32 @@ publishMods {
     curseforge("curseforgeFabric") {
         from curseforgeSettings
         file project(":fabric")
-        displayName = "[Fabric $minecraft_version_file_range] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_version_file_range"
+        displayName = "[Fabric $minecraft_display_version] v$mod_version"
+        version.set "fabric-$mod_version+$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
     curseforge("curseforgeForge") {
         from curseforgeSettings
         file project(":forge")
-        displayName = "[Forge $minecraft_version_file_range] v$mod_version"
-        version.set "forge-$mod_version+$minecraft_version_file_range"
+        displayName = "[Forge $minecraft_display_version] v$mod_version"
+        version.set "forge-$mod_version+$minecraft_display_version"
         modLoaders.add "forge"
     }
 
     modrinth("modrinthFabric") {
         from modrinthSettings
         file project(":fabric")
-        displayName = "[Fabric $minecraft_version_file_range] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_version_file_range"
+        displayName = "[Fabric $minecraft_display_version] v$mod_version"
+        version.set "fabric-$mod_version+$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
     modrinth("modrinthForge") {
         from modrinthSettings
         file project(":forge")
-        displayName = "[Forge $minecraft_version_file_range] v$mod_version"
-        version.set "forge-$mod_version+$minecraft_version_file_range"
+        displayName = "[Forge $minecraft_display_version] v$mod_version"
+        version.set "forge-$mod_version+$minecraft_display_version"
         modLoaders.add "forge"
     }
 }
