@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentAccessor;
 import net.psunset.translatorpp.core.TranslationKit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,7 +24,7 @@ public abstract class ChatScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/ChatScreen;getComponentStyleAt(DD)Lnet/minecraft/network/chat/Style;", shift = At.Shift.BEFORE), cancellable = true)
     private void translatorpp$onRender(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        String text = ((ChatComponentMixinAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(i, j);
+        String text = ((ChatComponentAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(i, j);
         TranslationKit.getInstance().setHoveredText(text);
 
         if (text != null &&
