@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 /**
  * Indicates that the annotated element is expected to have dependency mixin applied to it.
  * It involves injection, overwrite, or other modifications by specified subprojects.
- * <br>
+ * <p>
  * If possible, it is recommended to mark where the mixin is expected to be applied with {@code throw new} {@link AssertionError}{@code ();}
- * <br>
+ * <p>
  * This annotation serves as documentation and does not enforce any behavior at runtime.
  * Why I create this is just wanna easily track where I mixin my own code.
  */

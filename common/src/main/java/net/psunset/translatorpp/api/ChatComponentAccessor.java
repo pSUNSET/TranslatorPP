@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * To access mixin methods in ChatComponent.
  */
-public interface ChatComponentMixinAccessor {
+public interface ChatComponentAccessor {
 
     /**
      * @see ChatComponentMixin#translatorpp$getMessageContentAt(double, double)
