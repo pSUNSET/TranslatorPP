@@ -23,7 +23,7 @@ allprojects {
     apply plugin: 'java'
 
     group = "$maven_group"
-    version = "${mod_version}+${minecraft_version_file_range}"
+    version = "${mod_version}+${it.name}-${minecraft_display_version}"
 
     repositories {
         maven {
@@ -56,7 +56,7 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
 
     base {
-        archivesName = "$mod_id-$project.name"
+        archivesName = "$mod_id"
     }
 
     loom {
@@ -130,32 +130,32 @@ publishMods {
     curseforge("curseforgeFabric") {
         from curseforgeSettings
         file project(":fabric")
-        displayName = "[Fabric $minecraft_version_file_range] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_version_file_range"
+        displayName = "[Fabric $minecraft_display_version] v$mod_version"
+        version.set "fabric-$mod_version+$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
     curseforge("curseforgeNeoForge") {
         from curseforgeSettings
         file project(":neoforge")
-        displayName = "[NeoForge $minecraft_version_file_range] v$mod_version"
-        version.set "neoforge-$mod_version+$minecraft_version_file_range"
+        displayName = "[NeoForge $minecraft_display_version] v$mod_version"
+        version.set "neoforge-$mod_version+$minecraft_display_version"
         modLoaders.add "neoforge"
     }
 
     modrinth("modrinthFabric") {
         from modrinthSettings
         file project(":fabric")
-        displayName = "[Fabric $minecraft_version_file_range] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_version_file_range"
+        displayName = "[Fabric $minecraft_display_version] v$mod_version"
+        version.set "fabric-$mod_version+$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
     modrinth("modrinthNeoForge") {
         from modrinthSettings
         file project(":neoforge")
-        displayName = "[NeoForge $minecraft_version_file_range] v$mod_version"
-        version.set "neoforge-$mod_version+$minecraft_version_file_range"
+        displayName = "[NeoForge $minecraft_display_version] v$mod_version"
+        version.set "neoforge-$mod_version+$minecraft_display_version"
         modLoaders.add "neoforge"
     }
 }
