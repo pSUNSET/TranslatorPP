@@ -55,7 +55,7 @@ public class OllamaClientProvider implements IServiceProvider {
             this.baseUrl = DEFAULT_BASE_URL;
             return;
         }
-        this.baseUrl = baseUrl.endsWith("/") ? baseUrl:baseUrl + "/";
+        this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     }
 
     public @NotNull String getBaseUrl() {
@@ -107,7 +107,7 @@ public class OllamaClientProvider implements IServiceProvider {
         } else {
             this.setBaseUrl(baseUrl);
         }
-        this.setModel(model.isBlank() ? "":model.strip());
+        this.setModel(model.isBlank() ? "" : model.strip());
     }
 
     @Override
@@ -149,10 +149,10 @@ public class OllamaClientProvider implements IServiceProvider {
             boolean isError = statusCode < 200 || statusCode >= 300;
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    isError ? con.getErrorStream():con.getInputStream(),
+                    isError ? con.getErrorStream() : con.getInputStream(),
                     StandardCharsets.UTF_8))) {
                 String responseLine;
-                while ((responseLine = br.readLine())!=null) {
+                while ((responseLine = br.readLine()) != null) {
                     responseBodyBuilder.append(responseLine);
                 }
             }
@@ -164,14 +164,14 @@ public class OllamaClientProvider implements IServiceProvider {
 
             JsonObject responseJson = TranslationKit.GSON.fromJson(rawResponse, JsonObject.class);
             JsonObject message = responseJson.getAsJsonObject("message");
-            if (message==null || !message.has("content")) {
+            if (message == null || !message.has("content")) {
                 throw new IOException("Invalid response: 'message' or 'content' object not found. Response: " + rawResponse);
             }
 
             return message.get("content").getAsString().trim();
 
         } finally {
-            if (con!=null) {
+            if (con != null) {
                 con.disconnect();
             }
         }
@@ -210,10 +210,10 @@ public class OllamaClientProvider implements IServiceProvider {
             boolean isError = statusCode < 200 || statusCode >= 300;
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    isError ? con.getErrorStream():con.getInputStream(),
+                    isError ? con.getErrorStream() : con.getInputStream(),
                     StandardCharsets.UTF_8))) {
                 String responseLine;
-                while ((responseLine = br.readLine())!=null) {
+                while ((responseLine = br.readLine()) != null) {
                     responseBodyBuilder.append(responseLine);
                 }
             }
@@ -232,7 +232,7 @@ public class OllamaClientProvider implements IServiceProvider {
             JsonObject responseJson = TranslationKit.GSON.fromJson(rawResponse, JsonObject.class);
             JsonArray models = responseJson.getAsJsonArray("models");
 
-            if (models!=null && !models.isEmpty()) {
+            if (models != null && !models.isEmpty()) {
                 for (JsonElement modelElement : models) {
                     JsonObject modelObject = modelElement.getAsJsonObject();
                     if (modelObject.has("name")) {
@@ -246,13 +246,13 @@ public class OllamaClientProvider implements IServiceProvider {
             return modelIds;
 
         } catch (JsonSyntaxException e) {
-            TranslatorPP.LOGGER.error("JSON syntax error while parsing models list: {}. Response: {}", e.getMessage(), (con!=null && con.getDoInput() ? "Response too long or unreadable":"No response available or error during read"));
+            TranslatorPP.LOGGER.error("JSON syntax error while parsing models list: {}. Response: {}", e.getMessage(), (con != null && con.getDoInput() ? "Response too long or unreadable" : "No response available or error during read"));
             return getModelListOffline();
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Exception while getting online model list: {}", e, e);
             return getModelListOffline();
         } finally {
-            if (con!=null) {
+            if (con != null) {
                 con.disconnect();
             }
         }

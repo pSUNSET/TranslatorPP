@@ -21,8 +21,8 @@ public class ClothConfigMissingScreen extends Screen {
     @Override
     protected void init() {
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, this::onBack)
-                        .bounds(this.width / 2 - 100, this.height / 4 + 120 + 12, 200, 20)
-                        .build());
+                .bounds(this.width / 2 - 100, this.height / 4 + 120 + 12, 200, 20)
+                .build());
     }
 
     public void onBack(Button button) {

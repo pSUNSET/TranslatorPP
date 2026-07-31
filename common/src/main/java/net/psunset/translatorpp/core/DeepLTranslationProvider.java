@@ -86,10 +86,10 @@ public class DeepLTranslationProvider implements IServiceProvider {
             boolean isError = statusCode < 200 || statusCode >= 300;
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    isError ? con.getErrorStream():con.getInputStream(),
+                    isError ? con.getErrorStream() : con.getInputStream(),
                     StandardCharsets.UTF_8))) {
                 String responseLine;
-                while ((responseLine = br.readLine())!=null) {
+                while ((responseLine = br.readLine()) != null) {
                     responseBodyBuilder.append(responseLine);
                 }
             }
@@ -104,7 +104,7 @@ public class DeepLTranslationProvider implements IServiceProvider {
 
             JsonArray translations = responseJson.getAsJsonArray("translations");
 
-            if (translations==null || translations.isEmpty()) {
+            if (translations == null || translations.isEmpty()) {
                 throw new IOException("Invalid response: 'translations' array not found or empty. Response: " + rawResponse);
             }
 
@@ -115,7 +115,7 @@ public class DeepLTranslationProvider implements IServiceProvider {
 
             return result.toString();
         } finally {
-            if (con!=null) {
+            if (con != null) {
                 con.disconnect();
             }
         }
