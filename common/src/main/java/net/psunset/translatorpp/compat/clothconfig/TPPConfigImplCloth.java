@@ -19,12 +19,8 @@ import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.core.*;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
+import net.psunset.translatorpp.tool.LangUtl;
 import org.jetbrains.annotations.ApiStatus;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * The ClothConfig-compatible implementation of {@link TPPConfig}.
@@ -168,16 +164,6 @@ public class TPPConfigImplCloth implements TPPConfig {
             ConfigCategory libre = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.libre"));
             ConfigCategory ollama = builder.getOrCreateCategory(Component.translatable("config.category.translatorpp.ollama"));
 
-            List<String> tlList = Arrays.stream(Locale.getAvailableLocales())
-                    .map(Locale::toLanguageTag)
-                    .distinct()
-                    .sorted(String::compareTo)
-                    .toList();
-
-            List<String> slList = new ArrayList<>(tlList.size() + 1);
-            slList.add("auto");
-            slList.addAll(tlList);
-
             general.addEntry(entryBuilder.startEnumSelector(Component.translatable("config.translatorpp.mode"), TranslationMode.class, this.mode)
                     .setTooltip(Component.translatable("config.translatorpp.mode.tooltip"))
                     .setEnumNameProvider(e -> ((ComponentizableEnum) e).toComponent())
@@ -192,7 +178,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             general.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.source_language"), this.source_language)
                     .setTooltip(Component.translatable("config.translatorpp.source_language.tooltip"))
-                    .setSelections(slList)
+                    .setSelections(LangUtl.SOURCE_LANGUAGES)
                     .setDefaultValue(Default.sourceLanguage)
                     .setSaveConsumer(it -> {
                         if (!this.source_language.equals(it)) {
@@ -204,7 +190,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
             general.addEntry(entryBuilder.startStringDropdownMenu(Component.translatable("config.translatorpp.target_language"), this.target_language)
                     .setTooltip(Component.translatable("config.translatorpp.target_language.tooltip"))
-                    .setSelections(tlList)
+                    .setSelections(LangUtl.TARGET_LANGUAGES)
                     .setDefaultValue(Default.targetLanguage)
                     .setSaveConsumer(it -> {
                         if (!this.target_language.equals(it)) {

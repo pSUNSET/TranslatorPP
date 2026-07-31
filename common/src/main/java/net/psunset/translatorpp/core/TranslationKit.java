@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +17,7 @@ import net.psunset.translatorpp.event.ItemTooltipCallbacks;
 import net.psunset.translatorpp.event.ScreenCallbacks;
 import net.psunset.translatorpp.exception.ServiceException;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
-import net.psunset.translatorpp.tool.ClientUtl;
+import net.psunset.translatorpp.tool.MessageUtl;
 import net.psunset.translatorpp.tool.TooltipUtl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -47,10 +49,17 @@ public final class TranslationKit {
         translationThread.setDaemon(true); // Allow JVM to exit even if this thread is running
         return translationThread;
     });
+    private static final ExecutorService independentExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread translationThread = new Thread(r, "TranslationIWorker-" + taskCounter.incrementAndGet());
+        translationThread.setDaemon(true);
+        return translationThread;
+    });
 
     public static TranslationKit getInstance() {
         return INSTANCE;
     }
+
+    final Minecraft client = Minecraft.getInstance();
 
     // TODO: Make cache size configurable
     private static final int MAX_CACHE_SIZE = 100;
@@ -105,7 +114,7 @@ public final class TranslationKit {
         return hoveredText;
     }
 
-    public void setHoveredText(@Nullable ItemStack stack, Minecraft client) {
+    public void setHoveredText(@Nullable ItemStack stack) {
         if (stack == null) {
             this.hoveredText = null;
             return;
@@ -148,7 +157,7 @@ public final class TranslationKit {
     /**
      * Start translating the currently hovered text.
      */
-    public void start(Minecraft client) {
+    public void start() {
         if (hoveredText == null || hoveredText.equals(translatedText)) {
             // Already translating or translated this exact stack instance
             return;
@@ -190,23 +199,43 @@ public final class TranslationKit {
                 }, translationExecutor)
                 .exceptionally(err -> {
                     TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", translatedText, err.getCause());
-                    translatedResult = I18n.get("misc.translatorpp.translation.failed") + ERROR;
-                    this.clientExecuteSendingError(client, err.getCause());
+                    translatedResult = I18n.get("misc.translatorpp.translation.failure") + ERROR;
+                    MessageUtl.threadSafeToLocal(createErrorMessage(err.getCause()));
                     return null; // Indicate exception was handled
                 });
     }
 
-    private void clientExecuteSendingError(Minecraft client, Throwable throwable) {
-        client.execute(() -> sendErrorToClient(client, throwable));
+
+    public void startIndependently(String translatedText, Consumer<String> onSuccess, Consumer<Throwable> onError) {
+        startIndependently(translatedText, TPPConfig.getInstance().getSourceLanguage(), TPPConfig.getInstance().getTargetLanguage(), onSuccess, onError);
     }
 
-    private void sendErrorToClient(Minecraft client, Throwable err) {
-        if (err instanceof ServiceException se) {
-            ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat.status_code",
-                    se.statusCode, se.getMessage()).withStyle(ChatFormatting.RED));
-        } else {
-            ClientUtl.message(client, Component.translatable("misc.translatorpp.translation.failed.chat", err.toString()).withStyle(ChatFormatting.RED));
+    public void startIndependently(String translatedText, String sl, String tl, Consumer<String> onSuccess, Consumer<Throwable> onError) {
+        // Check cache first
+        String cachedResult = translationCache.get(translatedText);
+        if (cachedResult != null) {
+            onSuccess.accept(cachedResult);
+            return; // Skip API call
         }
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                String result = TPPConfig.getInstance().getService().provider.translate(translatedText, sl, tl);
+                // Consume the result and cache it
+                onSuccess.accept(result);
+                translationCache.put(translatedText, result); // Add to cache
+            } catch (Exception e) {
+                TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", translatedText, e);
+                onError.accept(e);
+            }
+        }, independentExecutor);
+    }
+
+    private Component createErrorMessage(Throwable err) {
+        MutableComponent content = err instanceof ServiceException se ?
+                Component.translatable("misc.translatorpp.translation.failure.chat.status_code", se.statusCode, se.getMessage()) :
+                Component.translatable("misc.translatorpp.translation.failure.chat", err.toString());
+        return content.withStyle(ChatFormatting.RED);
     }
 
     /**
@@ -282,6 +311,18 @@ public final class TranslationKit {
                     lines.add(i * 2 + 1, Component.literal(texts[i]).withStyle(appliedStyle));
                 }
             }
+            case REPLACE -> {
+                // if the translation process is successful
+                if (appliedStyle.getColor().getValue() == ChatFormatting.GRAY.getColor()) {
+                    for (int i = 0; i < texts.length; i++) {
+                        lines.set(i, Component.literal(texts[i]).withStyle(lines.get(i).getStyle()));
+                    }
+                } else {
+                    for (int i = 0; i < texts.length; i++) {
+                        lines.set(i, Component.literal(texts[i]).withStyle(appliedStyle));
+                    }
+                }
+            }
         }
     }
 
@@ -302,6 +343,7 @@ public final class TranslationKit {
 
     public static void init() {
         Runtime.getRuntime().addShutdownHook(new Thread(translationExecutor::shutdownNow));
+        Runtime.getRuntime().addShutdownHook(new Thread(independentExecutor::shutdownNow));
 
         ItemTooltipCallbacks.EVENT.register((stack, flag, lines) -> {
             TranslationKit.getInstance().setHoveredText(lines);
@@ -315,7 +357,7 @@ public final class TranslationKit {
 
         ScreenCallbacks.KEY_PRESSED_POST.register((screen, key, scancode, modifiers) -> {
             if (TPPKeyMappings.TRANSLATE_KEY.matches(key, scancode)) {
-                TranslationKit.getInstance().start(Minecraft.getInstance());
+                TranslationKit.getInstance().start();
                 TranslationKit.getInstance().setKeyDown(true);
             }
         });

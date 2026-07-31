@@ -1,15 +1,15 @@
 {
-  "required": true,
-  "package": "net.psunset.translatorpp.mixin.fabric",
-  "compatibilityLevel": "JAVA_17",
-  "minVersion": "0.8",
-  "plugin": "net.psunset.translatorpp.fabric.TPPMixinPluginImpl",
-  "client": [
-  ],
-  "mixins": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "refmap": "translatorpp-fabric-fabric-refmap.json"
+    "required": true,
+    "package": "net.psunset.translatorpp.mixin.fabric",
+    "compatibilityLevel": "JAVA_17",
+    "minVersion": "0.8",
+    "plugin": "net.psunset.translatorpp.fabric.TPPMixinPluginImpl",
+    "client": [
+    ],
+    "mixins": [
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "refmap": "translatorpp-fabric-fabric-refmap.json"
 }

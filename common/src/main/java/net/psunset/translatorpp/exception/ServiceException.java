@@ -21,7 +21,7 @@ public sealed abstract class ServiceException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
-    public ServiceException(String message, Throwable cause,  int statusCode) {
+    public ServiceException(String message, Throwable cause, int statusCode) {
         super(message, cause);
         this.statusCode = statusCode;
     }
@@ -30,12 +30,15 @@ public sealed abstract class ServiceException extends RuntimeException {
         public Google(int statusCode) {
             super(statusCode);
         }
+
         public Google(String message, int statusCode) {
             super(message, statusCode);
         }
+
         public Google(Throwable cause, int statusCode) {
             super(cause, statusCode);
         }
+
         public Google(String message, Throwable cause, int statusCode) {
             super(message, cause, statusCode);
         }
@@ -45,12 +48,15 @@ public sealed abstract class ServiceException extends RuntimeException {
         public OpenAI(int statusCode) {
             super(statusCode);
         }
+
         public OpenAI(String message, int statusCode) {
             super(message, statusCode);
         }
+
         public OpenAI(Throwable cause, int statusCode) {
             super(cause, statusCode);
         }
+
         public OpenAI(String message, Throwable cause, int statusCode) {
             super(message, cause, statusCode);
         }
@@ -60,12 +66,15 @@ public sealed abstract class ServiceException extends RuntimeException {
         public DeepL(int statusCode) {
             super(statusCode);
         }
+
         public DeepL(String message, int statusCode) {
             super(message, statusCode);
         }
+
         public DeepL(Throwable cause, int statusCode) {
             super(cause, statusCode);
         }
+
         public DeepL(String message, Throwable cause, int statusCode) {
             super(message, cause, statusCode);
         }
@@ -75,12 +84,15 @@ public sealed abstract class ServiceException extends RuntimeException {
         public Libre(int statusCode) {
             super(statusCode);
         }
+
         public Libre(String message, int statusCode) {
             super(message, statusCode);
         }
+
         public Libre(Throwable cause, int statusCode) {
             super(cause, statusCode);
         }
+
         public Libre(String message, Throwable cause, int statusCode) {
             super(message, cause, statusCode);
         }
@@ -90,12 +102,15 @@ public sealed abstract class ServiceException extends RuntimeException {
         public Ollama(int statusCode) {
             super(statusCode);
         }
+
         public Ollama(String message, int statusCode) {
             super(message, statusCode);
         }
+
         public Ollama(Throwable cause, int statusCode) {
             super(cause, statusCode);
         }
+
         public Ollama(String message, Throwable cause, int statusCode) {
             super(message, cause, statusCode);
         }

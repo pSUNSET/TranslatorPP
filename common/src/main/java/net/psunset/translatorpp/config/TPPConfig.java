@@ -10,8 +10,8 @@ import net.psunset.translatorpp.core.TranslationService;
 import net.psunset.translatorpp.event.ClientTickCallbacks;
 import net.psunset.translatorpp.keybind.TPPKeyMappings;
 import net.psunset.translatorpp.platform.Platform;
-import net.psunset.translatorpp.tool.ClientUtl;
 import net.psunset.translatorpp.tool.CompatUtl;
+import net.psunset.translatorpp.tool.MessageUtl;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -147,7 +147,7 @@ public interface TPPConfig {
         public static void init() {
             ClientTickCallbacks.POST.register(client -> {
                 while (TPPKeyMappings.CONFIG_KEY.consumeClick()) {
-                    ClientUtl.message(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
+                    MessageUtl.toLocal(client, Component.translatable("misc.translatorpp.missing.clothconfig"));
                 }
             });
         }
