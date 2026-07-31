@@ -19,6 +19,8 @@ public interface ChatComponentAccessor {
     int[] translatorpp$getMessageIndexTrimmedToAll();
 
     double translatorpp$screenToChatX(double x);
+
     double translatorpp$screenToChatY(double y);
+
     int translatorpp$getMessageLineIndexAt(double mouseX, double mouseY);
 }

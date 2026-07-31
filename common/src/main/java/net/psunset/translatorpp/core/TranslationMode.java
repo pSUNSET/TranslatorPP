@@ -27,7 +27,12 @@ public enum TranslationMode implements ComponentizableEnum {
      * Translates all lines.
      * All translated results will be shown at the end of raw texts.
      */
-    ALL_IN_END("All In End");
+    ALL_IN_END("All In End"),
+
+    /**
+     * Override all raw contents.
+     */
+    REPLACE("Replace");
 
     public final String displayName;
 

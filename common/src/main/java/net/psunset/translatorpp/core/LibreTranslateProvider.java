@@ -38,7 +38,7 @@ public class LibreTranslateProvider implements IServiceProvider {
     }
 
     private void setBaseUrl(@NotNull String baseUrl) {
-        this.baseUrl = baseUrl.endsWith("/") ? baseUrl:baseUrl + "/";
+        this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     }
 
     public @NotNull String getBaseUrl() {
@@ -65,7 +65,7 @@ public class LibreTranslateProvider implements IServiceProvider {
     private void safeRefresh(String apiKey, String baseUrl) {
         try {
             this.unsafeRefresh(apiKey, baseUrl);
-            String shownApiKey = this.apiKey.isEmpty() ? "NOT_SET":"****" + this.apiKey.substring(apiKey.length() - 4); // Avoid logging full API key
+            String shownApiKey = this.apiKey.isEmpty() ? "NOT_SET" : "****" + this.apiKey.substring(apiKey.length() - 4); // Avoid logging full API key
             TranslatorPP.LOGGER.debug("LibreTranslateProvider is currently set to {apiKey={}, baseUrl={}}", shownApiKey, this.baseUrl);
         } catch (Exception e) {
             TranslatorPP.LOGGER.error("Error while refreshing LibreTranslateProvider: {}", e.toString());
@@ -78,7 +78,7 @@ public class LibreTranslateProvider implements IServiceProvider {
      * @throws IllegalArgumentException if {@code api} is {@code Custom} and {@code customApiUrl} is {@code null}.
      */
     void unsafeRefresh(String apiKey, String baseUrl) {
-        this.setApiKey(apiKey.isBlank() ? "":apiKey.strip());
+        this.setApiKey(apiKey.isBlank() ? "" : apiKey.strip());
         if (baseUrl.isBlank()) {
             this.setBaseUrl("");
             throw new IllegalArgumentException("Base URL must be provided.");
@@ -120,10 +120,10 @@ public class LibreTranslateProvider implements IServiceProvider {
             boolean isError = statusCode < 200 || statusCode >= 300;
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    isError ? con.getErrorStream():con.getInputStream(),
+                    isError ? con.getErrorStream() : con.getInputStream(),
                     StandardCharsets.UTF_8))) {
                 String responseLine;
-                while ((responseLine = br.readLine())!=null) {
+                while ((responseLine = br.readLine()) != null) {
                     responseBodyBuilder.append(responseLine);
                 }
             }
@@ -138,7 +138,7 @@ public class LibreTranslateProvider implements IServiceProvider {
 
             return responseJson.getAsJsonPrimitive("translatedText").getAsString().trim();
         } finally {
-            if (con!=null) {
+            if (con != null) {
                 con.disconnect();
             }
         }

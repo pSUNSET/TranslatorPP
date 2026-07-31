@@ -1,6 +1,5 @@
 package net.psunset.translatorpp.compat.jade;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.psunset.translatorpp.core.TranslationKit;
@@ -15,9 +14,9 @@ public class TPPCompatJade implements IWailaPlugin {
 
     public static void init() {
         ClientTickCallbacks.POST.register(client -> {
-            if (Minecraft.getInstance().screen == null) {
+            if (client.screen == null) {
                 if (TPPKeyMappings.TRANSLATE_KEY.isDown()) {
-                    TranslationKit.getInstance().start(client);
+                    TranslationKit.getInstance().start();
                 } else {
                     TranslationKit.getInstance().stop();
                 }
