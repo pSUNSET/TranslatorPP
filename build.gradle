@@ -131,7 +131,7 @@ publishMods {
         from curseforgeSettings
         file project(":fabric")
         displayName = "[Fabric $minecraft_display_version] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+fabric-$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
@@ -139,7 +139,7 @@ publishMods {
         from curseforgeSettings
         file project(":forge")
         displayName = "[Forge $minecraft_display_version] v$mod_version"
-        version.set "forge-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+forge-$minecraft_display_version"
         modLoaders.add "forge"
     }
 
@@ -147,7 +147,7 @@ publishMods {
         from modrinthSettings
         file project(":fabric")
         displayName = "[Fabric $minecraft_display_version] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+fabric-$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
@@ -155,7 +155,7 @@ publishMods {
         from modrinthSettings
         file project(":forge")
         displayName = "[Forge $minecraft_display_version] v$mod_version"
-        version.set "forge-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+forge-$minecraft_display_version"
         modLoaders.add "forge"
     }
 }
