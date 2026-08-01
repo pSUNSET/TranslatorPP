@@ -7,7 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.psunset.translatorpp.api.ChatComponentMixinAccessor;
+import net.psunset.translatorpp.api.ChatComponentAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Pseudo
 @Environment(EnvType.CLIENT)
 @Mixin(WrappingChatComponent.class)
-public abstract class WrappingChatComponentMixin extends ChatComponent implements ChatComponentMixinAccessor {
+public abstract class WrappingChatComponentMixin extends ChatComponent implements ChatComponentAccessor {
     public WrappingChatComponentMixin(Minecraft minecraft) {
         super(minecraft);
     }
@@ -32,7 +32,7 @@ public abstract class WrappingChatComponentMixin extends ChatComponent implement
         Optional<ChatComponent> optional = Services.ChatTab.getChatComponent(tab);
         if (optional.isEmpty()) return null;
         ChatComponent chat = optional.get();
-        ChatComponentMixinAccessor ext = (ChatComponentMixinAccessor) chat;
+        ChatComponentAccessor ext = (ChatComponentAccessor) chat;
 
         double mouseX = this.translatorpp$screenToChatX(globalMouseX);
         double mouseY = this.translatorpp$screenToChatY(globalMouseY);
