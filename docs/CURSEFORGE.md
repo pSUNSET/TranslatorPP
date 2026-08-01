@@ -1,3 +1,1 @@
-# Deprecated
-
-Checkout latest branch
+Please check out the latest branch instead.
