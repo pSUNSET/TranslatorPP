@@ -135,7 +135,7 @@ publishMods {
         from curseforgeSettings
         file project(":fabric")
         displayName = "[Fabric $minecraft_display_version] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+fabric-$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
@@ -143,7 +143,7 @@ publishMods {
         from curseforgeSettings
         file project(":neoforge")
         displayName = "[NeoForge $minecraft_display_version] v$mod_version"
-        version.set "neoforge-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+neoforge-$minecraft_display_version"
         modLoaders.add "neoforge"
     }
 
@@ -151,7 +151,7 @@ publishMods {
         from modrinthSettings
         file project(":fabric")
         displayName = "[Fabric $minecraft_display_version] v$mod_version"
-        version.set "fabric-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+fabric-$minecraft_display_version"
         modLoaders.addAll "fabric", "quilt"
     }
 
@@ -159,7 +159,7 @@ publishMods {
         from modrinthSettings
         file project(":neoforge")
         displayName = "[NeoForge $minecraft_display_version] v$mod_version"
-        version.set "neoforge-$mod_version+$minecraft_display_version"
+        version.set "$mod_version+neoforge-$minecraft_display_version"
         modLoaders.add "neoforge"
     }
 }
