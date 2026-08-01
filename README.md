@@ -1,9 +1,1 @@
-# Translator++
-
-A Minecraft mod for swift, light, and convenient auto translation.
-
-## Downloads
-
-You can download this mod on:
-- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/translatorpp)
-- [Modrinth](https://modrinth.com/mod/translatorpp)
+Please check out the latest branch instead.
