@@ -41,6 +41,6 @@ A Minecraft mod for swift, light, and convenient auto translation.
 * Press the settings keybind (default: **O**).
 * Through the Mod Menu mod in Fabric or standard mod list in (Neo)Forge.
 
-## Versioning (since `v2.2.0`)
+## Versioning (since `v2.6.0`)
 Display Name: `[${Platform} ${mc_ver_range}] v${mod_version}`  
-File Name: `translatorpp-${platform}-${mod_version}+${mc_ver_range}`
+File Name: `translatorpp-${mod_version}+${platform}-${mc_ver_range}`
