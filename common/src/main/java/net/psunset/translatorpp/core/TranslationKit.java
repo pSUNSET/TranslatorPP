@@ -221,9 +221,7 @@ public final class TranslationKit {
         CompletableFuture.runAsync(() -> {
             try {
                 String result = TPPConfig.getInstance().getService().provider.translate(translatedText, sl, tl);
-                // Consume the result and cache it
                 onSuccess.accept(result);
-                translationCache.put(translatedText, result); // Add to cache
             } catch (Exception e) {
                 TranslatorPP.LOGGER.error("Translation failed for: {}. Cause: {}", translatedText, e);
                 onError.accept(e);

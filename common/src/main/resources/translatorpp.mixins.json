@@ -13,5 +13,5 @@
     "injectors": {
         "defaultRequire": 1
     },
-    "refmap": "translatorpp-common-common-refmap.json"
+    "refmap": "translatorpp-common-refmap.json"
 }

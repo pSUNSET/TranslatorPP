@@ -1,4 +1,4 @@
-package net.psunset.translatorpp.mixin.neoforge;
+package net.psunset.translatorpp.mixin.forge;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.multiplayer.ClientLevel;

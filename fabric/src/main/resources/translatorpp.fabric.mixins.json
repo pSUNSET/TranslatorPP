@@ -5,11 +5,12 @@
     "minVersion": "0.8",
     "plugin": "net.psunset.translatorpp.fabric.TPPMixinPluginImpl",
     "client": [
+        "FabricClientCommandSourceMixin"
     ],
     "mixins": [
     ],
     "injectors": {
         "defaultRequire": 1
     },
-    "refmap": "translatorpp-fabric-fabric-refmap.json"
+    "refmap": "translatorpp-fabric-refmap.json"
 }
