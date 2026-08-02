@@ -54,6 +54,6 @@ public interface FabricClientCommandSourceMixin extends ClientCommandSourceStack
     @Unique
     @Override
     default ClientLevel tpp$getLevel() {
-        return ((FabricClientCommandSource) this).getLevel();
+        return ((FabricClientCommandSource) this).getWorld();
     }
 }
