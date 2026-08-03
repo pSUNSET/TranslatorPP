@@ -2,12 +2,12 @@ package net.psunset.translatorpp.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 import net.psunset.translatorpp.TranslatorPP;
 import net.psunset.translatorpp.config.TPPConfig;
@@ -231,7 +231,7 @@ public final class TranslationKit {
         MutableComponent content = err instanceof ServiceException se ?
                 Component.translatable("misc.translatorpp.translation.failure.chat.status_code", se.statusCode, se.getMessage()) :
                 Component.translatable("misc.translatorpp.translation.failure.chat", err.toString());
-        return content.withStyle(ChatFormatting.RED);
+        return content.withColor(TextColor.RED);
     }
 
     /**
@@ -264,9 +264,9 @@ public final class TranslationKit {
         String resultText = this.translatedResult;
 
         switch (resultText.substring(resultText.length() - 3)) {
-            case PROCESSING -> appliedStyle = appliedStyle.withColor(ChatFormatting.DARK_GRAY);
-            case ERROR -> appliedStyle = appliedStyle.withColor(ChatFormatting.RED);
-            default -> appliedStyle = appliedStyle.withColor(ChatFormatting.GRAY); // SUCCESS
+            case PROCESSING -> appliedStyle = appliedStyle.withColor(TextColor.DARK_GRAY);
+            case ERROR -> appliedStyle = appliedStyle.withColor(TextColor.RED);
+            default -> appliedStyle = appliedStyle.withColor(TextColor.GRAY); // SUCCESS
         }
 
         String[] texts = resultText.substring(0, resultText.length() - 3).split(literalSeparator());
@@ -289,7 +289,7 @@ public final class TranslationKit {
                 lines.add(1, Component.literal(texts[0]).withStyle(appliedStyle));
                 if (texts.length > 1) {
                     // 15 < ${max_length_of_lines} < 30
-                    lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
+                    lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withColor(TextColor.DARK_GRAY));
                     for (int i = 1; i < texts.length; i++) {
                         lines.add(Component.literal(texts[i]).withStyle(appliedStyle));
                     }
@@ -297,7 +297,7 @@ public final class TranslationKit {
             }
             case ALL_IN_END -> {
                 // 15 < ${max_length_of_lines} < 30
-                lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(Component.literal("-".repeat(Math.clamp(Arrays.stream(texts).map(String::length).flatMapToInt(IntStream::of).max().getAsInt(), 15, 30))).withColor(TextColor.DARK_GRAY));
                 for (String text : texts) {
                     lines.add(Component.literal(text).withStyle(appliedStyle));
                 }
@@ -309,7 +309,7 @@ public final class TranslationKit {
             }
             case REPLACE -> {
                 // if the translation process is successful
-                if (appliedStyle.getColor().getValue() == ChatFormatting.GRAY.getColor()) {
+                if (appliedStyle.getColor() == TextColor.GRAY) {
                     for (int i = 0; i < texts.length; i++) {
                         lines.set(i, Component.literal(texts[i]).withStyle(lines.get(i).getStyle()));
                     }

@@ -44,7 +44,7 @@ public class TPPConfigClothScreen extends OptionsSubScreen {
             String configName = config.getClass().getSimpleName().toLowerCase();
             String displayName = I18n.get(CATEGORY_PREFIX + configName);
             btn = Button.builder(Component.literal("%s...".formatted(displayName)),
-                    button -> minecraft.setScreen(config.createScreen(this))).width(310).build();
+                    button -> minecraft.setScreenAndShow(config.createScreen(this))).width(310).build();
             btn.setTooltip(Tooltip.create(Component.translatable(TOOLTIP, displayName)));
             list.addSmall(btn, null);
         }

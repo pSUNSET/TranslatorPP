@@ -25,7 +25,7 @@ public final class MessageUtl {
      * Sends {@code message} to client side.
      */
     public static void toLocal(Minecraft client, Component message) {
-        client.getChatListener().handleSystemMessage(message, true);
+        client.gui.chatListener().handleSystemMessage(message, true);
     }
 
     /**
@@ -39,7 +39,7 @@ public final class MessageUtl {
      * Sends {@code message} to client side in client thread.
      */
     public static void threadSafeToLocal(Minecraft client, Component message) {
-        client.execute(() -> client.getChatListener().handleSystemMessage(message, true));
+        client.execute(() -> client.gui.chatListener().handleSystemMessage(message, true));
     }
 
     /**

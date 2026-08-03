@@ -49,7 +49,7 @@ public final class TPPJadeExtension {
     }
 
     private static void tooltipCallback(Tooltip tooltip) {
-        if (Minecraft.getInstance().screen == null) {
+        if (Minecraft.getInstance().gui.screen() == null) {
             List<Component> hoveredTexts = new ArrayList<>(1); // TODO: Remove initial capacity
 
             outer:

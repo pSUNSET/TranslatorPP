@@ -1,39 +1,39 @@
 {
-  "schemaVersion": 1,
-  "id": "translatorpp",
-  "version": "${version}",
-  "name": "Translator++",
-  "description": "A mod for swift, light and convenient auto translation.",
-  "authors": [
-    "Project-SUNSET"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/project/translator++",
-    "sources": "https://github.com/pSUNSET/TranslatorPP",
-    "issues": "https://github.com/pSUNSET/TranslatorPP/issues"
-  },
-  "license": "MIT",
-  "icon": "icon.png",
-  "environment": "client",
-  "entrypoints": {
-    "client": [
-      "net.psunset.translatorpp.fabric.TranslatorPPImpl"
+    "schemaVersion": 1,
+    "id": "translatorpp",
+    "version": "${version}",
+    "name": "Translator++",
+    "description": "A mod for swift, light and convenient auto translation.",
+    "authors": [
+        "Project-SUNSET"
     ],
-    "modmenu": [
-      "net.psunset.translatorpp.compat.fabric.modmenu.TPPModMenuIntegration"
+    "contact": {
+        "homepage": "https://modrinth.com/project/translator++",
+        "sources": "https://github.com/pSUNSET/TranslatorPP",
+        "issues": "https://github.com/pSUNSET/TranslatorPP/issues"
+    },
+    "license": "MIT",
+    "icon": "icon.png",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "net.psunset.translatorpp.fabric.TranslatorPPImpl"
+        ],
+        "modmenu": [
+            "net.psunset.translatorpp.compat.fabric.modmenu.TPPModMenuIntegration"
+        ],
+        "jade": [
+            "net.psunset.translatorpp.compat.jade.TPPCompatJade"
+        ]
+    },
+    "mixins": [
+        "translatorpp.mixins.json",
+        "translatorpp.fabric.mixins.json"
     ],
-    "jade": [
-      "net.psunset.translatorpp.compat.jade.TPPCompatJade"
-    ]
-  },
-  "mixins": [
-    "translatorpp.mixins.json",
-    "translatorpp.fabric.mixins.json"
-  ],
-  "accessWidener": "translatorpp.accesswidener",
-  "depends": {
-    "minecraft": "${minecraft_version_fabric_range}",
-    "fabricloader": "${fabric_loader_version_range}",
-    "fabric-api": "${fabric_api_version_range}"
-  }
+    "accessWidener": "translatorpp.accesswidener",
+    "depends": {
+        "minecraft": "${minecraft_version_fabric_range}",
+        "fabricloader": "${fabric_loader_version_range}",
+        "fabric-api": "${fabric_api_version_range}"
+    }
 }

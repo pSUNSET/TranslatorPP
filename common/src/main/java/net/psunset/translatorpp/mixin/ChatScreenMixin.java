@@ -22,7 +22,7 @@ public abstract class ChatScreenMixin extends Screen {
 
     @Inject(method = "extractRenderState", at = @At("TAIL"), cancellable = true)
     private void translatorpp$onExtractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        String text = ((ChatComponentAccessor) this.minecraft.gui.getChat()).translatorpp$getMessageContentAt(mouseX, mouseY);
+        String text = ((ChatComponentAccessor) this.minecraft.gui.hud.getChat()).translatorpp$getMessageContentAt(mouseX, mouseY);
         TranslationKit.getInstance().setHoveredText(text);
 
         if (text != null &&

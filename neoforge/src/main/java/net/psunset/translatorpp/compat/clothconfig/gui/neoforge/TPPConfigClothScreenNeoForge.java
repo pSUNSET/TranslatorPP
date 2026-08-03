@@ -34,7 +34,7 @@ public class TPPConfigClothScreenNeoForge {
 
     public static void afterClientTickIfHasClothConfig(ClientTickEvent.Post event) {
         if (TPPKeyMappings.CONFIG_KEY.isDown()) {
-            Minecraft.getInstance().setScreen(create(Minecraft.getInstance().screen));
+            Minecraft.getInstance().setScreenAndShow(create(Minecraft.getInstance().gui.screen()));
         }
     }
 

@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.psunset.translatorpp.command.arguments.LangArgument;
 import net.psunset.translatorpp.config.TPPConfig;
 import net.psunset.translatorpp.core.TranslationKit;
@@ -21,7 +21,7 @@ public final class TPPCommands {
         String tl_ = tl == null ? TPPConfig.getInstance().getTargetLanguage() : tl;
         TranslationKit.getInstance().startIndependently(text, sl_, tl_,
                 result -> MessageUtl.threadSafeToLocal(Component.translatable("misc.translatorpp.translation.full", text, result)),
-                result -> MessageUtl.threadSafeToLocal(Component.translatable("misc.translatorpp.translation.failure.chat", result).withStyle(ChatFormatting.RED)));
+                result -> MessageUtl.threadSafeToLocal(Component.translatable("misc.translatorpp.translation.failure.chat", result).withColor(TextColor.RED)));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -30,7 +30,7 @@ public final class TPPCommands {
         String tl_ = tl == null ? TPPConfig.getInstance().getTargetLanguage() : tl;
         TranslationKit.getInstance().startIndependently(text, sl_, tl_,
                 result -> MessageUtl.toRemote(result),
-                result -> MessageUtl.threadSafeToLocal(Component.translatable("misc.translatorpp.translation.failure.chat", result).withStyle(ChatFormatting.RED)));
+                result -> MessageUtl.threadSafeToLocal(Component.translatable("misc.translatorpp.translation.failure.chat", result).withColor(TextColor.RED)));
         return Command.SINGLE_SUCCESS;
     }
 

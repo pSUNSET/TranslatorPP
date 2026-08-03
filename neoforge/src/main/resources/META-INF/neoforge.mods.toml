@@ -37,4 +37,4 @@ config = "translatorpp.mixins.json"
 config = "translatorpp.neoforge.mixins.json"
 
 [[accessTransformers]]
-file="META-INF/accesstransformer.cfg"
+file = "META-INF/accesstransformer.cfg"

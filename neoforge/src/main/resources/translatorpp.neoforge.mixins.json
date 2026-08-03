@@ -5,8 +5,8 @@
     "minVersion": "0.8",
     "plugin": "net.psunset.translatorpp.neoforge.TPPMixinPluginImpl",
     "client": [
-        "ConfigurationSectionScreenMixin",
-        "CommandSourceStackMixin"
+        "CommandSourceStackMixin",
+        "ConfigurationSectionScreenMixin"
     ],
     "mixins": [
         "ComponentizableEnumMixin",

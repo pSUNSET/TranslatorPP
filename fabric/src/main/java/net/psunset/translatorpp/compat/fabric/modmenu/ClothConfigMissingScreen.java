@@ -3,7 +3,7 @@ package net.psunset.translatorpp.compat.fabric.modmenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -36,7 +36,7 @@ public class ClothConfigMissingScreen extends Screen {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.lastScreen);
+        this.minecraft.setScreenAndShow(this.lastScreen);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ClothConfigMissingScreen extends Screen {
         graphics.centeredText(this.font, this.title, this.width / 2, 20, -1);
         int line = 0;
         String key;
-        while (I18n.exists(key = MISSING_DESC_PREFIX + line)) {
+        while (Language.getInstance().has(key = MISSING_DESC_PREFIX + line)) {
             graphics.centeredText(this.font, Component.translatable(key), this.width / 2, this.height / 4 + 60 + line * 12, -1);
             ++line;
         }

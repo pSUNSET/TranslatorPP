@@ -49,8 +49,8 @@ processResources {
 
     filesMatching('META-INF/neoforge.mods.toml') {
         expand([
-                version: "$mod_version",
-                neoforge_version_range: "$neoforge_version_range",
+                version                         : "$mod_version",
+                neoforge_version_range          : "$neoforge_version_range",
                 minecraft_version_neoforge_range: "$minecraft_version_neoforge_range",
         ])
     }

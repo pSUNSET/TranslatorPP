@@ -14,7 +14,7 @@ public class TPPCompatJade implements IWailaPlugin {
 
     public static void init() {
         ClientTickCallbacks.POST.register(client -> {
-            if (client.screen == null) {
+            if (client.gui.screen() == null) {
                 if (TPPKeyMappings.TRANSLATE_KEY.isDown()) {
                     TranslationKit.getInstance().start();
                 } else {

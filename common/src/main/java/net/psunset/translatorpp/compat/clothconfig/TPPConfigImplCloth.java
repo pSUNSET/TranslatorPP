@@ -110,7 +110,7 @@ public class TPPConfigImplCloth implements TPPConfig {
 
         ClientTickCallbacks.POST.register(client -> {
             if (TPPKeyMappings.CONFIG_KEY.isDown()) {
-                client.setScreen(TPPConfigClothScreenWrapper.createScreen(client.screen));
+                client.setScreenAndShow(TPPConfigClothScreenWrapper.createScreen(client.gui.screen()));
             }
         });
 

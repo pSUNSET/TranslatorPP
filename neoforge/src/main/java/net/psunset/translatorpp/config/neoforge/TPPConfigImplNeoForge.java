@@ -234,7 +234,7 @@ public class TPPConfigImplNeoForge implements TPPConfig {
 
     public static void afterClientTickIfNoClothConfig(ClientTickEvent.Post event) {
         if (TPPKeyMappings.CONFIG_KEY.isDown()) {
-            Minecraft.getInstance().setScreen(TPPConfigNeoForgeScreen.create(Minecraft.getInstance().screen));
+            Minecraft.getInstance().setScreenAndShow(TPPConfigNeoForgeScreen.create(Minecraft.getInstance().gui.screen()));
         }
     }
 

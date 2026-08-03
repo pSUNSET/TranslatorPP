@@ -32,7 +32,7 @@ public abstract class ChatComponentMixin implements ChatComponentAccessor {
 
     @Shadow
     @Final
-    private List<GuiMessage> allMessages;
+    public List<GuiMessage> allMessages;
 
     @Shadow
     protected abstract int getWidth();
@@ -42,7 +42,7 @@ public abstract class ChatComponentMixin implements ChatComponentAccessor {
 
     @Shadow
     @Final
-    Minecraft minecraft;
+    private Minecraft minecraft;
 
     @Shadow
     public abstract boolean isChatFocused();
